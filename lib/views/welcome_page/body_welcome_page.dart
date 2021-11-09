@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/views/components/label.dart';
 import 'package:plango_front/views/components/rounded_button.dart';
-import 'package:plango_front/views/welcome_page/welcome_page_bloc.dart';
+import 'package:plango_front/views/travels_list/travels_list.dart';
+import 'package:plango_front/views/welcome_page/welcome_page_bloc/welcome_page_bloc.dart';
 import 'background_welcome_page.dart';
 
 class Body extends StatelessWidget {
@@ -13,7 +14,7 @@ class Body extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (_) => WelcomePageBloc(),
-        child: Background(
+        child: const Background(
           child: FormLogin(),
         ));
   }
@@ -21,7 +22,7 @@ class Body extends StatelessWidget {
 
 // ignore: must_be_immutable
 class FormLogin extends StatelessWidget {
-  FormLogin({
+  const FormLogin({
     Key? key,
   }) : super(key: key);
 
@@ -31,15 +32,15 @@ class FormLogin extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Stack(
-          children: [
-            const Label(
+          children: const [
+            Label(
                 text: "Votre adresse mail :", color: kPrimaryLightColor),
             Login(),
           ],
         ),
         Stack(
-          children: [
-            const Label(
+          children: const [
+            Label(
               text: "Votre mot de passe :",
               color: kPrimaryLightColor,
             ),
@@ -48,7 +49,11 @@ class FormLogin extends StatelessWidget {
         ),
         RoundedButton(
           text: "Connexion",
-          press: () {},
+          press: () {
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context) => const TravelsList(),
+            ));
+          },
         ),
       ],
     );
@@ -57,7 +62,7 @@ class FormLogin extends StatelessWidget {
 
 // ignore: must_be_immutable
 class Login extends StatefulWidget {
-  Login({Key? key}) : super(key: key);
+  const Login({Key? key}) : super(key: key);
 
   @override
   _LoginState createState() => _LoginState();
@@ -75,12 +80,8 @@ class _LoginState extends State<Login> {
           return Container(
             margin: const EdgeInsets.symmetric(vertical: 10),
             width: 240,
-            child: TextField(
-              onTap: () {
-                  context.read<WelcomePageBloc>().add(const TypingEvent());
-              },
-
-              decoration: const InputDecoration(
+            child: const TextField(
+              decoration: InputDecoration(
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey),
                 ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:plango_front/views/login/connexion_page.dart';
 import 'package:plango_front/views/welcome_page//welcome_page.dart';
 import 'views/header_bar.dart';
 

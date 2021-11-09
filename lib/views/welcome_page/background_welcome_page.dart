@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:plango_front/views/welcome_page/welcome_page_bloc.dart';
+import 'package:plango_front/views/welcome_page/welcome_page_bloc/welcome_page_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class Background extends StatefulWidget {
@@ -23,10 +23,11 @@ class _BackgroundState extends State<Background>{
     super.initState();
 
     KeyboardVisibilityController().onChange.listen((isVisible) {
-     if(isVisible)
-      context.read<WelcomePageBloc>().add(const NotTypingEvent());
-     else
-      context.read<WelcomePageBloc>().add(const TypingEvent());
+     if(isVisible) {
+       context.read<WelcomePageBloc>().add(const TypingEvent());
+     } else {
+       context.read<WelcomePageBloc>().add(const NotTypingEvent());
+     }
     });
   }
   @override
@@ -49,23 +50,24 @@ class _BackgroundState extends State<Background>{
                   child: Image.asset(
                       "assets/image/plango_logo.png", width: size.width * 0.67),
                 ),
-                if(state is NotTyping) ...[
-                  Positioned(
-                      top: 0,
-                      left: 0,
-                      child: Image.asset("assets/image/deco_welcome_page_1.png",
-                        width: size.width * 0.9,)
-                  ),
-                ],
+              if(state is Typing) ...[
+          const BlurImage(),],
+                Positioned(
+                    top: 0,
+                    left: 0,
+                    child: Image.asset("assets/image/deco_welcome_page_1.png",
+                      width: size.width * 0.9,)
+                ),
                 if(state is Typing) ...[
-                  Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Image.asset("assets/image/deco_welcome_page_2.png",
-                        width: size.width * 1.2,)
-                  ),
-
-                ],
+                  const BlurImage(),],
+                Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Image.asset("assets/image/deco_welcome_page_2.png",
+                      width: size.width * 1.2,)
+                ),
+                if(state is Typing) ...[
+                  const BlurImage(),],
                 widget.child,
 
 
@@ -73,5 +75,22 @@ class _BackgroundState extends State<Background>{
             ),
           );
         });
+  }
+}
+
+class BlurImage extends StatelessWidget {
+  const BlurImage({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+      child: Container(
+        color:Colors.black.withOpacity(0),
+      ),
+    );
   }
 }
