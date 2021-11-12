@@ -38,6 +38,7 @@ dependencies:
   flutter_bloc: ^7.3.3
   equatable: ^2.0.3
   flutter_keyboard_visibility: ^5.1.0
+  share: ^2.0.4
 
 dev_dependencies:
   flutter_test:
