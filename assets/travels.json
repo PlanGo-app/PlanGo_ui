@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Paris",
+    "country": "France",
+    "city": "Paris",
+    "date_start":"2021-11-17T13:30:06.419Z",
+    "date_end":"2021-11-30T13:30:06.419Z"
+  },
+  {
+    "name": "Tokyo",
+    "country": "Japon",
+    "city": "Tokyo",
+    "date_start":"2022-01-05T13:30:06.419Z",
+    "date_end":"2022-01-17T13:30:06.419Z"
+  }
+]

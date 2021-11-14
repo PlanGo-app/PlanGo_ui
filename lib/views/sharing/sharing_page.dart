@@ -59,7 +59,7 @@ class SharingPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width / 2,
                       child: RoundedButton(
                           text: "Retour",
@@ -67,7 +67,7 @@ class SharingPage extends StatelessWidget {
                             Navigator.pop(context);
                           }),
                     ),
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width / 2,
                       child: RoundedButton(
                           text: "Partager",
