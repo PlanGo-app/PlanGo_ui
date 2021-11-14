@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:intl/intl.dart';
 import 'package:plango_front/model/travel.dart';
+import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/views/sharing/sharing_page.dart';
 import 'package:plango_front/views/travels_list/travels_list_background.dart';
 
@@ -28,88 +29,34 @@ class _TravelsListState extends State<TravelsList> {
         child: Scaffold(
           backgroundColor: Colors.blue,
           body: MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: FutureBuilder<List<Travel>>(
-                future: loadTravels(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Travel>> snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return const Center(
-                        child: CircularProgressIndicator(
-                            backgroundColor: Colors.black),
-                      );
-                    default:
-                      if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else if (snapshot.data!.isEmpty) {
-                        return const Text('No travels');
-                      } else {
-                        // return Text(snapshot.data!);
-                        return ListView.builder(
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              return Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: ListTile(
-                                      title: Text(snapshot.data![index].name),
-                                      subtitle: Text(dateFormat.format(snapshot
-                                              .data![index].date_start) +
-                                          " -- " +
-                                          dateFormat.format(
-                                              snapshot.data![index].date_end)),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.share),
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const SharingPage(),
-                                          ));
-                                    },
-                                  )
-                                ],
-                              );
-                            });
-                      }
-                  }
-                },
-              )
-
-              /*ListView.builder(
-                itemCount: ["voyage1", "voyage2"].length,
-                itemBuilder: (context, index) {
-                  return Row(
-                    // title: Text(["voyage1", "voyage2"][index]),
-                    // tileColor: Colors.blue
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        ["voyage1", "voyage2"][index],
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.share),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const SharingPage(),
-                              ));
-                        },
-                      )
-                    ],
-                  );
-                }),*/
-              ),
+            context: context,
+            removeTop: true,
+            child: FutureBuilder<List<Travel>>(
+              future: loadTravels(),
+              builder:
+                  (BuildContext context, AsyncSnapshot<List<Travel>> snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return const Center(
+                      child: CircularProgressIndicator(
+                          backgroundColor: kPrimaryLightColor,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(kPrimaryColor)),
+                    );
+                  default:
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (snapshot.data!.isEmpty) {
+                      return const Text('No travels');
+                    } else {
+                      // return Text(snapshot.data!);
+                      return TravelsListBuilder(
+                          dateFormat: dateFormat, snapshot: snapshot);
+                    }
+                }
+              },
+            ),
+          ),
         ),
       ),
     ));
@@ -121,7 +68,7 @@ class _TravelsListState extends State<TravelsList> {
   }
 
   Future<List<Travel>> loadTravels() async {
-    await Future.delayed(Duration(seconds: 1), () => {});
+    await Future.delayed(const Duration(seconds: 1), () => {});
     String jsonString = await _loadTravelsAssets();
     final jsonResponse = json.decode(jsonString);
     List<Travel> travels = [];
@@ -129,5 +76,51 @@ class _TravelsListState extends State<TravelsList> {
       travels.add(Travel.fromJson(travel));
     }
     return travels;
+  }
+}
+
+class TravelsListBuilder extends StatelessWidget {
+  const TravelsListBuilder({
+    Key? key,
+    required this.dateFormat,
+    required this.snapshot,
+  }) : super(key: key);
+
+  final DateFormat dateFormat;
+  final AsyncSnapshot<List<Travel>> snapshot;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        itemCount: snapshot.data!.length,
+        itemBuilder: (context, index) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: ListTile(
+                  title: Text(snapshot.data![index].name),
+                  subtitle: Text(
+                      dateFormat.format(snapshot.data![index].date_start) +
+                          " -- " +
+                          dateFormat.format(snapshot.data![index].date_end)),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.share),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (
+                          context,
+                        ) =>
+                            SharingPage(name: snapshot.data![index].name),
+                      ));
+                },
+              )
+            ],
+          );
+        });
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plango_front/util/constant.dart';
@@ -6,7 +8,9 @@ import 'package:plango_front/views/travels_list/travels_list_background.dart';
 import 'package:share/share.dart';
 
 class SharingPage extends StatelessWidget {
-  const SharingPage({Key? key}) : super(key: key);
+  final String name;
+
+  const SharingPage({Key? key, required this.name}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +30,9 @@ class SharingPage extends StatelessWidget {
                       width: 240,
                       child: Card(
                         child: TextFormField(
-                          initialValue: "Code de partage",
+                          initialValue: utf8.fuse(base64).encode(name),
                           readOnly: true,
+                          showCursor: true,
                           decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey),
@@ -43,8 +48,8 @@ class SharingPage extends StatelessWidget {
                       child: IconButton(
                         icon: const Icon(Icons.copy),
                         onPressed: () {
-                          Clipboard.setData(
-                                  const ClipboardData(text: "Code de partage"))
+                          Clipboard.setData(ClipboardData(
+                                  text: utf8.fuse(base64).encode(name)))
                               .then(
                             (_) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -57,10 +62,10 @@ class SharingPage extends StatelessWidget {
                   ],
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     SizedBox(
-                      width: MediaQuery.of(context).size.width / 2,
+                      width: MediaQuery.of(context).size.width / 2.2,
                       child: RoundedButton(
                           text: "Retour",
                           press: () {
@@ -68,11 +73,11 @@ class SharingPage extends StatelessWidget {
                           }),
                     ),
                     SizedBox(
-                      width: MediaQuery.of(context).size.width / 2,
+                      width: MediaQuery.of(context).size.width / 2.2,
                       child: RoundedButton(
                           text: "Partager",
                           press: () {
-                            Share.share("Plango: Code a partager");
+                            Share.share("http://Plango/VG9reW8=");
                           }),
                     ),
                   ],
