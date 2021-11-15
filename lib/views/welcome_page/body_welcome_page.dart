@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/views/components/label.dart';
 import 'package:plango_front/views/components/rounded_button.dart';
+import 'package:plango_front/views/create_account/create_account.dart';
+import 'package:plango_front/views/sharing/sharing_page.dart';
 import 'package:plango_front/views/travels_list/travels_list.dart';
 import 'package:plango_front/views/welcome_page/welcome_page_bloc/welcome_page_bloc.dart';
 import 'background_welcome_page.dart';
@@ -47,11 +49,33 @@ class FormLogin extends StatelessWidget {
             Login(),
           ],
         ),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (
+                      context,
+                      ) =>
+                      CreateAccount(),
+                ));
+          },
+          child: Container(
+            width: 200,
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(10.0),
+            margin: const EdgeInsets.only(bottom: 5),
+            child: const Label(
+              text: "Créer un compte",
+              color: kPrimaryLightColor,
+            ),
+          ),
+        ),
         RoundedButton(
           text: "Connexion",
           press: () {
             Navigator.push(context, MaterialPageRoute(
-                builder: (context) => const TravelsList(),
+              builder: (context) => const TravelsList(),
             ));
           },
         ),

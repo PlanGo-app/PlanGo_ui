@@ -18,48 +18,50 @@ class TravelsList extends StatefulWidget {
 class _TravelsListState extends State<TravelsList> {
   @override
   Widget build(BuildContext context) {
+
     Size size = MediaQuery.of(context).size;
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
     return BackgroundTravelsList(
         child: SizedBox(
-      width: size.width * 0.95,
-      height: size.height * 0.85,
-      child: Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.deepPurple)),
-        child: Scaffold(
-          backgroundColor: Colors.blue,
-          body: MediaQuery.removePadding(
-            context: context,
-            removeTop: true,
-            child: FutureBuilder<List<Travel>>(
-              future: loadTravels(),
-              builder:
-                  (BuildContext context, AsyncSnapshot<List<Travel>> snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return const Center(
-                      child: CircularProgressIndicator(
-                          backgroundColor: kPrimaryLightColor,
-                          valueColor:
+          width: size.width * 0.95,
+          height: size.height * 0.65,
+          child: Container(
+            decoration:
+            BoxDecoration(border: Border.all(color: kPrimaryLightColor)),
+            child: Scaffold(
+              backgroundColor: Colors.white60,
+              body: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: FutureBuilder<List<Travel>>(
+                  future: loadTravels(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<List<Travel>> snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return const Center(
+                          child: CircularProgressIndicator(
+                              backgroundColor: kPrimaryLightColor,
+                              valueColor:
                               AlwaysStoppedAnimation<Color>(kPrimaryColor)),
-                    );
-                  default:
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (snapshot.data!.isEmpty) {
-                      return const Text('No travels');
-                    } else {
-                      // return Text(snapshot.data!);
-                      return TravelsListBuilder(
-                          dateFormat: dateFormat, snapshot: snapshot);
+                        );
+                      default:
+                        if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else if (snapshot.data!.isEmpty) {
+                          return const Text('No travels');
+                        } else {
+                          // return Text(snapshot.data!);
+                          return TravelsListBuilder(
+                              dateFormat: dateFormat, snapshot: snapshot);
+                        }
                     }
-                }
-              },
+                  },
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-    ));
+        ));
   }
 
   Future<String> _loadTravelsAssets() async {
@@ -94,32 +96,40 @@ class TravelsListBuilder extends StatelessWidget {
     return ListView.builder(
         itemCount: snapshot.data!.length,
         itemBuilder: (context, index) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: ListTile(
-                  title: Text(snapshot.data![index].name),
-                  subtitle: Text(
-                      dateFormat.format(snapshot.data![index].date_start) +
-                          " -- " +
-                          dateFormat.format(snapshot.data![index].date_end)),
+          return Container(
+            color: kPrimaryColor,
+            margin: const EdgeInsets.only(bottom: 1.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ListTile(
+                    title: Text(
+                      snapshot.data![index].name + " ( " + snapshot.data![index].country + " )",
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                        dateFormat.format(snapshot.data![index].date_start) +
+                            " -- " +
+                            dateFormat.format(snapshot.data![index].date_end),
+                        style: const TextStyle(color: Colors.white)),
+                  ),
                 ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.share),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (
-                          context,
-                        ) =>
-                            SharingPage(name: snapshot.data![index].name),
-                      ));
-                },
-              )
-            ],
+                IconButton(
+                  icon: const Icon(Icons.share),
+                  color: Colors.white,
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (
+                            context,
+                          ) =>
+                              SharingPage(name: snapshot.data![index].name),
+                        ));
+                  },
+                ),
+              ],
+            ),
           );
         });
   }
