@@ -13,7 +13,8 @@ class SmallRoundedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 120,
+      width: 125,
+      // height: 60,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: TextButton(

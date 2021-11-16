@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:plango_front/model/travel.dart';
 import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/util/loading.dart';
+import 'package:plango_front/views/components/small_rounded_button.dart';
 import 'package:plango_front/views/sharing/sharing_page.dart';
 
 class TravelsList extends StatefulWidget {
@@ -68,7 +70,56 @@ class _TravelsListState extends State<TravelsList> {
             child: Center(
               child: IconButton(
                 onPressed: () {
-                  print("click");
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Container(
+                          height: 300,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    child: Text(
+                                      "Voulez-vous créer ou rejoindre un plan?",
+                                      style: GoogleFonts.montserrat(
+                                          fontSize: 30, color: kPrimaryColor),
+                                      textAlign: TextAlign.center,
+                                    )),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    SmallRoundedButton(
+                                        text: "Rejoindre",
+                                        press: () {
+                                          Navigator.pop(context);
+                                        }),
+                                    SmallRoundedButton(
+                                        text: "Créer",
+                                        press: () {
+                                          Navigator.pop(context);
+                                        }),
+                                  ],
+                                ),
+                              ),
+                              Flexible(
+                                flex: 3,
+                                child: SmallRoundedButton(
+                                    text: "Annuler",
+                                    press: () {
+                                      Navigator.pop(context);
+                                    }),
+                              ),
+                            ],
+                          ),
+                        );
+                      });
                 },
                 iconSize: 60,
                 icon: const Icon(
