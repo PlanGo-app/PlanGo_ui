@@ -71,17 +71,22 @@ class _TravelsListState extends State<TravelsList> {
               child: IconButton(
                 onPressed: () {
                   showModalBottomSheet(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(25),
+                            topRight: Radius.circular(25)),
+                      ),
                       context: context,
                       builder: (BuildContext context) {
-                        return Container(
+                        return SizedBox(
                           height: 300,
                           child: Column(
                             children: [
                               Expanded(
-                                flex: 3,
+                                flex: 4,
                                 child: Container(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 10),
                                     child: Text(
                                       "Voulez-vous créer ou rejoindre un plan?",
                                       style: GoogleFonts.montserrat(
@@ -91,21 +96,24 @@ class _TravelsListState extends State<TravelsList> {
                               ),
                               Expanded(
                                 flex: 3,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    SmallRoundedButton(
-                                        text: "Rejoindre",
-                                        press: () {
-                                          Navigator.pop(context);
-                                        }),
-                                    SmallRoundedButton(
-                                        text: "Créer",
-                                        press: () {
-                                          Navigator.pop(context);
-                                        }),
-                                  ],
+                                child: Container(
+                                  margin: EdgeInsets.all(10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SmallRoundedButton(
+                                          text: "Rejoindre",
+                                          press: () {
+                                            Navigator.pop(context);
+                                          }),
+                                      SmallRoundedButton(
+                                          text: "Créer",
+                                          press: () {
+                                            Navigator.pop(context);
+                                          }),
+                                    ],
+                                  ),
                                 ),
                               ),
                               Flexible(
