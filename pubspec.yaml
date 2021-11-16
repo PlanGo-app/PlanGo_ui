@@ -41,6 +41,7 @@ dependencies:
   share: ^2.0.4
   intl: ^0.17.0
   lottie: ^1.2.1
+  google_fonts: ^2.1.0
 
 dev_dependencies:
   flutter_test:

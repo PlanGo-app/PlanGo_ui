@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:plango_front/util/constant.dart';
-import 'package:plango_front/views/components/field.dart';
-import 'package:plango_front/views/components/input.dart';
-import 'package:plango_front/views/components/label.dart';
-import 'package:plango_front/views/components/rounded_button.dart';
 import 'package:plango_front/views/create_account/create_account_background.dart';
-import 'package:plango_front/views/travels_list/travels_list_background.dart';
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({Key? key}) : super(key: key);
@@ -58,7 +52,8 @@ class _CreateAccountState extends State<CreateAccount> {
                         },
                       ),
                       TextFormField(
-                        decoration: InputDecoration(label: Text("Mot de passe")),
+                        decoration:
+                            InputDecoration(label: Text("Mot de passe")),
 
                         // The validator receives the text that the user has entered.
                         validator: (value) {
@@ -67,7 +62,6 @@ class _CreateAccountState extends State<CreateAccount> {
                           }
                           return null;
                         },
-
                       ),
                       ElevatedButton(
                         onPressed: () {
@@ -75,7 +69,6 @@ class _CreateAccountState extends State<CreateAccount> {
                             _formKey.currentState!.save();
                             print(pseudo);
                           }
-
                         },
                         child: const Text('Créer'),
                       )

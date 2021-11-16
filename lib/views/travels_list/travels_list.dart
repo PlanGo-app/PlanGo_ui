@@ -5,8 +5,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:intl/intl.dart';
 import 'package:plango_front/model/travel.dart';
 import 'package:plango_front/util/constant.dart';
+import 'package:plango_front/util/loading.dart';
 import 'package:plango_front/views/sharing/sharing_page.dart';
-import 'package:plango_front/views/travels_list/travels_list_background.dart';
 
 class TravelsList extends StatefulWidget {
   const TravelsList({Key? key}) : super(key: key);
@@ -18,50 +18,69 @@ class TravelsList extends StatefulWidget {
 class _TravelsListState extends State<TravelsList> {
   @override
   Widget build(BuildContext context) {
-
-    Size size = MediaQuery.of(context).size;
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
-    return BackgroundTravelsList(
-        child: SizedBox(
-          width: size.width * 0.95,
-          height: size.height * 0.65,
-          child: Container(
-            decoration:
-            BoxDecoration(border: Border.all(color: kPrimaryLightColor)),
-            child: Scaffold(
-              backgroundColor: Colors.white60,
-              body: MediaQuery.removePadding(
-                context: context,
-                removeTop: true,
-                child: FutureBuilder<List<Travel>>(
-                  future: loadTravels(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<List<Travel>> snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return const Center(
-                          child: CircularProgressIndicator(
-                              backgroundColor: kPrimaryLightColor,
-                              valueColor:
-                              AlwaysStoppedAnimation<Color>(kPrimaryColor)),
-                        );
-                      default:
-                        if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else if (snapshot.data!.isEmpty) {
-                          return const Text('No travels');
-                        } else {
-                          // return Text(snapshot.data!);
-                          return TravelsListBuilder(
-                              dateFormat: dateFormat, snapshot: snapshot);
-                        }
-                    }
-                  },
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Image.asset(
+              "assets/image/plango_title.png",
+            ),
+          ),
+          Expanded(
+            flex: 7,
+            child: Container(
+              width: 330,
+              decoration:
+                  BoxDecoration(border: Border.all(color: Colors.black)),
+              child: Scaffold(
+                backgroundColor: Colors.white60,
+                body: MediaQuery.removePadding(
+                  context: context,
+                  removeTop: true,
+                  child: FutureBuilder<List<Travel>>(
+                    future: loadTravels(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<Travel>> snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return const Loading();
+                        default:
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else if (snapshot.data!.isEmpty) {
+                            return const Text('No travels');
+                          } else {
+                            // return Text(snapshot.data!);
+                            return TravelsListBuilder(
+                                dateFormat: dateFormat, snapshot: snapshot);
+                          }
+                      }
+                    },
+                  ),
                 ),
               ),
             ),
           ),
-        ));
+          Expanded(
+            flex: 1,
+            child: Center(
+              child: IconButton(
+                onPressed: () {
+                  print("click");
+                },
+                iconSize: 60,
+                icon: const Icon(
+                  Icons.add_circle,
+                  color: kPrimaryLightColor,
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   Future<String> _loadTravelsAssets() async {
@@ -104,8 +123,12 @@ class TravelsListBuilder extends StatelessWidget {
                 Expanded(
                   child: ListTile(
                     title: Text(
-                      snapshot.data![index].name + " ( " + snapshot.data![index].country + " )",
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      snapshot.data![index].name +
+                          " ( " +
+                          snapshot.data![index].country +
+                          " )",
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
                         dateFormat.format(snapshot.data![index].date_start) +
