@@ -8,6 +8,7 @@ import 'package:plango_front/model/travel.dart';
 import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/util/loading.dart';
 import 'package:plango_front/views/components/small_rounded_button.dart';
+import 'package:plango_front/views/create_travel/create_travel.dart';
 import 'package:plango_front/views/sharing/sharing_page.dart';
 
 class TravelsList extends StatefulWidget {
@@ -97,7 +98,7 @@ class _TravelsListState extends State<TravelsList> {
                               Expanded(
                                 flex: 3,
                                 child: Container(
-                                  margin: EdgeInsets.all(10),
+                                  margin: const EdgeInsets.all(10),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -110,7 +111,14 @@ class _TravelsListState extends State<TravelsList> {
                                       SmallRoundedButton(
                                           text: "Créer",
                                           press: () {
-                                            Navigator.pop(context);
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (
+                                                    context,
+                                                  ) =>
+                                                      const CreateTravel(),
+                                                ));
                                           }),
                                     ],
                                   ),
