@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:plango_front/views/components/rounded_button.dart';
 import 'package:plango_front/views/create_account/create_account_background.dart';
 
 class CreateAccount extends StatefulWidget {
@@ -27,50 +28,57 @@ class _CreateAccountState extends State<CreateAccount> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TextFormField(
-                        decoration: InputDecoration(label: Text("Pseudo")),
-                        // The validator receives the text that the user has entered.
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          pseudo = value;
-                        },
+                      SizedBox(
+                        width: 240,
+                        child: TextFormField(
+                          decoration:
+                              const InputDecoration(label: Text("Pseudo")),
+                          // The validator receives the text that the user has entered.
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter some text';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            pseudo = value;
+                          },
+                        ),
                       ),
-                      TextFormField(
-                        decoration: InputDecoration(label: Text("Email")),
-
-                        // The validator receives the text that the user has entered.
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
+                      SizedBox(
+                        width: 240,
+                        child: TextFormField(
+                          autovalidateMode: AutovalidateMode.always,
+                          decoration:
+                              const InputDecoration(label: Text("Email")),
+                          validator: validateEmail,
+                        ),
                       ),
-                      TextFormField(
-                        decoration:
-                            InputDecoration(label: Text("Mot de passe")),
-
-                        // The validator receives the text that the user has entered.
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
+                      SizedBox(
+                        width: 240,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                              label: Text("Mot de passe")),
+                          obscureText: true,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          // The validator receives the text that the user has entered.
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter some text';
+                            }
+                            return null;
+                          },
+                        ),
                       ),
-                      ElevatedButton(
-                        onPressed: () {
+                      RoundedButton(
+                        text: 'Créer',
+                        press: () {
                           if (_formKey.currentState!.validate()) {
                             _formKey.currentState!.save();
                             print(pseudo);
                           }
                         },
-                        child: const Text('Créer'),
                       )
                     ],
                   ),
@@ -81,5 +89,18 @@ class _CreateAccountState extends State<CreateAccount> {
         },
       ),
     );
+  }
+}
+
+String? validateEmail(String? value) {
+  String pattern =
+      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+      r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+      r"{0,253}[a-zA-Z0-9])?)*$";
+  RegExp regex = RegExp(pattern);
+  if (value == null || !regex.hasMatch(value)) {
+    return 'Enter a valid email address';
+  } else {
+    return null;
   }
 }
