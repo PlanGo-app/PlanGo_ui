@@ -118,7 +118,7 @@ class _MapViewBodyState extends State<MapViewBody> {
                   size: 35.0,
                 ),
               );
-              print(latLng);
+              // print(latLng);
               markers.add(m);
               // Controller._controller.move(latLng, 16);
             });

@@ -49,6 +49,9 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   flutter_map: ^0.14.0
   osm_nominatim: ^2.0.1
+  dio: ^4.0.3
+  json_annotation: any
+
 
 dev_dependencies:
   flutter_test:
