@@ -16,7 +16,5 @@ class MapPageInitialState extends MapPageState {
 
 // ignore: must_be_immutable
 class MapPagePanelState extends MapPageState {
-  MapPagePanelState(MapBoxPlace place) : super(place) {
-    print("AHHHHHHHHHHHHHHh");
-  }
+  MapPagePanelState(MapBoxPlace place) : super(place) {}
 }

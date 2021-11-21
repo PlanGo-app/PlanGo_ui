@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mapbox_search_flutter/mapbox_search_flutter.dart';
+import 'package:plango_front/views/nav_bar/search_Text_Field.dart';
 
 import 'nav_bar_bloc/nav_bar_bloc.dart';
 
@@ -34,20 +34,7 @@ class _NavBarViewState extends State<NavBarView> {
         buildWhen: (prev, state) => prev.runtimeType != state.runtimeType,
         builder: (context, state) {
           if (state is NavBarSearch) {
-            return Row(
-              children: [
-                FloatingActionButton(
-                  onPressed: () {
-                    context
-                        .read<NavBarBloc>()
-                        .add(NavBarEventPlaceFound(place: MapBoxPlace()));
-                  },
-                  child: Icon(Icons.more_horiz_outlined),
-                  mini: true,
-                ),
-                Flexible(child: TextField()),
-              ],
-            );
+            return SearchTextField();
           } else {
             return Row(
               children: [

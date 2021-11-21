@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:mapbox_search_flutter/mapbox_search_flutter.dart';
 import 'package:plango_front/views/nav_bar/nav_bar.dart';
 import 'package:plango_front/views/nav_bar/nav_bar_bloc/nav_bar_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -82,6 +83,9 @@ class _MapViewBodyState extends State<MapViewBody> {
   Widget build(BuildContext context) {
     return BlocBuilder<MapPageBloc, MapPageState>(builder: (context, state) {
       if (state is MapPagePanelState) {
+        print(state.place.geometry.coordinates);
+        print(LatLng(state.place.geometry.coordinates[1],
+            state.place.geometry.coordinates[0]));
         // PanelController _pc = PanelController();
         return SlidingUpPanel(
           borderRadius: const BorderRadius.only(
@@ -89,19 +93,17 @@ class _MapViewBodyState extends State<MapViewBody> {
             topRight: Radius.circular(18.0),
           ),
           // controller: _pc,
-          panelBuilder: (sc) => _panel(sc, context),
+          panelBuilder: (sc) => _panel(sc, context, state.place),
           backdropEnabled: true,
-          body: _Map(),
+          body: _Map(state.place.geometry),
         );
       } else {
-        return _Map();
+        return _Map(Geometry(coordinates: [3.057256, 50.62925]));
       }
     });
-    return _Map();
   }
 
-  // ignore: non_constant_identifier_names
-  Widget _Map() {
+  Widget _Map(Geometry geo) {
     return FlutterMap(
       options: MapOptions(
           onLongPress: (_, latLng) {
@@ -120,7 +122,7 @@ class _MapViewBodyState extends State<MapViewBody> {
               markers.add(m);
             });
           },
-          center: LatLng(50.62925, 3.057256),
+          center: LatLng(geo.coordinates[1], geo.coordinates[0]),
           minZoom: 10.0,
           maxZoom: 20.0,
           zoom: 16.0),
@@ -137,6 +139,7 @@ class _MapViewBodyState extends State<MapViewBody> {
   _panel(
     ScrollController sc,
     BuildContext context,
+    MapBoxPlace mb,
   ) {
     return MediaQuery.removePadding(
       context: context,
@@ -145,6 +148,11 @@ class _MapViewBodyState extends State<MapViewBody> {
         decoration: const BoxDecoration(
           color: Colors.grey,
           borderRadius: BorderRadius.all(Radius.circular(18.0)),
+        ),
+        child: ListView(
+          children: [
+            ListTile(title: Text(mb.placeName)),
+          ],
         ),
       ),
     );

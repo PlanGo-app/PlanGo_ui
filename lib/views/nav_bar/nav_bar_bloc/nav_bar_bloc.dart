@@ -25,7 +25,6 @@ class NavBarBloc extends Bloc<NavBarEvent, NavBarState> {
 
   FutureOr<void> _onPlaceFound(
       NavBarEventPlaceFound event, Emitter<NavBarState> emit) {
-    print("Emit NavBarFound");
     emit(NavBarPlaceFound(event.place));
   }
 }
