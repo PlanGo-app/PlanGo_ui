@@ -78,16 +78,55 @@ class _MapViewBodyState extends State<MapViewBody> {
     )
   ];
 
+  late MapController mapController;
+  bool isReady = false;
+  late PanelController panelController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    mapController = MapController();
+    mapController.onReady.then((value) => isReady = true);
+    panelController = PanelController();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final map = _Map();
+    // final map = _Map();
+    // return BlocBuilder<MapPageBloc, MapPageState>(builder: (context, state) {
+    //   if (state is MapPagePanelState) {
+    //     if (isReady) {
+    //       mapController.move(LatLng(state.place.lat, state.place.lon), 16.0);
+    //     }
+    //     return SlidingUpPanel(
+    //       controller: panelController,
+    //       borderRadius: const BorderRadius.only(
+    //         topLeft: Radius.circular(18.0),
+    //         topRight: Radius.circular(18.0),
+    //       ),
+    //       // controller: _pc,
+    //       panelBuilder: (sc) => _panel(sc, context, state.place),
+    //       backdropEnabled: true,
+    //       body: map,
+    //     );
+    //   } else {
+    //     return map;
+    //   }
+    // });
     return BlocBuilder<MapPageBloc, MapPageState>(builder: (context, state) {
+      if (state is MapPageInitialState) {
+        // panelController.hide();
+      }
       if (state is MapPagePanelState) {
-        // print(state.place.geometry.coordinates);
-        // print(LatLng(state.place.geometry.coordinates[1],
-        //     state.place.geometry.coordinates[0]));
-        // PanelController _pc = PanelController();
-        return SlidingUpPanel(
+        panelController.show();
+        if (isReady) {
+          mapController.move(LatLng(state.place!.lat, state.place!.lon), 16.0);
+        }
+      }
+
+      return SlidingUpPanel(
+          controller: panelController,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(18.0),
             topRight: Radius.circular(18.0),
@@ -95,16 +134,13 @@ class _MapViewBodyState extends State<MapViewBody> {
           // controller: _pc,
           panelBuilder: (sc) => _panel(sc, context, state.place),
           backdropEnabled: true,
-          body: map,
-        );
-      } else {
-        return map;
-      }
+          body: _Map());
     });
   }
 
   Widget _Map() {
     return FlutterMap(
+      mapController: mapController,
       options: MapOptions(
           onLongPress: (_, latLng) {
             setState(() {
@@ -118,7 +154,7 @@ class _MapViewBodyState extends State<MapViewBody> {
                   size: 35.0,
                 ),
               );
-              // print(latLng);
+              print(latLng);
               markers.add(m);
               // Controller._controller.move(latLng, 16);
             });
@@ -140,8 +176,11 @@ class _MapViewBodyState extends State<MapViewBody> {
   _panel(
     ScrollController sc,
     BuildContext context,
-    Place mb,
+    Place? place,
   ) {
+    if (place == null) {
+      panelController.hide();
+    }
     return MediaQuery.removePadding(
       context: context,
       removeTop: true,
@@ -152,7 +191,15 @@ class _MapViewBodyState extends State<MapViewBody> {
         ),
         child: ListView(
           children: [
-            ListTile(title: Text(mb.displayName)),
+            ListTile(title: Text(place == null ? "Hello" : place.displayName)),
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    panelController.hide();
+                  }),
+            )
           ],
         ),
       ),

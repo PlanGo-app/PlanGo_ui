@@ -13,7 +13,7 @@ class MapPageBloc extends Bloc<MapPageEvent, MapPageState> {
   NavBarBloc nvb;
   StreamSubscription? navBarSubscription;
 
-  MapPageBloc({required this.nvb}) : super(MapPageInitialState()) {
+  MapPageBloc({required this.nvb}) : super(MapPageInitialState(null)) {
     navBarSubscription = nvb.stream.listen((state) {
       if (state is NavBarPlaceFound) {
         // emit(MapPageInitialState());
@@ -26,7 +26,7 @@ class MapPageBloc extends Bloc<MapPageEvent, MapPageState> {
 
   FutureOr<void> _onInitial(
       MapPageEventInitial event, Emitter<MapPageState> emit) {
-    emit(MapPageInitialState());
+    emit(MapPageInitialState(null));
   }
 
   FutureOr<void> _onPanel(MapPageEventPanel event, Emitter<MapPageState> emit) {
