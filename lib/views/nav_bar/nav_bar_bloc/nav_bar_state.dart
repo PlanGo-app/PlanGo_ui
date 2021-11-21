@@ -11,6 +11,6 @@ class NavBarInitial extends NavBarState {}
 class NavBarSearch extends NavBarState {}
 
 class NavBarPlaceFound extends NavBarState {
-  MapBoxPlace place;
+  Place place;
   NavBarPlaceFound(this.place);
 }

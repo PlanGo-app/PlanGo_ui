@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mapbox_search/mapbox_search.dart';
 import 'package:meta/meta.dart';
+import 'package:osm_nominatim/osm_nominatim.dart';
 import 'package:plango_front/views/nav_bar/nav_bar_bloc/nav_bar_bloc.dart';
 
 part 'map_page_event.dart';

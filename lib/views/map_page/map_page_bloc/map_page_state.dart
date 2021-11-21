@@ -2,19 +2,21 @@ part of 'map_page_bloc.dart';
 
 // ignore: must_be_immutable
 abstract class MapPageState extends Equatable {
-  MapBoxPlace place;
-  MapPageState(this.place);
-
+  // Place place;
+  // MapPageState(this.place);
   @override
-  List<Object?> get props => [place];
+  List<Object?> get props => [];
 }
 
 // ignore: must_be_immutable
 class MapPageInitialState extends MapPageState {
-  MapPageInitialState() : super(MapBoxPlace());
+  MapPageInitialState() : super();
 }
 
 // ignore: must_be_immutable
 class MapPagePanelState extends MapPageState {
-  MapPagePanelState(MapBoxPlace place) : super(place) {}
+  Place place;
+  MapPagePanelState(this.place) : super() {}
+  @override
+  List<Object?> get props => [place];
 }

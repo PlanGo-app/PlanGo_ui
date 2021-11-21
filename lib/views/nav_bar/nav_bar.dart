@@ -34,7 +34,7 @@ class _NavBarViewState extends State<NavBarView> {
         buildWhen: (prev, state) => prev.runtimeType != state.runtimeType,
         builder: (context, state) {
           if (state is NavBarSearch) {
-            return SearchTextField();
+            return const SearchTextField();
           } else {
             return Row(
               children: [
@@ -42,14 +42,14 @@ class _NavBarViewState extends State<NavBarView> {
                   onPressed: () {
                     context.read<NavBarBloc>().emit(NavBarSearch());
                   },
-                  child: Icon(Icons.search),
+                  child: const Icon(Icons.search),
                   mini: true,
                 ),
                 FloatingActionButton(
                   onPressed: () {
                     context.read<NavBarBloc>().emit(NavBarInitial());
                   },
-                  child: Icon(Icons.list),
+                  child: const Icon(Icons.list),
                   mini: true,
                 ),
               ],

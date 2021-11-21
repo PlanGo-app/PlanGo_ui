@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:mapbox_search_flutter/mapbox_search_flutter.dart';
+import 'package:osm_nominatim/osm_nominatim.dart';
 import 'package:plango_front/views/nav_bar/nav_bar.dart';
 import 'package:plango_front/views/nav_bar/nav_bar_bloc/nav_bar_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -11,7 +11,6 @@ import 'map_page_bloc/map_page_bloc.dart';
 
 class MapPage extends StatelessWidget {
   const MapPage({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -24,7 +23,7 @@ class MapPage extends StatelessWidget {
               MapPageBloc(nvb: context.read<NavBarBloc>()),
         ),
       ],
-      child: Scaffold(body: MapPageView()),
+      child: const Scaffold(body: MapPageView()),
     );
   }
 }
@@ -81,11 +80,12 @@ class _MapViewBodyState extends State<MapViewBody> {
 
   @override
   Widget build(BuildContext context) {
+    final map = _Map();
     return BlocBuilder<MapPageBloc, MapPageState>(builder: (context, state) {
       if (state is MapPagePanelState) {
-        print(state.place.geometry.coordinates);
-        print(LatLng(state.place.geometry.coordinates[1],
-            state.place.geometry.coordinates[0]));
+        // print(state.place.geometry.coordinates);
+        // print(LatLng(state.place.geometry.coordinates[1],
+        //     state.place.geometry.coordinates[0]));
         // PanelController _pc = PanelController();
         return SlidingUpPanel(
           borderRadius: const BorderRadius.only(
@@ -95,15 +95,15 @@ class _MapViewBodyState extends State<MapViewBody> {
           // controller: _pc,
           panelBuilder: (sc) => _panel(sc, context, state.place),
           backdropEnabled: true,
-          body: _Map(state.place.geometry),
+          body: map,
         );
       } else {
-        return _Map(Geometry(coordinates: [3.057256, 50.62925]));
+        return map;
       }
     });
   }
 
-  Widget _Map(Geometry geo) {
+  Widget _Map() {
     return FlutterMap(
       options: MapOptions(
           onLongPress: (_, latLng) {
@@ -120,9 +120,10 @@ class _MapViewBodyState extends State<MapViewBody> {
               );
               print(latLng);
               markers.add(m);
+              // Controller._controller.move(latLng, 16);
             });
           },
-          center: LatLng(geo.coordinates[1], geo.coordinates[0]),
+          center: LatLng(50.62925, 3.057256),
           minZoom: 10.0,
           maxZoom: 20.0,
           zoom: 16.0),
@@ -139,7 +140,7 @@ class _MapViewBodyState extends State<MapViewBody> {
   _panel(
     ScrollController sc,
     BuildContext context,
-    MapBoxPlace mb,
+    Place mb,
   ) {
     return MediaQuery.removePadding(
       context: context,
@@ -151,7 +152,7 @@ class _MapViewBodyState extends State<MapViewBody> {
         ),
         child: ListView(
           children: [
-            ListTile(title: Text(mb.placeName)),
+            ListTile(title: Text(mb.displayName)),
           ],
         ),
       ),

@@ -15,6 +15,6 @@ class NavBarEventSearch extends NavBarEvent {
 }
 
 class NavBarEventPlaceFound extends NavBarEvent {
-  MapBoxPlace place;
+  Place place;
   NavBarEventPlaceFound({required this.place});
 }

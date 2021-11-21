@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mapbox_search_flutter/mapbox_search_flutter.dart';
-import 'package:plango_front/util/constant.dart';
+import 'package:osm_nominatim/osm_nominatim.dart';
 import 'package:provider/src/provider.dart';
 
 import 'nav_bar_bloc/nav_bar_bloc.dart';
@@ -20,10 +19,10 @@ class _SearchTextFieldState extends State<SearchTextField> {
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
       children: [
-        FutureBuilder<List<MapBoxPlace>>(
+        FutureBuilder<List<Place>>(
             future: getPlaces(searchController.text),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<MapBoxPlace>> snapshot) {
+            builder:
+                (BuildContext context, AsyncSnapshot<List<Place>> snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
                   return const CircularProgressIndicator();
@@ -38,7 +37,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
                           return ListTile(
-                            title: Text(snapshot.data![index].toString()),
+                            title: Text(snapshot.data![index].displayName),
                             onTap: () {
                               context.read<NavBarBloc>().emit(
                                   NavBarPlaceFound(snapshot.data![index]));
@@ -54,9 +53,9 @@ class _SearchTextFieldState extends State<SearchTextField> {
             children: [
               FloatingActionButton(
                 onPressed: () {
-                  context
-                      .read<NavBarBloc>()
-                      .add(NavBarEventPlaceFound(place: MapBoxPlace()));
+                  // context
+                  // .read<NavBarBloc>()
+                  // .add(NavBarEventPlaceFound(place: Place()));
                 },
                 child: Icon(Icons.more_horiz_outlined),
                 mini: true,
@@ -77,12 +76,13 @@ class _SearchTextFieldState extends State<SearchTextField> {
     );
   }
 
-  final placesSearch = PlacesSearch(
-    apiKey: API_KEY,
-    limit: 5,
-  );
-
-  Future<List<MapBoxPlace>> getPlaces(text) {
-    return placesSearch.getPlaces(text);
+  getPlaces(text) {
+    return Nominatim.searchByName(
+      query: text,
+      limit: 5,
+      addressDetails: true,
+      extraTags: false,
+      nameDetails: true,
+    );
   }
 }

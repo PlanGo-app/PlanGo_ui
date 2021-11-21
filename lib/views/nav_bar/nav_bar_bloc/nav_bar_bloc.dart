@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mapbox_search_flutter/mapbox_search_flutter.dart';
+import 'package:osm_nominatim/osm_nominatim.dart';
 
 part 'nav_bar_event.dart';
 part 'nav_bar_state.dart';
