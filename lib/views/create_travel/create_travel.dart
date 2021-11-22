@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:plango_front/views/components/rounded_button.dart';
 import 'package:plango_front/views/create_account/create_account_background.dart';
 import 'package:plango_front/views/create_travel/search_countries.dart';
+import 'package:plango_front/views/map_page/map_page.dart';
 
 class CreateTravel extends StatefulWidget {
   const CreateTravel({Key? key}) : super(key: key);
@@ -63,15 +64,15 @@ class _CreateTravelState extends State<CreateTravel> {
                       ),
                       RoundedButton(
                         press: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //       builder: (
-                          //         context,
-                          //       ) =>
-                          //           const MapPage(),
-                          //     ));
-                          print(searchControllerCountry.text);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (
+                                  context,
+                                ) =>
+                                    const MapPage(),
+                              ));
+                          // print(searchControllerCountry.text);
                         },
                         text: "Créer",
                       )
