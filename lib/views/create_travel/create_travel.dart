@@ -15,6 +15,8 @@ class _CreateTravelState extends State<CreateTravel> {
   final _formKey = GlobalKey<FormState>();
   String? pseudo;
   String? email;
+  final searchControllerCountry = TextEditingController();
+  final searchControllerCity = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +32,13 @@ class _CreateTravelState extends State<CreateTravel> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(
+                      SizedBox(
                         width: 240,
-                        child: TextSearchCountry(),
+                        child: TextSearchCountry(
+                          searchController: searchControllerCountry,
+                          address: "https://restcountries.com/v3.1/name/",
+                        ),
+
                         // TextFormField(
                         //   decoration: const InputDecoration(
                         //       label:
@@ -49,6 +55,13 @@ class _CreateTravelState extends State<CreateTravel> {
                         //   },
                         // ),
                       ),
+                      SizedBox(
+                        width: 240,
+                        child: TextSearchCountry(
+                          searchController: searchControllerCity,
+                          address: "https://restcountries.com/v3.1/name/",
+                        ),
+                      ),
                       RoundedButton(
                         press: () {
                           Navigator.push(
@@ -59,6 +72,7 @@ class _CreateTravelState extends State<CreateTravel> {
                                 ) =>
                                     const MapPage(),
                               ));
+                          // print(searchControllerCountry.text);
                         },
                         text: "Créer",
                       )
