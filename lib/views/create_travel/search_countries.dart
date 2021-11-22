@@ -30,8 +30,6 @@ class _TextSearchCountryState extends State<TextSearchCountry> {
             future: getCountry(searchController.text),
             builder:
                 (BuildContext context, AsyncSnapshot<List<Country>?> snapshot) {
-              print(snapshot.data);
-              print(snapshot.connectionState);
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
                   return const CircularProgressIndicator();

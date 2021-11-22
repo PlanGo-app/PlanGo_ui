@@ -36,23 +36,28 @@ class _NavBarViewState extends State<NavBarView> {
           if (state is NavBarSearch) {
             return const SearchTextField();
           } else {
-            return Row(
-              children: [
-                FloatingActionButton(
-                  onPressed: () {
-                    context.read<NavBarBloc>().emit(NavBarSearch());
-                  },
-                  child: const Icon(Icons.search),
-                  mini: true,
-                ),
-                FloatingActionButton(
-                  onPressed: () {
-                    context.read<NavBarBloc>().emit(NavBarInitial());
-                  },
-                  child: const Icon(Icons.list),
-                  mini: true,
-                ),
-              ],
+            return Container(
+              decoration: BoxDecoration(
+                  border:
+                      Border(top: BorderSide(color: Colors.black, width: 2))),
+              child: Row(
+                children: [
+                  FloatingActionButton(
+                    onPressed: () {
+                      context.read<NavBarBloc>().emit(NavBarSearch());
+                    },
+                    child: const Icon(Icons.search),
+                    mini: true,
+                  ),
+                  FloatingActionButton(
+                    onPressed: () {
+                      context.read<NavBarBloc>().emit(NavBarInitial());
+                    },
+                    child: const Icon(Icons.list),
+                    mini: true,
+                  ),
+                ],
+              ),
             );
           }
         });

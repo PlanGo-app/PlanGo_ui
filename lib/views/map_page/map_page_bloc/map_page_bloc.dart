@@ -16,7 +16,6 @@ class MapPageBloc extends Bloc<MapPageEvent, MapPageState> {
   MapPageBloc({required this.nvb}) : super(MapPageInitialState(null)) {
     navBarSubscription = nvb.stream.listen((state) {
       if (state is NavBarPlaceFound) {
-        // emit(MapPageInitialState());
         emit(MapPagePanelState(state.place));
       }
     });

@@ -1,8 +1,13 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
+import 'package:plango_front/model/place_info.dart';
 import 'package:plango_front/views/nav_bar/nav_bar.dart';
 import 'package:plango_front/views/nav_bar/nav_bar_bloc/nav_bar_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -41,6 +46,7 @@ class _MapPageViewState extends State<MapPageView> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
+      resizeToAvoidBottomInset: true,
       body: MapViewBody(),
       bottomNavigationBar: NavBar(),
     );
@@ -93,31 +99,7 @@ class _MapViewBodyState extends State<MapViewBody> {
 
   @override
   Widget build(BuildContext context) {
-    // final map = _Map();
-    // return BlocBuilder<MapPageBloc, MapPageState>(builder: (context, state) {
-    //   if (state is MapPagePanelState) {
-    //     if (isReady) {
-    //       mapController.move(LatLng(state.place.lat, state.place.lon), 16.0);
-    //     }
-    //     return SlidingUpPanel(
-    //       controller: panelController,
-    //       borderRadius: const BorderRadius.only(
-    //         topLeft: Radius.circular(18.0),
-    //         topRight: Radius.circular(18.0),
-    //       ),
-    //       // controller: _pc,
-    //       panelBuilder: (sc) => _panel(sc, context, state.place),
-    //       backdropEnabled: true,
-    //       body: map,
-    //     );
-    //   } else {
-    //     return map;
-    //   }
-    // });
     return BlocBuilder<MapPageBloc, MapPageState>(builder: (context, state) {
-      if (state is MapPageInitialState) {
-        // panelController.hide();
-      }
       if (state is MapPagePanelState) {
         panelController.show();
         if (isReady) {
@@ -180,29 +162,86 @@ class _MapViewBodyState extends State<MapViewBody> {
   ) {
     if (place == null) {
       panelController.hide();
+      return;
     }
-    return MediaQuery.removePadding(
-      context: context,
-      removeTop: true,
-      child: Container(
-        decoration: const BoxDecoration(
-          color: Colors.grey,
-          borderRadius: BorderRadius.all(Radius.circular(18.0)),
-        ),
-        child: ListView(
-          children: [
-            ListTile(title: Text(place == null ? "Hello" : place.displayName)),
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
-                    panelController.hide();
-                  }),
-            )
-          ],
-        ),
-      ),
-    );
+    return FutureBuilder(
+        future: getInfoPlace(place.osmType, place.osmId),
+        builder: (BuildContext context, AsyncSnapshot<PlaceInfo> snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return const CircularProgressIndicator();
+            default:
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (snapshot.data == null) {
+                return const Text('Pas d\'info sur ce lieu');
+              } else {
+                // print(snapshot.data["addresstags"]);
+                return MediaQuery.removePadding(
+                  context: context,
+                  removeTop: true,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(18.0)),
+                    ),
+                    child: ListView(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                                child: Container(
+                                    padding: EdgeInsets.only(left: 15, top: 15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(snapshot.data!.name,
+                                            style: GoogleFonts.montserrat(
+                                                fontSize: 30)),
+                                        snapshot.data!.street.isNotEmpty
+                                            ? Text(snapshot.data!.street,
+                                                style: GoogleFonts.montserrat(
+                                                    fontSize: 15))
+                                            : Container(),
+                                        snapshot.data!.city.isNotEmpty
+                                            ? Text(snapshot.data!.city,
+                                                style: GoogleFonts.montserrat(
+                                                    fontSize: 15,
+                                                    color: Colors.black))
+                                            : Container(),
+                                      ],
+                                      // ],
+                                    ))),
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: IconButton(
+                                  icon: Icon(Icons.close),
+                                  onPressed: () {
+                                    panelController.hide();
+                                  }),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+          }
+        });
+  }
+
+  Future<PlaceInfo> getInfoPlace(osmType, osmId) async {
+    var oType = osmType == "way"
+        ? 'W'
+        : osmType == "node"
+            ? 'N'
+            : 'R';
+    Response r = await Dio().get(
+        'https://nominatim.openstreetmap.org/details.php?osmtype=$oType&osmid=$osmId&format=json',
+        options: Options(responseType: ResponseType.plain));
+    return PlaceInfo.fromJson(json.decode(r.data));
   }
 }

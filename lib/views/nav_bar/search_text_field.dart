@@ -37,6 +37,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
                           return ListTile(
+                            tileColor: Colors.purple,
                             title: Text(snapshot.data![index].displayName),
                             onTap: () {
                               context.read<NavBarBloc>().emit(
@@ -48,14 +49,13 @@ class _SearchTextFieldState extends State<SearchTextField> {
               }
             }),
         Container(
-          color: Colors.red,
+          decoration: BoxDecoration(
+              border: Border(top: BorderSide(color: Colors.black, width: 2))),
           child: Row(
             children: [
               FloatingActionButton(
                 onPressed: () {
-                  // context
-                  // .read<NavBarBloc>()
-                  // .add(NavBarEventPlaceFound(place: Place()));
+                  context.read<NavBarBloc>().emit(NavBarInitial());
                 },
                 child: Icon(Icons.more_horiz_outlined),
                 mini: true,
