@@ -14,6 +14,10 @@ class NavBarEventSearch extends NavBarEvent {
   const NavBarEventSearch();
 }
 
+class NavBarEventList extends NavBarEvent {
+  const NavBarEventList();
+}
+
 class NavBarEventPlaceFound extends NavBarEvent {
   Place place;
   NavBarEventPlaceFound({required this.place});

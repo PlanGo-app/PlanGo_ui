@@ -47,9 +47,9 @@ class MapPageView extends StatefulWidget {
 class _MapPageViewState extends State<MapPageView> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: MapViewBody(),
-      bottomNavigationBar: NavBar(),
+      bottomNavigationBar: NavBar(onList: false),
     );
   }
 }

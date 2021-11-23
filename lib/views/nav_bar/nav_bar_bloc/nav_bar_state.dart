@@ -10,6 +10,8 @@ class NavBarInitial extends NavBarState {}
 
 class NavBarSearch extends NavBarState {}
 
+class NavBarList extends NavBarState {}
+
 class NavBarPlaceFound extends NavBarState {
   Place place;
   NavBarPlaceFound(this.place);

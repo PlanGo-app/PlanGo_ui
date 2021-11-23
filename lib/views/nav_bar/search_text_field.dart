@@ -51,9 +51,9 @@ class _SearchTextFieldState extends State<SearchTextField> {
                                     title:
                                         Text(snapshot.data![index].displayName),
                                     onTap: () {
-                                      context.read<NavBarBloc>().emit(
-                                          NavBarPlaceFound(
-                                              snapshot.data![index]));
+                                      context.read<NavBarBloc>().add(
+                                          NavBarEventPlaceFound(
+                                              place: snapshot.data![index]));
                                     },
                                   );
                                 }),
@@ -70,7 +70,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
                 FloatingActionButton(
                   heroTag: null,
                   onPressed: () {
-                    context.read<NavBarBloc>().emit(NavBarInitial());
+                    context.read<NavBarBloc>().add(const NavBarEventInitial());
                   },
                   child: const Icon(Icons.more_horiz_outlined),
                   mini: true,
@@ -95,11 +95,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
   getPlaces(text) {
     return Nominatim.searchByName(
       query: text,
-      language: "fr",
       limit: 5,
-      addressDetails: false,
-      extraTags: false,
-      nameDetails: false,
     );
   }
 }
