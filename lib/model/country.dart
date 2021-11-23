@@ -6,7 +6,7 @@ class Country {
 
   factory Country.fromJson(Map<String, dynamic> parsedJson) {
     return Country(
-        name: parsedJson['name']['common'].toString(),
+        name: parsedJson['translations']['fra']['common'].toString(),
         latlng: parsedJson['latlng'].toString());
   }
 }

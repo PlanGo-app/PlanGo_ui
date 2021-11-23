@@ -59,7 +59,8 @@ class _CreateTravelState extends State<CreateTravel> {
                         width: 240,
                         child: TextSearchCountry(
                           searchController: searchControllerCity,
-                          address: "https://restcountries.com/v3.1/name/",
+                          address:
+                              "https://restcountries.com/v3.1/translation/",
                         ),
                       ),
                       RoundedButton(
