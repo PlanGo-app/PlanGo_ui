@@ -43,6 +43,7 @@ class _NavBarViewState extends State<NavBarView> {
               child: Row(
                 children: [
                   FloatingActionButton(
+                    heroTag: null,
                     onPressed: () {
                       context.read<NavBarBloc>().emit(NavBarSearch());
                     },
@@ -50,6 +51,7 @@ class _NavBarViewState extends State<NavBarView> {
                     mini: true,
                   ),
                   FloatingActionButton(
+                    heroTag: null,
                     onPressed: () {
                       context.read<NavBarBloc>().emit(NavBarInitial());
                     },

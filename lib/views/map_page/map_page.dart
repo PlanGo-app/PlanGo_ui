@@ -48,7 +48,6 @@ class _MapPageViewState extends State<MapPageView> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      resizeToAvoidBottomInset: true,
       body: MapViewBody(),
       bottomNavigationBar: NavBar(),
     );
@@ -118,12 +117,12 @@ class _MapViewBodyState extends State<MapViewBody> {
         maxHeight: 300,
         panelBuilder: (sc) => _panel(sc, context, state.place),
         backdropEnabled: true,
-        body: _Map(),
+        body: _map(),
       );
     });
   }
 
-  Widget _Map() {
+  Widget _map() {
     return FlutterMap(
       mapController: mapController,
       options: MapOptions(
@@ -141,7 +140,6 @@ class _MapViewBodyState extends State<MapViewBody> {
               );
               print(latLng);
               markers.add(m);
-              // Controller._controller.move(latLng, 16);
             });
           },
           center: LatLng(50.62925, 3.057256),
@@ -172,7 +170,7 @@ class _MapViewBodyState extends State<MapViewBody> {
         builder: (BuildContext context, AsyncSnapshot<PlaceInfo> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
-              return const CircularProgressIndicator();
+              return CircularProgressIndicator();
             default:
               if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
@@ -225,13 +223,24 @@ class _MapViewBodyState extends State<MapViewBody> {
                                     ))),
                             Expanded(
                               flex: 1,
-                              child: Align(
-                                alignment: Alignment.bottomRight,
-                                child: IconButton(
-                                    icon: Icon(Icons.close),
-                                    onPressed: () {
-                                      panelController.hide();
-                                    }),
+                              child: Column(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.topRight,
+                                    child: IconButton(
+                                        icon: const Icon(Icons.close),
+                                        onPressed: () {
+                                          panelController.hide();
+                                        }),
+                                  ),
+                                  Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: IconButton(
+                                        icon: const Icon(Icons.add),
+                                        onPressed: () =>
+                                            addMarker(snapshot.data!.point),
+                                      )),
+                                ],
                               ),
                             ),
                           ],
@@ -280,5 +289,21 @@ class _MapViewBodyState extends State<MapViewBody> {
         'https://nominatim.openstreetmap.org/details.php?osmtype=$oType&osmid=$osmId&format=json',
         options: Options(responseType: ResponseType.plain));
     return PlaceInfo.fromJson(json.decode(r.data));
+  }
+
+  addMarker(LatLng point) {
+    setState(() {
+      Marker m = Marker(
+        width: 45.0,
+        height: 45.0,
+        point: point,
+        builder: (ctx) => const Icon(
+          Icons.location_on,
+          color: Colors.red,
+          size: 35.0,
+        ),
+      );
+      markers.add(m);
+    });
   }
 }

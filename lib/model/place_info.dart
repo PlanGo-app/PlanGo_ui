@@ -38,7 +38,7 @@ class PlaceInfo {
       city = [
         (parsedJson["calculated_postcode"] ?? ""),
         (parsedJson["addresstags"]["city"] ?? "")
-      ].join(", ");
+      ].where((i) => (i.length > 0)).join(", ");
     } catch (e) {}
     try {
       price = parsedJson["extratags"]["fee"] ?? "";
