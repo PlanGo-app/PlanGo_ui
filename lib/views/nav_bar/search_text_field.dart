@@ -30,14 +30,18 @@ class _SearchTextFieldState extends State<SearchTextField> {
                   if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else if (snapshot.data!.isEmpty) {
-                    return const Text('No travels');
+                    return const Text(
+                        'Aucun lieu ne correspond à votre recherche');
                   } else {
-                    return ListView.builder(
+                    return ListView.separated(
+                        separatorBuilder: (context, _) => const Divider(
+                              color: Colors.grey,
+                              thickness: 1,
+                            ),
                         shrinkWrap: true,
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
                           return ListTile(
-                            tileColor: Colors.purple,
                             title: Text(snapshot.data![index].displayName),
                             onTap: () {
                               context.read<NavBarBloc>().emit(
@@ -49,7 +53,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
               }
             }),
         Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               border: Border(top: BorderSide(color: Colors.black, width: 2))),
           child: Row(
             children: [
@@ -57,7 +61,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
                 onPressed: () {
                   context.read<NavBarBloc>().emit(NavBarInitial());
                 },
-                child: Icon(Icons.more_horiz_outlined),
+                child: const Icon(Icons.more_horiz_outlined),
                 mini: true,
               ),
               Flexible(
