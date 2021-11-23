@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:link_text/link_text.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 import 'package:plango_front/model/place_info.dart';
+import 'package:plango_front/views/map_page/map_view.dart';
 import 'package:plango_front/views/nav_bar/nav_bar.dart';
 import 'package:plango_front/views/nav_bar/nav_bar_bloc/nav_bar_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -62,39 +62,39 @@ class MapViewBody extends StatefulWidget {
 }
 
 class _MapViewBodyState extends State<MapViewBody> {
-  List<Marker> markers = [
-    Marker(
-      width: 45.0,
-      height: 45.0,
-      point: LatLng(50.62925, 3.057256),
-      builder: (ctx) => const Icon(
-        Icons.location_on,
-        color: Colors.red,
-        size: 35.0,
-      ),
-    ),
-    Marker(
-      width: 45.0,
-      height: 45.0,
-      point: LatLng(50.95926, 3.057257),
-      builder: (ctx) => const Icon(
-        Icons.location_on,
-        color: Colors.red,
-        size: 35.0,
-      ),
-    )
-  ];
+  // List<Marker> markers = [
+  //   Marker(
+  //     width: 45.0,
+  //     height: 45.0,
+  //     point: LatLng(50.62925, 3.057256),
+  //     builder: (ctx) => const Icon(
+  //       Icons.location_on,
+  //       color: Colors.red,
+  //       size: 35.0,
+  //     ),
+  //   ),
+  //   Marker(
+  //     width: 45.0,
+  //     height: 45.0,
+  //     point: LatLng(50.95926, 3.057257),
+  //     builder: (ctx) => const Icon(
+  //       Icons.location_on,
+  //       color: Colors.red,
+  //       size: 35.0,
+  //     ),
+  //   )
+  // ];
 
-  late MapController mapController;
-  bool isReady = false;
+  // late MapController mapController;
+  // bool isReady = false;
   late PanelController panelController;
+  MapView map = MapView();
 
   @override
   void initState() {
     super.initState();
-
-    mapController = MapController();
-    mapController.onReady.then((value) => isReady = true);
+    // mapController = MapController();
+    // mapController.onReady.then((value) => isReady = true);
     panelController = PanelController();
   }
 
@@ -103,8 +103,9 @@ class _MapViewBodyState extends State<MapViewBody> {
     return BlocBuilder<MapPageBloc, MapPageState>(builder: (context, state) {
       if (state is MapPagePanelState) {
         panelController.show();
-        if (isReady) {
-          mapController.move(LatLng(state.place!.lat, state.place!.lon), 16.0);
+        if (map.isReady) {
+          map.mapController
+              .move(LatLng(state.place!.lat, state.place!.lon), 16.0);
         }
       }
 
@@ -117,44 +118,44 @@ class _MapViewBodyState extends State<MapViewBody> {
         maxHeight: 300,
         panelBuilder: (sc) => _panel(sc, context, state.place),
         backdropEnabled: true,
-        body: _map(),
+        body: map,
       );
     });
   }
 
-  Widget _map() {
-    return FlutterMap(
-      mapController: mapController,
-      options: MapOptions(
-          onLongPress: (_, latLng) {
-            setState(() {
-              Marker m = Marker(
-                width: 45.0,
-                height: 45.0,
-                point: latLng,
-                builder: (ctx) => const Icon(
-                  Icons.location_on,
-                  color: Colors.red,
-                  size: 35.0,
-                ),
-              );
-              print(latLng);
-              markers.add(m);
-            });
-          },
-          center: LatLng(50.62925, 3.057256),
-          minZoom: 10.0,
-          maxZoom: 20.0,
-          zoom: 16.0),
-      layers: [
-        TileLayerOptions(
-          urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          subdomains: ['a', 'b', 'c'],
-        ),
-        MarkerLayerOptions(markers: markers),
-      ],
-    );
-  }
+  // Widget _map() {
+  //   return FlutterMap(
+  //     mapController: mapController,
+  //     options: MapOptions(
+  //         onLongPress: (_, latLng) {
+  //           setState(() {
+  //             Marker m = Marker(
+  //               width: 45.0,
+  //               height: 45.0,
+  //               point: latLng,
+  //               builder: (ctx) => const Icon(
+  //                 Icons.location_on,
+  //                 color: Colors.red,
+  //                 size: 35.0,
+  //               ),
+  //             );
+  //             print(latLng);
+  //             markers.add(m);
+  //           });
+  //         },
+  //         center: LatLng(50.62925, 3.057256),
+  //         minZoom: 10.0,
+  //         maxZoom: 20.0,
+  //         zoom: 16.0),
+  //     layers: [
+  //       TileLayerOptions(
+  //         urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  //         subdomains: ['a', 'b', 'c'],
+  //       ),
+  //       MarkerLayerOptions(markers: markers),
+  //     ],
+  //   );
+  // }
 
   _panel(
     ScrollController sc,
@@ -170,7 +171,11 @@ class _MapViewBodyState extends State<MapViewBody> {
         builder: (BuildContext context, AsyncSnapshot<PlaceInfo> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
-              return CircularProgressIndicator();
+              return Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                      padding: EdgeInsets.only(top: 30),
+                      child: CircularProgressIndicator()));
             default:
               if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
@@ -238,7 +243,7 @@ class _MapViewBodyState extends State<MapViewBody> {
                                       child: IconButton(
                                         icon: const Icon(Icons.add),
                                         onPressed: () =>
-                                            addMarker(snapshot.data!.point),
+                                            map.addMarker(snapshot.data!.point),
                                       )),
                                 ],
                               ),
@@ -280,6 +285,7 @@ class _MapViewBodyState extends State<MapViewBody> {
   }
 
   Future<PlaceInfo> getInfoPlace(osmType, osmId) async {
+    // await Future.delayed(const Duration(seconds: 5), () => {});
     var oType = osmType == "way"
         ? 'W'
         : osmType == "node"
@@ -291,19 +297,19 @@ class _MapViewBodyState extends State<MapViewBody> {
     return PlaceInfo.fromJson(json.decode(r.data));
   }
 
-  addMarker(LatLng point) {
-    setState(() {
-      Marker m = Marker(
-        width: 45.0,
-        height: 45.0,
-        point: point,
-        builder: (ctx) => const Icon(
-          Icons.location_on,
-          color: Colors.red,
-          size: 35.0,
-        ),
-      );
-      markers.add(m);
-    });
-  }
+  // addMarker(LatLng point) {
+  //   setState(() {
+  //     Marker m = Marker(
+  //       width: 45.0,
+  //       height: 45.0,
+  //       point: point,
+  //       builder: (ctx) => const Icon(
+  //         Icons.location_on,
+  //         color: Colors.red,
+  //         size: 35.0,
+  //       ),
+  //     );
+  //     markers.add(m);
+  //   });
+  // }
 }
