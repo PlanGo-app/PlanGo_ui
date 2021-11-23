@@ -21,42 +21,47 @@ class _SearchTextFieldState extends State<SearchTextField> {
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: [
-          FutureBuilder<List<Place>>(
-              future: getPlaces(searchController.text),
-              builder:
-                  (BuildContext context, AsyncSnapshot<List<Place>> snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return const CircularProgressIndicator();
-                  default:
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (snapshot.data!.isEmpty) {
-                      return const Text(
-                          'Aucun lieu ne correspond à votre recherche');
-                    } else {
-                      return Flexible(
-                        child: ListView.separated(
-                            primary: false,
-                            separatorBuilder: (context, _) => const Divider(
-                                  color: Colors.grey,
-                                  thickness: 1,
-                                ),
-                            shrinkWrap: true,
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                title: Text(snapshot.data![index].displayName),
-                                onTap: () {
-                                  context.read<NavBarBloc>().emit(
-                                      NavBarPlaceFound(snapshot.data![index]));
-                                },
-                              );
-                            }),
-                      );
+          searchController.text.isNotEmpty
+              ? FutureBuilder<List<Place>>(
+                  future: getPlaces(searchController.text),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Place>> snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return const CircularProgressIndicator();
+                      default:
+                        if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else if (snapshot.data!.isEmpty) {
+                          return const Text(
+                              'Aucun lieu ne correspond à votre recherche');
+                        } else {
+                          return ConstrainedBox(
+                            constraints: const BoxConstraints(maxHeight: 350),
+                            child: ListView.separated(
+                                primary: false,
+                                separatorBuilder: (context, _) => const Divider(
+                                      color: Colors.grey,
+                                      thickness: 1,
+                                    ),
+                                shrinkWrap: true,
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    title:
+                                        Text(snapshot.data![index].displayName),
+                                    onTap: () {
+                                      context.read<NavBarBloc>().emit(
+                                          NavBarPlaceFound(
+                                              snapshot.data![index]));
+                                    },
+                                  );
+                                }),
+                          );
+                        }
                     }
-                }
-              }),
+                  })
+              : Container(),
           Container(
             decoration: const BoxDecoration(
                 border: Border(top: BorderSide(color: Colors.black, width: 2))),
@@ -90,6 +95,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
   getPlaces(text) {
     return Nominatim.searchByName(
       query: text,
+      language: "fr",
       limit: 5,
       addressDetails: false,
       extraTags: false,
