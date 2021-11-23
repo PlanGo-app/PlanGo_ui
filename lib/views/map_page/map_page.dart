@@ -6,11 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:link_text/link_text.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 import 'package:plango_front/model/place_info.dart';
 import 'package:plango_front/views/nav_bar/nav_bar.dart';
 import 'package:plango_front/views/nav_bar/nav_bar_bloc/nav_bar_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'map_page_bloc/map_page_bloc.dart';
 
@@ -108,15 +110,16 @@ class _MapViewBodyState extends State<MapViewBody> {
       }
 
       return SlidingUpPanel(
-          controller: panelController,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(18.0),
-            topRight: Radius.circular(18.0),
-          ),
-          // controller: _pc,
-          panelBuilder: (sc) => _panel(sc, context, state.place),
-          backdropEnabled: true,
-          body: _Map());
+        controller: panelController,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(18.0),
+          topRight: Radius.circular(18.0),
+        ),
+        maxHeight: 300,
+        panelBuilder: (sc) => _panel(sc, context, state.place),
+        backdropEnabled: true,
+        body: _Map(),
+      );
     });
   }
 
@@ -176,7 +179,6 @@ class _MapViewBodyState extends State<MapViewBody> {
               } else if (snapshot.data == null) {
                 return const Text('Pas d\'info sur ce lieu');
               } else {
-                // print(snapshot.data["addresstags"]);
                 return MediaQuery.removePadding(
                   context: context,
                   removeTop: true,
@@ -189,8 +191,10 @@ class _MapViewBodyState extends State<MapViewBody> {
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Flexible(
+                            Expanded(
+                                flex: 9,
                                 child: Container(
                                     padding: EdgeInsets.only(left: 15, top: 15),
                                     child: Column(
@@ -199,31 +203,64 @@ class _MapViewBodyState extends State<MapViewBody> {
                                       children: [
                                         Text(snapshot.data!.name,
                                             style: GoogleFonts.montserrat(
-                                                fontSize: 30)),
-                                        snapshot.data!.street.isNotEmpty
-                                            ? Text(snapshot.data!.street,
-                                                style: GoogleFonts.montserrat(
-                                                    fontSize: 15))
-                                            : Container(),
-                                        snapshot.data!.city.isNotEmpty
-                                            ? Text(snapshot.data!.city,
-                                                style: GoogleFonts.montserrat(
-                                                    fontSize: 15,
-                                                    color: Colors.black))
-                                            : Container(),
+                                                fontSize: 25)),
+                                        // snapshot.data!.street.isNotEmpty
+                                        //     ? Text(snapshot.data!.street,
+                                        //         style: GoogleFonts.montserrat(
+                                        //             fontSize: 15))
+                                        //     : Container(),
+                                        Text(snapshot.data!.street,
+                                            style: GoogleFonts.montserrat(
+                                                fontSize: 15)),
+                                        // snapshot.data!.city.isNotEmpty
+                                        //     ? Text(snapshot.data!.city,
+                                        //         style: GoogleFonts.montserrat(
+                                        //             fontSize: 15))
+                                        // : Container(),
+                                        Text(snapshot.data!.city,
+                                            style: GoogleFonts.montserrat(
+                                                fontSize: 15,
+                                                color: Colors.black)),
                                       ],
-                                      // ],
                                     ))),
-                            Align(
-                              alignment: Alignment.topRight,
-                              child: IconButton(
-                                  icon: Icon(Icons.close),
-                                  onPressed: () {
-                                    panelController.hide();
-                                  }),
+                            Expanded(
+                              flex: 1,
+                              child: Align(
+                                alignment: Alignment.bottomRight,
+                                child: IconButton(
+                                    icon: Icon(Icons.close),
+                                    onPressed: () {
+                                      panelController.hide();
+                                    }),
+                              ),
                             ),
                           ],
                         ),
+                        ListTile(
+                            title: LinkText(
+                          "Website : " +
+                              (snapshot.data!.website.isNotEmpty
+                                  ? snapshot.data!.website
+                                  : "-"),
+                          onLinkTap: (url) async {
+                            if (await canLaunch(url)) {
+                              await launch(
+                                url,
+                                forceSafariVC: false,
+                              );
+                            }
+                          },
+                        )),
+                        ListTile(
+                            title: Text("Prix : " +
+                                (snapshot.data!.price.isNotEmpty
+                                    ? snapshot.data!.price
+                                    : "-"))),
+                        ListTile(
+                            title: Text("Heure d'ouverture : " +
+                                (snapshot.data!.openingHours.isNotEmpty
+                                    ? snapshot.data!.openingHours
+                                    : "-"))),
                       ],
                     ),
                   ),
