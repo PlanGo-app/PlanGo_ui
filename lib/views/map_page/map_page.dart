@@ -9,8 +9,8 @@ import 'package:link_text/link_text.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 import 'package:plango_front/model/place_info.dart';
 import 'package:plango_front/views/map_page/map_view.dart';
-import 'package:plango_front/views/nav_bar/nav_bar.dart';
 import 'package:plango_front/views/nav_bar/nav_bar_bloc/nav_bar_bloc.dart';
+import 'package:plango_front/views/nav_bar/search_text_field.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -30,7 +30,7 @@ class MapPage extends StatelessWidget {
               MapPageBloc(nvb: context.read<NavBarBloc>()),
         ),
       ],
-      child: const Scaffold(body: MapPageView()),
+      child: MapPageView(),
     );
   }
 }
@@ -47,10 +47,7 @@ class MapPageView extends StatefulWidget {
 class _MapPageViewState extends State<MapPageView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: MapViewBody(),
-      bottomNavigationBar: NavBar(onList: false),
-    );
+    return MapViewBody();
   }
 }
 
@@ -62,39 +59,12 @@ class MapViewBody extends StatefulWidget {
 }
 
 class _MapViewBodyState extends State<MapViewBody> {
-  // List<Marker> markers = [
-  //   Marker(
-  //     width: 45.0,
-  //     height: 45.0,
-  //     point: LatLng(50.62925, 3.057256),
-  //     builder: (ctx) => const Icon(
-  //       Icons.location_on,
-  //       color: Colors.red,
-  //       size: 35.0,
-  //     ),
-  //   ),
-  //   Marker(
-  //     width: 45.0,
-  //     height: 45.0,
-  //     point: LatLng(50.95926, 3.057257),
-  //     builder: (ctx) => const Icon(
-  //       Icons.location_on,
-  //       color: Colors.red,
-  //       size: 35.0,
-  //     ),
-  //   )
-  // ];
-
-  // late MapController mapController;
-  // bool isReady = false;
   late PanelController panelController;
   MapView map = MapView();
 
   @override
   void initState() {
     super.initState();
-    // mapController = MapController();
-    // mapController.onReady.then((value) => isReady = true);
     panelController = PanelController();
   }
 
@@ -118,44 +88,16 @@ class _MapViewBodyState extends State<MapViewBody> {
         maxHeight: 300,
         panelBuilder: (sc) => _panel(sc, context, state.place),
         backdropEnabled: true,
-        body: map,
+        body: Column(
+          children: [
+            SafeArea(
+                child: Material(elevation: 10000000, child: SearchTextField())),
+            Expanded(child: map),
+          ],
+        ),
       );
     });
   }
-
-  // Widget _map() {
-  //   return FlutterMap(
-  //     mapController: mapController,
-  //     options: MapOptions(
-  //         onLongPress: (_, latLng) {
-  //           setState(() {
-  //             Marker m = Marker(
-  //               width: 45.0,
-  //               height: 45.0,
-  //               point: latLng,
-  //               builder: (ctx) => const Icon(
-  //                 Icons.location_on,
-  //                 color: Colors.red,
-  //                 size: 35.0,
-  //               ),
-  //             );
-  //             print(latLng);
-  //             markers.add(m);
-  //           });
-  //         },
-  //         center: LatLng(50.62925, 3.057256),
-  //         minZoom: 10.0,
-  //         maxZoom: 20.0,
-  //         zoom: 16.0),
-  //     layers: [
-  //       TileLayerOptions(
-  //         urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  //         subdomains: ['a', 'b', 'c'],
-  //       ),
-  //       MarkerLayerOptions(markers: markers),
-  //     ],
-  //   );
-  // }
 
   _panel(
     ScrollController sc,
@@ -178,7 +120,8 @@ class _MapViewBodyState extends State<MapViewBody> {
                       child: CircularProgressIndicator()));
             default:
               if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
+                panelController.hide();
+                return Container();
               } else if (snapshot.data == null) {
                 return const Text('Pas d\'info sur ce lieu');
               } else {
@@ -207,19 +150,9 @@ class _MapViewBodyState extends State<MapViewBody> {
                                         Text(snapshot.data!.name,
                                             style: GoogleFonts.montserrat(
                                                 fontSize: 25)),
-                                        // snapshot.data!.street.isNotEmpty
-                                        //     ? Text(snapshot.data!.street,
-                                        //         style: GoogleFonts.montserrat(
-                                        //             fontSize: 15))
-                                        //     : Container(),
                                         Text(snapshot.data!.street,
                                             style: GoogleFonts.montserrat(
                                                 fontSize: 15)),
-                                        // snapshot.data!.city.isNotEmpty
-                                        //     ? Text(snapshot.data!.city,
-                                        //         style: GoogleFonts.montserrat(
-                                        //             fontSize: 15))
-                                        // : Container(),
                                         Text(snapshot.data!.city,
                                             style: GoogleFonts.montserrat(
                                                 fontSize: 15,
@@ -285,7 +218,6 @@ class _MapViewBodyState extends State<MapViewBody> {
   }
 
   Future<PlaceInfo> getInfoPlace(osmType, osmId) async {
-    // await Future.delayed(const Duration(seconds: 5), () => {});
     var oType = osmType == "way"
         ? 'W'
         : osmType == "node"
@@ -296,20 +228,4 @@ class _MapViewBodyState extends State<MapViewBody> {
         options: Options(responseType: ResponseType.plain));
     return PlaceInfo.fromJson(json.decode(r.data));
   }
-
-  // addMarker(LatLng point) {
-  //   setState(() {
-  //     Marker m = Marker(
-  //       width: 45.0,
-  //       height: 45.0,
-  //       point: point,
-  //       builder: (ctx) => const Icon(
-  //         Icons.location_on,
-  //         color: Colors.red,
-  //         size: 35.0,
-  //       ),
-  //     );
-  //     markers.add(m);
-  //   });
-  // }
 }

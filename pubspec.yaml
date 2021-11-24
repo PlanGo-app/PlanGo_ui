@@ -53,7 +53,7 @@ dependencies:
   json_annotation: any
   link_text: ^0.2.0
   url_launcher: ^6.0.15
-
+  bottom_navy_bar: ^6.0.0
 
 dev_dependencies:
   flutter_test:

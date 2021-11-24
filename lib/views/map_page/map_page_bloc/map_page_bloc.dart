@@ -29,6 +29,7 @@ class MapPageBloc extends Bloc<MapPageEvent, MapPageState> {
   }
 
   FutureOr<void> _onPanel(MapPageEventPanel event, Emitter<MapPageState> emit) {
+    print("ON PANEL");
     emit(MapPagePanelState(event.place));
   }
 
