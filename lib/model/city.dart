@@ -1,6 +1,8 @@
+import 'package:latlong2/latlong.dart';
+
 class City {
   String name;
-  String latlng;
+  LatLng latlng;
 
   City({
     required this.name,

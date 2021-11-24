@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:latlong2/latlong.dart';
 import 'package:plango_front/model/city.dart';
 import 'package:plango_front/util/constant.dart';
 
@@ -116,7 +117,8 @@ class _TextSearchCityState extends State<TextSearchCity> {
       var builder = result.substring(1, result.length - 1).split(',');
       for (var elm in builder) {
         print(elm);
-        cities.add(City(name: elm.substring(1, elm.length - 1), latlng: ""));
+        cities.add(
+            City(name: elm.substring(1, elm.length - 1), latlng: LatLng(0, 0)));
       }
     } catch (e) {
       print(e);

@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
+import 'package:latlong2/latlong.dart';
 import 'package:plango_front/model/city.dart';
 import 'package:plango_front/model/country.dart';
 import 'package:plango_front/util/loading.dart';
@@ -26,7 +30,7 @@ class _CreateTravelState extends State<CreateTravel> {
   @override
   void initState() {
     country = Country(name: "", latlng: "", code: "", add_flag: "");
-    city = City(name: "", latlng: "");
+    city = City(name: "", latlng: LatLng(0, 0));
     super.initState();
   }
 
@@ -107,17 +111,39 @@ class _CreateTravelState extends State<CreateTravel> {
                             ),
                       city!.name != ""
                           ? RoundedButton(
-                              press: () {
+                              press: () async {
+                                var result = await http.get(Uri.parse(
+                                    'https://nominatim.openstreetmap.org/search.php?city=' +
+                                        city!.name +
+                                        '&country=' +
+                                        country!.name +
+                                        '&format=jsonv2'));
+                                var res = json.decode(result.body);
+                                city!.latlng = LatLng(
+                                    double.parse(res[0]["lat"]),
+                                    double.parse(res[0]["lon"]));
+                                //Add loading
+                                //Pass city to next page
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (
                                         context,
                                       ) =>
-                                          const MapPage(),
+                                          const Screen(),
                                     ));
-                                // print(searchControllerCountry.text);
                               },
+                              //   print()
+                              //   Navigator.push(
+                              //       context,
+                              //       MaterialPageRoute(
+                              //         builder: (
+                              //           context,
+                              //         ) =>
+                              //             const Screen(),
+                              //       ));
+                              //   print(searchControllerCountry.text);
+                              // },
                               text: "Créer",
                             )
                           : Container(),
