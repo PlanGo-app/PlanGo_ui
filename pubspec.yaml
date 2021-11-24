@@ -55,7 +55,7 @@ dependencies:
   url_launcher: ^6.0.15
   http: ^0.13.0
   flutter_svg: ^0.20.0-nullsafety.3
-
+  bottom_navy_bar: ^6.0.0
 
 dev_dependencies:
   flutter_test:

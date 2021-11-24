@@ -20,6 +20,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
+        verticalDirection: VerticalDirection.up,
         children: [
           searchController.text.isNotEmpty
               ? FutureBuilder<List<Place>>(
@@ -54,6 +55,9 @@ class _SearchTextFieldState extends State<SearchTextField> {
                                       context.read<NavBarBloc>().add(
                                           NavBarEventPlaceFound(
                                               place: snapshot.data![index]));
+                                      searchController.text = "";
+                                      FocusScope.of(context)
+                                          .requestFocus(FocusNode());
                                     },
                                   );
                                 }),
@@ -65,27 +69,21 @@ class _SearchTextFieldState extends State<SearchTextField> {
           Container(
             decoration: const BoxDecoration(
                 border: Border(top: BorderSide(color: Colors.black, width: 2))),
-            child: Row(
-              children: [
-                FloatingActionButton(
-                  heroTag: null,
-                  onPressed: () {
-                    context.read<NavBarBloc>().add(const NavBarEventInitial());
-                  },
-                  child: const Icon(Icons.more_horiz_outlined),
-                  mini: true,
-                ),
-                Flexible(
-                    child: TextField(
-                  autofocus: true,
-                  controller: searchController,
-                  onChanged: (text) {
-                    setState(() {});
-                    // getPlaces(searchController.text);
-                  },
-                )),
-              ],
-            ),
+            child: Flexible(
+                child: TextField(
+              // autofocus: true,
+              decoration: new InputDecoration(
+                hintText: 'Votre recherche',
+                suffixIcon: Icon(Icons.search),
+                contentPadding: EdgeInsets.all(20),
+              ),
+              controller: searchController,
+
+              onChanged: (text) {
+                setState(() {});
+                // getPlaces(searchController.text);
+              },
+            )),
           ),
         ],
       ),

@@ -7,7 +7,7 @@ import 'package:plango_front/views/components/rounded_button.dart';
 import 'package:plango_front/views/create_account/create_account_background.dart';
 import 'package:plango_front/views/create_travel/search_cities.dart';
 import 'package:plango_front/views/create_travel/search_countries.dart';
-import 'package:plango_front/views/map_page/map_page.dart';
+import 'package:plango_front/views/screen/screen.dart';
 
 class CreateTravel extends StatefulWidget {
   const CreateTravel({Key? key}) : super(key: key);
