@@ -5,3 +5,5 @@ const kPrimaryLightColor = Color(0xffcb5310); // #CB5310
 
 const API_KEY =
     'pk.eyJ1IjoidG9uaXRydWFudHQiLCJhIjoiY2t3NjFtOXM0MjJ6dDJvcm9mOGw0c3AwYiJ9.SMlD3VaRAtFYtQBVOHMYqQ';
+const API_KEY_COUNTRY =
+    'SkpEbndWNVBiblVpZkNvWnZyMzhvNlc5MUVZVkh6RG1ZU1lNM2o0aA==';

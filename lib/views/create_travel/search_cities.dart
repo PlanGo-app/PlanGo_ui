@@ -1,17 +1,14 @@
-import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:plango_front/model/country.dart';
+import 'package:http/http.dart' as http;
+import 'package:plango_front/model/city.dart';
 import 'package:plango_front/util/constant.dart';
 
-class TextSearchCountry extends StatefulWidget {
+class TextSearchCity extends StatefulWidget {
   final TextEditingController searchController;
   final String address;
-  final Function(Country) search;
+  final Function(City) search;
 
-  const TextSearchCountry(
+  const TextSearchCity(
       {required this.searchController,
       required this.address,
       Key? key,
@@ -19,10 +16,10 @@ class TextSearchCountry extends StatefulWidget {
       : super(key: key);
 
   @override
-  _TextSearchCountryState createState() => _TextSearchCountryState();
+  _TextSearchCityState createState() => _TextSearchCityState();
 }
 
-class _TextSearchCountryState extends State<TextSearchCountry> {
+class _TextSearchCityState extends State<TextSearchCity> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -37,11 +34,11 @@ class _TextSearchCountryState extends State<TextSearchCountry> {
                       border: Border.all(color: Colors.black),
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15)),
-                  child: FutureBuilder<List<Country>?>(
-                      future: getCountry(
-                          widget.searchController.text, widget.address),
+                  child: FutureBuilder<List<City>?>(
+                      future:
+                          getCity(widget.searchController.text, widget.address),
                       builder: (BuildContext context,
-                          AsyncSnapshot<List<Country>?> snapshot) {
+                          AsyncSnapshot<List<City>?> snapshot) {
                         switch (snapshot.connectionState) {
                           case ConnectionState.waiting:
                             return const CircularProgressIndicator();
@@ -49,7 +46,7 @@ class _TextSearchCountryState extends State<TextSearchCountry> {
                             if (snapshot.hasError) {
                               return Text('Error: ${snapshot.error}');
                             } else if (snapshot.data!.isEmpty) {
-                              return const Text('Pas de pays de ce nom');
+                              return const Text('Pas de ville de ce nom');
                             } else {
                               return ListView.separated(
                                   separatorBuilder: (context, index) {
@@ -59,26 +56,9 @@ class _TextSearchCountryState extends State<TextSearchCountry> {
                                   itemCount: snapshot.data!.length,
                                   itemBuilder: (context, index) {
                                     return ListTile(
-                                      title: Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(5),
-                                            child: SvgPicture.network(
-                                              snapshot.data![index].add_flag,
-                                              width: 20,
-                                            ),
-                                          ),
-                                          Flexible(
-                                            child: Text(
-                                              snapshot.data![index].name,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          )
-                                        ],
-                                      ),
+                                      title: Text(snapshot.data![index].name),
                                       onTap: () {
                                         // widget.searchController.text =
-                                        //     snapshot.data![index].name;
                                         widget.search(snapshot.data![index]);
                                       },
                                     );
@@ -98,7 +78,7 @@ class _TextSearchCountryState extends State<TextSearchCountry> {
             children: [
               FloatingActionButton(
                 onPressed: () {
-                  getCountry(widget.searchController.text, widget.address);
+                  getCity(widget.searchController.text, widget.address);
                 },
                 child: const Icon(Icons.search_outlined),
                 mini: true,
@@ -107,7 +87,6 @@ class _TextSearchCountryState extends State<TextSearchCountry> {
               Flexible(
                   child: TextField(
                 decoration: const InputDecoration(
-                  hintText: 'Dans quel pays ?',
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide.none,
                   ),
@@ -115,7 +94,6 @@ class _TextSearchCountryState extends State<TextSearchCountry> {
                     borderSide: BorderSide.none,
                   ),
                 ),
-                autofocus: true,
                 controller: widget.searchController,
                 onChanged: (text) {
                   setState(() {});
@@ -130,19 +108,19 @@ class _TextSearchCountryState extends State<TextSearchCountry> {
     // return Container();
   }
 
-  Future<List<Country>?> getCountry(text, address) async {
-    late List<Country> countries;
-    countries = [];
+  Future<List<City>?> getCity(text, address) async {
+    late List<City> cities;
+    cities = [];
     try {
-      var response = await Dio().get('$address$text',
-          options: Options(responseType: ResponseType.plain));
-      final jsonResponse = json.decode(response.data.toString());
-      for (dynamic country in jsonResponse) {
-        countries.add(Country.fromJson(Map<String, dynamic>.from(country)));
+      var result = await http.read(Uri.parse(address + text));
+      var builder = result.substring(1, result.length - 1).split(',');
+      for (var elm in builder) {
+        print(elm);
+        cities.add(City(name: elm.substring(1, elm.length - 1), latlng: ""));
       }
     } catch (e) {
       print(e);
     }
-    return countries;
+    return cities;
   }
 }

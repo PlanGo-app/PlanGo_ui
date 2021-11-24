@@ -53,6 +53,8 @@ dependencies:
   json_annotation: any
   link_text: ^0.2.0
   url_launcher: ^6.0.15
+  http: ^0.13.0
+  flutter_svg: ^0.20.0-nullsafety.3
 
 
 dev_dependencies:
