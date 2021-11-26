@@ -14,8 +14,8 @@ class Screen extends StatefulWidget {
 class _ScreenState extends State<Screen> {
   int _currentIndex = 0;
   final List _children = [
-    MapPage(),
-    Calendar(),
+    const MapPage(),
+    const Calendar(),
   ];
 
   @override
@@ -31,13 +31,13 @@ class _ScreenState extends State<Screen> {
               onTabTapped, // this will be set when a new tab is tapped
           items: [
             BottomNavyBarItem(
-                icon: new Icon(Icons.map),
-                title: new Text('Map'),
+                icon: const Icon(Icons.map),
+                title: const Text('Map'),
                 activeColor: kPrimaryLightColor,
                 inactiveColor: kPrimaryColor),
             BottomNavyBarItem(
-                icon: new Icon(Icons.calendar_today),
-                title: new Text('Calendrier'),
+                icon: const Icon(Icons.calendar_today),
+                title: const Text('Calendrier'),
                 activeColor: kPrimaryLightColor,
                 inactiveColor: kPrimaryColor),
           ],
