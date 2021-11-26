@@ -48,8 +48,10 @@ class _SearchTextFieldState extends State<SearchTextField> {
                               itemCount: snapshot.data!.length,
                               itemBuilder: (context, index) {
                                 return ListTile(
-                                  title:
-                                      Text(snapshot.data![index].displayName),
+                                  title: Text(
+                                    snapshot.data![index].displayName,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                   onTap: () {
                                     context.read<NavBarBloc>().add(
                                         NavBarEventPlaceFound(
