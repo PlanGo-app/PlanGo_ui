@@ -67,25 +67,21 @@ class _SearchTextFieldState extends State<SearchTextField> {
                   }
                 })
             : Container(),
-        Container(
-          // decoration: const BoxDecoration(
-          //     border: Border(top: BorderSide(color: Colors.black, width: 2))),
-          child: Flexible(
-              child: TextField(
-            // autofocus: true,
-            decoration: const InputDecoration(
-              hintText: 'Votre recherche',
-              suffixIcon: Icon(Icons.search),
-              contentPadding: EdgeInsets.all(20),
-            ),
-            controller: searchController,
+        Flexible(
+            child: TextField(
+          // autofocus: true,
+          decoration: const InputDecoration(
+            hintText: 'Votre recherche',
+            suffixIcon: Icon(Icons.search),
+            contentPadding: EdgeInsets.all(20),
+          ),
+          controller: searchController,
 
-            onChanged: (text) {
-              setState(() {});
-              // getPlaces(searchController.text);
-            },
-          )),
-        ),
+          onChanged: (text) {
+            setState(() {});
+            // getPlaces(searchController.text);
+          },
+        )),
       ],
     );
   }
