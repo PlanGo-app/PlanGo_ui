@@ -18,6 +18,7 @@ class NavBarEventList extends NavBarEvent {
   const NavBarEventList();
 }
 
+// ignore: must_be_immutable
 class NavBarEventPlaceFound extends NavBarEvent {
   Place place;
   NavBarEventPlaceFound({required this.place});

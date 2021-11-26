@@ -17,24 +17,19 @@ class NavBarBloc extends Bloc<NavBarEvent, NavBarState> {
 
   FutureOr<void> _onInitial(
       NavBarEventInitial event, Emitter<NavBarState> emit) {
-    print("ON INITIAL");
     emit(NavBarInitial());
   }
 
   FutureOr<void> _onSearch(NavBarEventSearch event, Emitter<NavBarState> emit) {
-    print("ON SEARCH");
     emit(NavBarSearch());
   }
 
   FutureOr<void> _navBarList(NavBarEventList event, Emitter<NavBarState> emit) {
-    print("ON LIST");
     emit(NavBarList());
   }
 
   FutureOr<void> _onPlaceFound(
       NavBarEventPlaceFound event, Emitter<NavBarState> emit) {
-    print("ON FOUND");
-
     emit(NavBarInitial());
     emit(NavBarPlaceFound(event.place));
   }
