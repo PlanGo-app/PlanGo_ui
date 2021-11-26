@@ -9,6 +9,7 @@ import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/util/loading.dart';
 import 'package:plango_front/views/components/small_rounded_button.dart';
 import 'package:plango_front/views/create_travel/create_travel.dart';
+import 'package:plango_front/views/screen/screen.dart';
 import 'package:plango_front/views/sharing/sharing_page.dart';
 
 class TravelsList extends StatefulWidget {
@@ -86,7 +87,7 @@ class _TravelsListState extends State<TravelsList> {
                               Expanded(
                                 flex: 4,
                                 child: Container(
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 10),
                                     child: Text(
                                       "Voulez-vous créer ou rejoindre un plan?",
@@ -202,6 +203,10 @@ class TravelsListBuilder extends StatelessWidget {
                             " -- " +
                             dateFormat.format(snapshot.data![index].date_end),
                         style: const TextStyle(color: Colors.white)),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const Screen()));
+                    },
                   ),
                 ),
                 IconButton(
