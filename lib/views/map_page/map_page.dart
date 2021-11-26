@@ -88,12 +88,13 @@ class _MapViewBodyState extends State<MapViewBody> {
         maxHeight: 300,
         panelBuilder: (sc) => _panel(sc, context, state.place),
         backdropEnabled: true,
-        body: Column(
-          children: [
-            SafeArea(
-                child: Material(elevation: 10000000, child: SearchTextField())),
-            Expanded(child: map),
-          ],
+        body: SafeArea(
+          child: Column(
+            children: [
+              SearchTextField(),
+              Expanded(child: map),
+            ],
+          ),
         ),
       );
     });
