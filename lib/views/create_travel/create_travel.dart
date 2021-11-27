@@ -32,7 +32,8 @@ class _CreateTravelState extends State<CreateTravel> {
 
   @override
   void initState() {
-    country = Country(name: "", latlng: "", code: "", add_flag: "");
+    country =
+        Country(name: "", latlng: "", code: "", add_flag: "", realName: "");
     city = City(name: "", latlng: LatLng(0, 0));
     datePicked = false;
     super.initState();
@@ -74,6 +75,7 @@ class _CreateTravelState extends State<CreateTravel> {
                                 searchController: searchControllerCountry,
                                 address: "https://restcountries.com/v3.1/name/",
                                 search: (res) {
+                                  print(res.realName);
                                   searchControllerCountry.text = res.name;
                                   setState(() {
                                     country = res;
@@ -100,7 +102,8 @@ class _CreateTravelState extends State<CreateTravel> {
                                 searchController: searchControllerCity,
                                 address:
                                     "https://shivammathur.com/countrycity/cities/" +
-                                        searchControllerCountry.text +
+                                        country!.realName
+                                            .replaceAll(" ", "%20") +
                                         "/",
                                 search: (res) {
                                   searchControllerCity.text = res.name;
