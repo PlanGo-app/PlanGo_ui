@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -70,6 +71,7 @@ class _MapViewBodyState extends State<MapViewBody> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return BlocBuilder<MapPageBloc, MapPageState>(builder: (context, state) {
       if (state is MapPagePanelState) {
         panelController.show();
@@ -89,10 +91,10 @@ class _MapViewBodyState extends State<MapViewBody> {
         panelBuilder: (sc) => _panel(sc, context, state.place),
         backdropEnabled: true,
         body: SafeArea(
-          child: Column(
+          child: Stack(
             children: [
-              SearchTextField(),
-              Expanded(child: map),
+              SizedBox(width: size.width, height: size.height, child: map),
+              const SearchTextField(),
             ],
           ),
         ),
