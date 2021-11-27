@@ -23,45 +23,52 @@ class CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            buildTarget(
-              context,
-              text: 'All',
-              animals: all,
-              acceptTypes: AnimalType.values,
-              onAccept: (data) => setState(() {
-                removeAll(data);
-                all.add(data);
-              }),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                buildTarget(
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Container(
+                decoration:
+                    BoxDecoration(border: Border.all(color: Colors.red)),
+                child: buildTarget(
                   context,
-                  text: 'Animals',
-                  animals: land,
-                  acceptTypes: [AnimalType.land],
+                  text: 'All',
+                  animals: all,
+                  acceptTypes: AnimalType.values,
                   onAccept: (data) => setState(() {
                     removeAll(data);
-                    land.add(data);
+                    all.add(data);
                   }),
                 ),
-                buildTarget(
-                  context,
-                  text: 'Birds',
-                  animals: air,
-                  acceptTypes: [AnimalType.air],
-                  onAccept: (data) => setState(() {
-                    removeAll(data);
-                    air.add(data);
-                  }),
-                ),
-              ],
-            ),
-          ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  buildTarget(
+                    context,
+                    text: '08h00',
+                    animals: land,
+                    acceptTypes: [AnimalType.land],
+                    onAccept: (data) => setState(() {
+                      removeAll(data);
+                      land.add(data);
+                    }),
+                  ),
+                  buildTarget(
+                    context,
+                    text: '10h00',
+                    animals: air,
+                    acceptTypes: [AnimalType.air],
+                    onAccept: (data) => setState(() {
+                      removeAll(data);
+                      air.add(data);
+                    }),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       );
 
@@ -72,27 +79,40 @@ class CalendarState extends State<Calendar> {
     required List<AnimalType> acceptTypes,
     required DragTargetAccept<Animal> onAccept,
   }) =>
-      CircleAvatar(
-        radius: size / 2,
-        child: DragTarget<Animal>(
-          builder: (context, candidateData, rejectedData) => Stack(
-            children: [
-              ...animals
-                  .map((animal) => DraggableWidget(animal: animal))
-                  .toList(),
-              IgnorePointer(child: Center(child: buildText(text))),
-            ],
-          ),
-          onWillAccept: (data) => true,
-          onAccept: (data) {
-            if (acceptTypes.contains(data.type)) {
-              print("accept");
-            } else {
-              print("accept");
-            }
+      Container(
+        decoration: BoxDecoration(border: Border.all(color: Colors.purple)),
+        child: Row(
+          children: [
+            Expanded(flex: 2, child: Text(text)),
+            Expanded(
+              flex: 8,
+              child: Container(
+                height: 100,
+                decoration:
+                    BoxDecoration(border: Border.all(color: Colors.purple)),
+                child: DragTarget<Animal>(
+                  builder: (context, candidateData, rejectedData) => Row(
+                    children: [
+                      ...animals
+                          .map((animal) => DraggableWidget(animal: animal))
+                          .toList(),
+                      // IgnorePointer(child: Center(child: buildText(text))),
+                    ],
+                  ),
+                  onWillAccept: (data) => true,
+                  onAccept: (data) {
+                    if (acceptTypes.contains(data.type)) {
+                      print("accept");
+                    } else {
+                      print("accept");
+                    }
 
-            onAccept(data);
-          },
+                    onAccept(data);
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
       );
 

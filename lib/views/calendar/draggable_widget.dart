@@ -16,7 +16,9 @@ class DraggableWidget extends StatelessWidget {
         data: animal,
         feedback: buildImage(),
         child: buildImage(),
-        childWhenDragging: Container(height: size),
+        childWhenDragging: Container(
+          height: size,
+        ),
       );
 
   Widget buildImage() => Container(
