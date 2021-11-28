@@ -33,6 +33,10 @@ class CalendarState extends State<Calendar> {
     widget.air.removeWhere((marker) => marker.name == toRemove.name);
   }
 
+  bool isInAll(Marker toCheck) {
+    return widget.all.contains(toCheck);
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
         body: SafeArea(
@@ -51,6 +55,7 @@ class CalendarState extends State<Calendar> {
                     removeAll(data);
                     widget.all.add(data);
                   }),
+                  onData: (data) => isInAll(data),
                 ),
               ),
               Expanded(
@@ -67,6 +72,7 @@ class CalendarState extends State<Calendar> {
                           widget.land.add(data);
                         }
                       }),
+                      onData: (data) => isInAll(data),
                     );
                   },
                   // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -82,6 +88,7 @@ class CalendarState extends State<Calendar> {
     required String text,
     required List<Marker> markers,
     required DragTargetAccept<Marker> onAccept,
+    required bool Function(dynamic) onData,
   }) {
     return Container(
       decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
@@ -97,19 +104,14 @@ class CalendarState extends State<Calendar> {
                   scrollDirection: Axis.horizontal,
                   children: [
                     ...markers
-                        .map((marker) => DraggableWidget(marker: marker))
+                        .map((marker) =>
+                            DraggableWidget(onData: onData, marker: marker))
                         .toList(),
                     // IgnorePointer(child: Center(child: buildText(text))),
                   ],
                 ),
                 onWillAccept: (data) => true,
                 onAccept: (data) {
-                  // if (acceptTypes.contains(data.type)) {
-                  //   print("accept");
-                  // } else {
-                  //   print("accept");
-                  // }
-
                   onAccept(data);
                 },
               ),
