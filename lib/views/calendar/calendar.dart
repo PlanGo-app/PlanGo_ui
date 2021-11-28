@@ -1,24 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:plango_front/model/item_model.dart';
+import 'package:plango_front/service/planning_event_service.dart';
 
 import 'draggable_widget.dart';
 
 class Calendar extends StatefulWidget {
+  late List<Marker> all = [];
+  final List<Marker> land = [];
+  final List<Marker> air = [];
+  Calendar({Key? key}) : super(key: key);
+
   @override
   CalendarState createState() => CalendarState();
 }
 
 class CalendarState extends State<Calendar> {
-  final List<Animal> all = allAnimals;
-  final List<Animal> land = [];
-  final List<Animal> air = [];
+  final double size = 100;
+  @override
+  void initState() {
+    widget.all = [];
+    PlanningEventService().loadMarkers().then((value) {
+      setState(() {
+        widget.all = value;
+      });
+    });
+    super.initState();
+  }
 
-  final double size = 150;
-
-  void removeAll(Animal toRemove) {
-    all.removeWhere((animal) => animal.imageUrl == toRemove.imageUrl);
-    land.removeWhere((animal) => animal.imageUrl == toRemove.imageUrl);
-    air.removeWhere((animal) => animal.imageUrl == toRemove.imageUrl);
+  void removeAll(Marker toRemove) {
+    widget.all.removeWhere((marker) => marker.name == toRemove.name);
+    widget.land.removeWhere((marker) => marker.name == toRemove.name);
+    widget.air.removeWhere((marker) => marker.name == toRemove.name);
   }
 
   @override
@@ -33,39 +45,32 @@ class CalendarState extends State<Calendar> {
                     BoxDecoration(border: Border.all(color: Colors.red)),
                 child: buildTarget(
                   context,
-                  text: 'All',
-                  animals: all,
-                  acceptTypes: AnimalType.values,
+                  text: 'Activités',
+                  markers: widget.all,
                   onAccept: (data) => setState(() {
                     removeAll(data);
-                    all.add(data);
+                    widget.all.add(data);
                   }),
                 ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  buildTarget(
-                    context,
-                    text: '08h00',
-                    animals: land,
-                    acceptTypes: [AnimalType.land],
-                    onAccept: (data) => setState(() {
-                      removeAll(data);
-                      land.add(data);
-                    }),
-                  ),
-                  buildTarget(
-                    context,
-                    text: '10h00',
-                    animals: air,
-                    acceptTypes: [AnimalType.air],
-                    onAccept: (data) => setState(() {
-                      removeAll(data);
-                      air.add(data);
-                    }),
-                  ),
-                ],
+              Expanded(
+                child: ListView.builder(
+                  itemCount: 24,
+                  itemBuilder: (context, index) {
+                    return buildTarget(
+                      context,
+                      text: index.toString() + 'h00',
+                      markers: widget.land,
+                      onAccept: (data) => setState(() {
+                        if (widget.land.isEmpty) {
+                          removeAll(data);
+                          widget.land.add(data);
+                        }
+                      }),
+                    );
+                  },
+                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                ),
               ),
             ],
           ),
@@ -75,46 +80,47 @@ class CalendarState extends State<Calendar> {
   Widget buildTarget(
     BuildContext context, {
     required String text,
-    required List<Animal> animals,
-    required List<AnimalType> acceptTypes,
-    required DragTargetAccept<Animal> onAccept,
-  }) =>
-      Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.purple)),
-        child: Row(
-          children: [
-            Expanded(flex: 2, child: Text(text)),
-            Expanded(
-              flex: 8,
-              child: Container(
-                height: 100,
-                decoration:
-                    BoxDecoration(border: Border.all(color: Colors.purple)),
-                child: DragTarget<Animal>(
-                  builder: (context, candidateData, rejectedData) => Row(
-                    children: [
-                      ...animals
-                          .map((animal) => DraggableWidget(animal: animal))
-                          .toList(),
-                      // IgnorePointer(child: Center(child: buildText(text))),
-                    ],
-                  ),
-                  onWillAccept: (data) => true,
-                  onAccept: (data) {
-                    if (acceptTypes.contains(data.type)) {
-                      print("accept");
-                    } else {
-                      print("accept");
-                    }
-
-                    onAccept(data);
-                  },
+    required List<Marker> markers,
+    required DragTargetAccept<Marker> onAccept,
+  }) {
+    return Container(
+      decoration: BoxDecoration(border: Border.all(color: Colors.purple)),
+      child: Row(
+        children: [
+          Expanded(flex: 2, child: Text(text)),
+          Expanded(
+            flex: 8,
+            child: Container(
+              height: 100,
+              decoration:
+                  BoxDecoration(border: Border.all(color: Colors.purple)),
+              child: DragTarget<Marker>(
+                builder: (context, candidateData, rejectedData) => ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    ...markers
+                        .map((marker) => DraggableWidget(marker: marker))
+                        .toList(),
+                    // IgnorePointer(child: Center(child: buildText(text))),
+                  ],
                 ),
+                onWillAccept: (data) => true,
+                onAccept: (data) {
+                  // if (acceptTypes.contains(data.type)) {
+                  //   print("accept");
+                  // } else {
+                  //   print("accept");
+                  // }
+
+                  onAccept(data);
+                },
               ),
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget buildText(String text) => Container(
         decoration: BoxDecoration(boxShadow: [

@@ -1,38 +1,21 @@
 enum AnimalType { land, air }
 
-class Animal {
-  final String imageUrl;
-  final AnimalType type;
+class Marker {
+  final String name;
 
-  Animal({
-    required this.imageUrl,
-    required this.type,
+  Marker({
+    required this.name,
   });
+  factory Marker.fromJson(Map<String, dynamic> parsedJson) {
+    return Marker(name: parsedJson['name']);
+  }
 }
-
-final allAnimals = [
-  Animal(
-    type: AnimalType.land,
-    imageUrl: 'assets/image/plango_logo.png',
-  ),
-  Animal(
-    type: AnimalType.air,
-    imageUrl: 'assets/image/plango_title.png',
-  ),
-  Animal(
-    type: AnimalType.air,
-    imageUrl: 'assets/image/plango_logo.png',
-  ),
-  Animal(
-    type: AnimalType.land,
-    imageUrl: 'assets/image/plango_logo.png',
-  ),
-  Animal(
-    type: AnimalType.air,
-    imageUrl: 'assets/image/plango_logo.png',
-  ),
-  Animal(
-    type: AnimalType.land,
-    imageUrl: 'assets/image/plango_logo.png',
-  ),
-];
+//
+// final allMarkers = [
+//   Marker(
+//     name: 'assets/image/plango_logo.png',
+//   ),
+//   Marker(
+//     name: 'assets/image/plango_title.png',
+//   ),
+// ];

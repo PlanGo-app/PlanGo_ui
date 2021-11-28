@@ -1,0 +1,39 @@
+[{
+  "id" : 1,
+  "name" : "Tour Eiffel",
+  "pin": {
+    "lat":50.123123,
+    "lon":3.12312
+  },
+  "event_after": 0,
+  "transportTypeToNext": null,
+  "createdBy": "Anthony",
+  "date_start":"2021-11-17T13:30:06.419Z",
+  "date_end":"2021-11-30T13:30:06.419Z"
+},
+  {
+    "id" : 1,
+    "name" : "Montparnasse",
+    "pin": {
+      "lat":50.123123,
+      "lon":3.12312
+    },
+    "event_after": 0,
+    "transportTypeToNext": null,
+    "createdBy": "Anthony",
+    "date_start":"2021-11-17T13:30:06.419Z",
+    "date_end":"2021-11-30T13:30:06.419Z"
+  },
+  {
+    "id" : 1,
+    "name" : "Champs Elysee",
+    "pin": {
+      "lat":50.123123,
+      "lon":3.12312
+    },
+    "event_after": 0,
+    "transportTypeToNext": null,
+    "createdBy": "Anthony",
+    "date_start":"2021-11-17T13:30:06.419Z",
+    "date_end":"2021-11-30T13:30:06.419Z"
+  }]
