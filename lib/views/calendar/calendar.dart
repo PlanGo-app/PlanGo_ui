@@ -41,8 +41,8 @@ class CalendarState extends State<Calendar> {
             // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Container(
-                decoration:
-                    BoxDecoration(border: Border.all(color: Colors.red)),
+                height: 50,
+                margin: EdgeInsets.symmetric(vertical: 5),
                 child: buildTarget(
                   context,
                   text: 'Activités',
@@ -84,7 +84,7 @@ class CalendarState extends State<Calendar> {
     required DragTargetAccept<Marker> onAccept,
   }) {
     return Container(
-      decoration: BoxDecoration(border: Border.all(color: Colors.purple)),
+      decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
       child: Row(
         children: [
           Expanded(flex: 2, child: Text(text)),
@@ -92,8 +92,6 @@ class CalendarState extends State<Calendar> {
             flex: 8,
             child: Container(
               height: 100,
-              decoration:
-                  BoxDecoration(border: Border.all(color: Colors.purple)),
               child: DragTarget<Marker>(
                 builder: (context, candidateData, rejectedData) => ListView(
                   scrollDirection: Axis.horizontal,

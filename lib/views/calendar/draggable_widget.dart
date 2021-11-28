@@ -14,7 +14,7 @@ class DraggableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => LongPressDraggable<Marker>(
         data: marker,
-        feedback: buildImage(200.0),
+        feedback: buildImage(150.0),
         child: buildImage(size),
         childWhenDragging: Container(
           height: size,
