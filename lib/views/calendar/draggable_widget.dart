@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:plango_front/model/item_model.dart';
 
 class DraggableWidget extends StatelessWidget {
-  final Marker marker;
+  final Marker? marker;
 
   bool Function(dynamic) onData;
 
@@ -14,29 +14,26 @@ class DraggableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => LongPressDraggable<Marker>(
         data: marker,
-        feedback: buildImage(150.0),
-        child: buildImage(size),
+        feedback: buildImage(150.0, context),
+        child: buildImage(size, context),
         childWhenDragging: Container(
           height: size,
         ),
       );
 
-  Widget buildActivities() =>
-      Container(width: 100, height: 100, color: Colors.purpleAccent);
-
-  Widget buildImage(double width) => onData.call(marker)
-      ? buildActivities()
+  Widget buildActivities(double width) => marker == null
+      ? Container()
       : Container(
-          height: size,
           width: width,
+          height: 100,
           margin: const EdgeInsets.symmetric(horizontal: 3),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            color: Colors.blue,
+            color: Colors.green,
           ),
           child: Center(
               child: Text(
-            marker.name,
+            marker!.name,
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
@@ -47,4 +44,27 @@ class DraggableWidget extends StatelessWidget {
                 fontWeight: FontWeight.normal),
           )),
         );
+
+  Widget buildImage(double width, BuildContext context) => marker == null
+      ? Container()
+      : onData.call(marker)
+          ? buildActivities(width)
+          : Container(
+              width: MediaQuery.of(context).size.width * .8,
+              // width: double.infinity,
+
+              color: Colors.blueGrey,
+              child: Center(
+                  child: Text(
+                marker!.name,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                    fontFamily: 'Montserrat',
+                    fontSize: 15,
+                    color: Colors.white,
+                    decoration: TextDecoration.none,
+                    fontWeight: FontWeight.normal),
+              )),
+            );
 }

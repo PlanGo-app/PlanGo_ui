@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:plango_front/model/item_model.dart';
 import 'package:plango_front/service/planning_event_service.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'draggable_widget.dart';
 
 class Calendar extends StatefulWidget {
   late List<Marker> all = [];
-  final List<Marker> land = [];
-  final List<Marker> air = [];
+  late Map<String, Marker?> plan = {};
   Calendar({Key? key}) : super(key: key);
 
   @override
@@ -15,12 +15,19 @@ class Calendar extends StatefulWidget {
 }
 
 class CalendarState extends State<Calendar> {
+  final _scrollController = ItemScrollController();
   final double size = 100;
   @override
   void initState() {
+    WidgetsBinding.instance!
+        .addPostFrameCallback((_) => _scrollController.jumpTo(index: 8));
     widget.all = [];
+    widget.plan = {};
     PlanningEventService().loadMarkers().then((value) {
       setState(() {
+        for (int i = 0; i < 24; i++) {
+          widget.plan[i.toString().padLeft(2, '0') + "h00"] = null;
+        }
         widget.all = value;
       });
     });
@@ -29,8 +36,11 @@ class CalendarState extends State<Calendar> {
 
   void removeAll(Marker toRemove) {
     widget.all.removeWhere((marker) => marker.name == toRemove.name);
-    widget.land.removeWhere((marker) => marker.name == toRemove.name);
-    widget.air.removeWhere((marker) => marker.name == toRemove.name);
+    widget.plan.forEach((key, value) {
+      if (value != null && value.name == toRemove.name) {
+        widget.plan[key] = null;
+      }
+    });
   }
 
   bool isInAll(Marker toCheck) {
@@ -59,17 +69,22 @@ class CalendarState extends State<Calendar> {
                 ),
               ),
               Expanded(
-                child: ListView.builder(
+                child: ScrollablePositionedList.builder(
+                  itemScrollController: _scrollController,
                   itemCount: 24,
                   itemBuilder: (context, index) {
                     return buildTarget(
                       context,
-                      text: index.toString() + 'h00',
-                      markers: widget.land,
+                      text: index.toString().padLeft(2, '0') + 'h00',
+                      markers:
+                          widget.plan[index.toString().padLeft(2, '0') + 'h00'],
                       onAccept: (data) => setState(() {
-                        if (widget.land.isEmpty) {
+                        if (widget.plan[
+                                index.toString().padLeft(2, '0') + 'h00'] ==
+                            null) {
                           removeAll(data);
-                          widget.land.add(data);
+                          widget.plan[
+                              index.toString().padLeft(2, '0') + 'h00'] = data;
                         }
                       }),
                       onData: (data) => isInAll(data),
@@ -86,7 +101,7 @@ class CalendarState extends State<Calendar> {
   Widget buildTarget(
     BuildContext context, {
     required String text,
-    required List<Marker> markers,
+    required dynamic markers,
     required DragTargetAccept<Marker> onAccept,
     required bool Function(dynamic) onData,
   }) {
@@ -103,11 +118,15 @@ class CalendarState extends State<Calendar> {
                 builder: (context, candidateData, rejectedData) => ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    ...markers
-                        .map((marker) =>
-                            DraggableWidget(onData: onData, marker: marker))
-                        .toList(),
-                    // IgnorePointer(child: Center(child: buildText(text))),
+                    if (markers is List<Marker>) ...[
+                      ...markers
+                          .map((marker) =>
+                              DraggableWidget(onData: onData, marker: marker))
+                          .toList(),
+                      // IgnorePointer(child: Center(child: buildText(text))),
+                    ] else ...[
+                      DraggableWidget(onData: onData, marker: markers)
+                    ]
                   ],
                 ),
                 onWillAccept: (data) => true,
