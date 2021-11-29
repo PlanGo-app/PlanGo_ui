@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:plango_front/service/account_service.dart';
 import 'package:plango_front/views/components/rounded_button.dart';
 import 'package:plango_front/views/create_account/create_account_background.dart';
+import 'package:plango_front/views/travels_list/travels_list.dart';
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({Key? key}) : super(key: key);
@@ -83,7 +85,30 @@ class _CreateAccountState extends State<CreateAccount> {
                         press: () {
                           if (_formKey.currentState!.validate()) {
                             _formKey.currentState!.save();
-                            print(pseudo);
+                            AccountService()
+                                .CreateUser(pseudo, email, password)
+                                .then((value) {
+                              print(value);
+                              switch (value.statusCode) {
+                                case 200:
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => TravelsList()));
+                                  break;
+                                case 403:
+                                  print(403);
+                                  return Container(
+                                    width: 200,
+                                    height: 200,
+                                    color: Colors.deepPurpleAccent,
+                                  );
+                                default:
+                                  return Container(
+                                    width: 200,
+                                    height: 200,
+                                    color: Colors.red,
+                                  );
+                              }
+                            });
                           }
                         },
                       )
