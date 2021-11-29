@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plango_front/service/account_service.dart';
 import 'package:plango_front/util/constant.dart';
+import 'package:plango_front/util/storage.dart';
 import 'package:plango_front/views/components/label.dart';
 import 'package:plango_front/views/components/rounded_button.dart';
 import 'package:plango_front/views/create_account/create_account.dart';
+import 'package:plango_front/views/travels_list/travels_list.dart';
 import 'package:plango_front/views/welcome_page/welcome_page_bloc/welcome_page_bloc.dart';
 
 import 'background_welcome_page.dart';
@@ -24,7 +27,8 @@ class Body extends StatelessWidget {
 // ignore: must_be_immutable
 class FormLogin extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-
+  final TextEditingController pseudoController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   FormLogin({
     Key? key,
   }) : super(key: key);
@@ -37,18 +41,25 @@ class FormLogin extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Stack(
-            children: const [
-              Label(text: "Votre adresse mail :", color: kPrimaryLightColor),
-              Login(),
+            children: [
+              const Label(
+                  text: "Votre adresse mail :", color: kPrimaryLightColor),
+              Login(
+                hide: false,
+                controller: pseudoController,
+              ),
             ],
           ),
           Stack(
-            children: const [
-              Label(
+            children: [
+              const Label(
                 text: "Votre mot de passe :",
                 color: kPrimaryLightColor,
               ),
-              Login(),
+              Login(
+                hide: true,
+                controller: passwordController,
+              ),
             ],
           ),
           GestureDetector(
@@ -78,14 +89,23 @@ class FormLogin extends StatelessWidget {
             press: () {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
-                // print(_formKey.currentState!.widget.child.toString());
+                AccountService()
+                    .Login(pseudoController.text, passwordController.text)
+                    .then((value) {
+                  switch (value.statusCode) {
+                    case 200:
+                      Storage.setToken(value);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TravelsList(),
+                          ));
+                      break;
+                    default:
+                    //TODO ERROR
+                  }
+                });
               }
-              // AccountService().Login(pseudo, password)
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) => TravelsList(),
-              //     ));
             },
           ),
         ],
@@ -96,7 +116,10 @@ class FormLogin extends StatelessWidget {
 
 // ignore: must_be_immutable
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+  TextEditingController? controller;
+  bool hide;
+  Login({Key? key, required this.controller, required this.hide})
+      : super(key: key);
 
   @override
   _LoginState createState() => _LoginState();
@@ -114,6 +137,10 @@ class _LoginState extends State<Login> {
             margin: const EdgeInsets.symmetric(vertical: 10),
             width: 240,
             child: TextFormField(
+              obscureText: widget.hide,
+              enableSuggestions: !widget.hide,
+              autocorrect: !widget.hide,
+              controller: widget.controller,
               decoration: const InputDecoration(
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey),

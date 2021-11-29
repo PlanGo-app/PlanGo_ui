@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:plango_front/service/account_service.dart';
 import 'package:plango_front/util/storage.dart';
@@ -93,8 +91,8 @@ class _CreateAccountState extends State<CreateAccount> {
                                 .then((value) {
                               switch (value.statusCode) {
                                 case 200:
-                                  var token = json.decode(value.body)["token"];
-                                  Storage.setToken(token);
+                                  // var token = json.decode(value.body)["token"];
+                                  Storage.setToken(value);
                                   // storage.write(key: "kplango", value: token);
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) => TravelsList()));
