@@ -57,6 +57,7 @@ dependencies:
   flutter_svg: ^0.20.0-nullsafety.3
   bottom_navy_bar: ^6.0.0
   scrollable_positioned_list: ^0.2.3
+  flutter_secure_storage: ^5.0.2
 
 dev_dependencies:
   flutter_test:

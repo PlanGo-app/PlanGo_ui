@@ -13,7 +13,7 @@ import 'package:plango_front/views/screen/screen.dart';
 import 'package:plango_front/views/sharing/sharing_page.dart';
 
 class TravelsList extends StatefulWidget {
-  const TravelsList({Key? key}) : super(key: key);
+  TravelsList({Key? key}) : super(key: key);
 
   @override
   _TravelsListState createState() => _TravelsListState();
