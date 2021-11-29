@@ -25,13 +25,25 @@ class Body extends StatelessWidget {
 }
 
 // ignore: must_be_immutable
-class FormLogin extends StatelessWidget {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController pseudoController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+class FormLogin extends StatefulWidget {
   FormLogin({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<FormLogin> createState() => _FormLoginState();
+}
+
+class _FormLoginState extends State<FormLogin> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController pseudoController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  late bool error;
+  @override
+  void initState() {
+    super.initState();
+    error = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,12 +114,15 @@ class FormLogin extends StatelessWidget {
                           ));
                       break;
                     default:
-                    //TODO ERROR
+                      setState(() {
+                        error = true;
+                      });
                   }
                 });
               }
             },
           ),
+          error ? Text("Error") : Container(),
         ],
       ),
     );
