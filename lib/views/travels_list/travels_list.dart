@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:plango_front/model/travel.dart';
@@ -50,7 +47,7 @@ class _TravelsListState extends State<TravelsList> {
                   context: context,
                   removeTop: true,
                   child: FutureBuilder<List<Travel>>(
-                    future: loadTravels(),
+                    future: TravelService().getTravels(),
                     builder: (BuildContext context,
                         AsyncSnapshot<List<Travel>> snapshot) {
                       switch (snapshot.connectionState) {
@@ -58,9 +55,14 @@ class _TravelsListState extends State<TravelsList> {
                           return const Loading();
                         default:
                           if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
+                            return const Center(
+                              child: Text(
+                                'Impossible de recupérer vos voyages pour le moment',
+                                textAlign: TextAlign.center,
+                              ),
+                            );
                           } else if (snapshot.data!.isEmpty) {
-                            return const Text('No travels');
+                            return Center(child: const Text('Aucun voyage'));
                           } else {
                             // return Text(snapshot.data!);
                             return TravelsListBuilder(
@@ -157,21 +159,21 @@ class _TravelsListState extends State<TravelsList> {
     );
   }
 
-  Future<String> _loadTravelsAssets() async {
-    return await rootBundle
-        .loadString('assets/travels.json'); // return your response
-  }
+  // Future<String> _loadTravelsAssets() async {
+  //   return await rootBundle
+  //       .loadString('assets/travels.json'); // return your response
+  // }
 
-  Future<List<Travel>> loadTravels() async {
-    await Future.delayed(const Duration(seconds: 1), () => {});
-    String jsonString = await _loadTravelsAssets();
-    final jsonResponse = json.decode(jsonString);
-    List<Travel> travels = [];
-    for (dynamic travel in jsonResponse) {
-      travels.add(Travel.fromJson(travel));
-    }
-    return travels;
-  }
+  // Future<List<Travel>> loadTravels() async {
+  //   await Future.delayed(const Duration(seconds: 1), () => {});
+  //   String jsonString = await _loadTravelsAssets();
+  //   final jsonResponse = json.decode(jsonString);
+  //   List<Travel> travels = [];
+  //   for (dynamic travel in jsonResponse) {
+  //     travels.add(Travel.fromJson(travel));
+  //   }
+  //   return travels;
+  // }
 }
 
 class TravelsListBuilder extends StatelessWidget {
