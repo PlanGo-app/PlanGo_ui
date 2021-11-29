@@ -50,21 +50,37 @@ class DraggableWidget extends StatelessWidget {
       : onData.call(marker)
           ? buildActivities(width)
           : Container(
-              width: MediaQuery.of(context).size.width * .8,
+              width: MediaQuery.of(context).size.width * .7,
               // width: double.infinity,
-
+              height: 100,
               color: Colors.blueGrey,
-              child: Center(
-                  child: Text(
-                marker!.name,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontSize: 15,
-                    color: Colors.white,
-                    decoration: TextDecoration.none,
-                    fontWeight: FontWeight.normal),
-              )),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: Text(
+                      marker!.name,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontSize: 20,
+                          color: Colors.white,
+                          decoration: TextDecoration.none,
+                          fontWeight: FontWeight.normal),
+                    ),
+                  ),
+                  Expanded(
+                      flex: 3,
+                      child: IconButton(
+                        iconSize: 45,
+                        icon: const Icon(
+                          Icons.access_time,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {},
+                      )),
+                ],
+              ),
             );
 }

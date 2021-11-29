@@ -48,8 +48,11 @@ class CalendarState extends State<Calendar> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: SafeArea(
+  Widget build(BuildContext context) {
+    var sizeScreen = MediaQuery.of(context).size;
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -69,34 +72,44 @@ class CalendarState extends State<Calendar> {
                 ),
               ),
               Expanded(
-                child: ScrollablePositionedList.builder(
-                  itemScrollController: _scrollController,
-                  itemCount: 24,
-                  itemBuilder: (context, index) {
-                    return buildTarget(
-                      context,
-                      text: index.toString().padLeft(2, '0') + 'h00',
-                      markers:
-                          widget.plan[index.toString().padLeft(2, '0') + 'h00'],
-                      onAccept: (data) => setState(() {
-                        if (widget.plan[
-                                index.toString().padLeft(2, '0') + 'h00'] ==
-                            null) {
-                          removeAll(data);
-                          widget.plan[
-                              index.toString().padLeft(2, '0') + 'h00'] = data;
-                        }
-                      }),
-                      onData: (data) => isInAll(data),
-                    );
-                  },
-                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                child: Center(
+                  child: Container(
+                    decoration:
+                        BoxDecoration(border: Border.all(color: Colors.black)),
+                    height: sizeScreen.height * 0.6,
+                    width: sizeScreen.width * 0.85,
+                    child: ScrollablePositionedList.builder(
+                      itemScrollController: _scrollController,
+                      itemCount: 24,
+                      itemBuilder: (context, index) {
+                        return buildTarget(
+                          context,
+                          text: index.toString().padLeft(2, '0') + 'h00',
+                          markers: widget
+                              .plan[index.toString().padLeft(2, '0') + 'h00'],
+                          onAccept: (data) => setState(() {
+                            if (widget.plan[
+                                    index.toString().padLeft(2, '0') + 'h00'] ==
+                                null) {
+                              removeAll(data);
+                              widget.plan[index.toString().padLeft(2, '0') +
+                                  'h00'] = data;
+                            }
+                          }),
+                          onData: (data) => isInAll(data),
+                        );
+                      },
+                      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
         ),
-      );
+      ),
+    );
+  }
 
   Widget buildTarget(
     BuildContext context, {
@@ -109,11 +122,13 @@ class CalendarState extends State<Calendar> {
       decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
       child: Row(
         children: [
-          Expanded(flex: 2, child: Text(text)),
+          Expanded(flex: 2, child: Container(child: Center(child: Text(text)))),
           Expanded(
             flex: 8,
             child: Container(
-              height: 100,
+              decoration: const BoxDecoration(
+                  border: Border(left: BorderSide(color: Colors.black))),
+              height: 65,
               child: DragTarget<Marker>(
                 builder: (context, candidateData, rejectedData) => ListView(
                   scrollDirection: Axis.horizontal,

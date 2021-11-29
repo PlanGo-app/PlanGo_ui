@@ -13,6 +13,7 @@ class _CreateAccountState extends State<CreateAccount> {
   final _formKey = GlobalKey<FormState>();
   String? pseudo;
   String? email;
+  String? password;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +53,9 @@ class _CreateAccountState extends State<CreateAccount> {
                           decoration:
                               const InputDecoration(label: Text("Email")),
                           validator: validateEmail,
+                          onSaved: (value) {
+                            email = value;
+                          },
                         ),
                       ),
                       SizedBox(
@@ -68,6 +72,9 @@ class _CreateAccountState extends State<CreateAccount> {
                               return 'Please enter some text';
                             }
                             return null;
+                          },
+                          onSaved: (value) {
+                            password = value;
                           },
                         ),
                       ),
