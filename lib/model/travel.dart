@@ -1,4 +1,5 @@
 class Travel {
+  int id;
   String name;
   String country;
   String city;
@@ -6,7 +7,8 @@ class Travel {
   DateTime date_end;
 
   Travel(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.country,
       required this.city,
       required this.date_start,
@@ -14,6 +16,7 @@ class Travel {
 
   factory Travel.fromJson(Map<String, dynamic> parsedJson) {
     return Travel(
+        id: parsedJson["id"],
         name: parsedJson['name'],
         country: parsedJson['country'],
         city: parsedJson['city'],
