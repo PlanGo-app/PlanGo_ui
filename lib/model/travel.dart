@@ -20,7 +20,7 @@ class Travel {
         name: parsedJson['name'],
         country: parsedJson['country'],
         city: parsedJson['city'],
-        date_start: DateTime.parse(parsedJson['date_start'].toString()),
-        date_end: DateTime.parse(parsedJson['date_end'].toString()));
+        date_start: DateTime.parse(parsedJson['dateStart'].toString()),
+        date_end: DateTime.parse(parsedJson['dateEnd'].toString()));
   }
 }

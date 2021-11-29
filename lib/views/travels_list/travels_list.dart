@@ -55,6 +55,7 @@ class _TravelsListState extends State<TravelsList> {
                           return const Loading();
                         default:
                           if (snapshot.hasError) {
+                            print(snapshot.error);
                             return const Center(
                               child: Text(
                                 'Impossible de recupérer vos voyages pour le moment',
@@ -199,7 +200,7 @@ class TravelsListBuilder extends StatelessWidget {
                 Expanded(
                   child: ListTile(
                     title: Text(
-                      snapshot.data![index].name +
+                      snapshot.data![index].city +
                           " ( " +
                           snapshot.data![index].country +
                           " )",
