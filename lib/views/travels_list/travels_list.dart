@@ -231,7 +231,8 @@ class TravelsListBuilder extends StatelessWidget {
                           builder: (
                             context,
                           ) =>
-                              SharingPage(name: snapshot.data![index].name),
+                              SharingPage(
+                                  name: snapshot.data![index].invitationCode),
                         ));
                   },
                 ),
