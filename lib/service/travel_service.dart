@@ -24,4 +24,32 @@ class TravelService {
       }
     });
   }
+
+  Future<bool> addTravel(
+      String country, String city, DateTime dateStart, DateTime dateEnd) async {
+    return Storage.getToken().then((token) async {
+      return await http.post(
+        Uri.parse(HTTP + "travel"),
+        body: jsonEncode(<String, dynamic>{
+          'country': country,
+          'city': city,
+          'dateStart': dateStart.toIso8601String(),
+          'dateEnd': dateEnd.toIso8601String(),
+        }),
+        headers: {
+          'Authorization': 'Bearer $token',
+          "Content-Type": "application/json"
+        },
+      );
+    }).then((response) {
+      print(response.statusCode);
+      if (response.statusCode == 201) {
+        print("ajouté");
+        return true;
+      } else {
+        return false;
+        // throw Exception("Failed to load travels");
+      }
+    });
+  }
 }

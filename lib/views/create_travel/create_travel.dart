@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:plango_front/model/city.dart';
 import 'package:plango_front/model/country.dart';
+import 'package:plango_front/service/travel_service.dart';
 import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/views/components/rounded_button.dart';
 import 'package:plango_front/views/create_account/create_account_background.dart';
@@ -215,19 +216,25 @@ class _CreateTravelState extends State<CreateTravel> {
                                 city!.latlng = LatLng(
                                     double.parse(res[0]["lat"]),
                                     double.parse(res[0]["lon"]));
-
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (
-                                        context,
-                                      ) =>
-                                          Screen(
-                                        city: city,
-                                        country: country,
-                                        date: selectedDate,
-                                      ),
-                                    ));
+                                TravelService()
+                                    .addTravel(country!.name, city!.name,
+                                        selectedDate, selectedEndDate)
+                                    .then((value) => {
+                                          value
+                                              ? Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (
+                                                      context,
+                                                    ) =>
+                                                        Screen(
+                                                      city: city,
+                                                      country: country,
+                                                      date: selectedDate,
+                                                    ),
+                                                  ))
+                                              : print("error")
+                                        });
                               },
                               text: "Créer",
                             )
