@@ -47,7 +47,7 @@ class _MapState extends State<MapView> {
           onLongPress: (_, latLng) {
             widget.addMarker(latLng);
           },
-          center: LatLng(50.62925, 3.057256),
+          // center: LatLng(50.62925, 3.057256),
           minZoom: 5.0,
           maxZoom: 20.0,
           zoom: 16.0),

@@ -6,9 +6,13 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'draggable_widget.dart';
 
 class Calendar extends StatefulWidget {
+  final DateTime dateBegin;
+  final DateTime dateEnd;
+
   late List<Marker> all = [];
   late Map<String, Marker?> plan = {};
-  Calendar({Key? key}) : super(key: key);
+  Calendar({Key? key, required this.dateBegin, required this.dateEnd})
+      : super(key: key);
 
   @override
   CalendarState createState() => CalendarState();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
+import 'package:plango_front/service/country_city_service.dart';
 import 'package:provider/src/provider.dart';
 
 import 'nav_bar_bloc/nav_bar_bloc.dart';
@@ -91,9 +92,6 @@ class _SearchTextFieldState extends State<SearchTextField> {
   }
 
   getPlaces(text) {
-    return Nominatim.searchByName(
-      query: text,
-      limit: 5,
-    );
+    return CountryCityService().search(text);
   }
 }

@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:plango_front/model/city.dart';
 import 'package:plango_front/model/country.dart';
@@ -205,17 +202,7 @@ class _CreateTravelState extends State<CreateTravel> {
                           : Container(),
                       dateEndPicked == true
                           ? RoundedButton(
-                              press: () async {
-                                var result = await http.get(Uri.parse(
-                                    'https://nominatim.openstreetmap.org/search.php?city=' +
-                                        city!.name +
-                                        '&country=' +
-                                        country!.name +
-                                        '&format=jsonv2'));
-                                var res = json.decode(result.body);
-                                city!.latlng = LatLng(
-                                    double.parse(res[0]["lat"]),
-                                    double.parse(res[0]["lon"]));
+                              press: () {
                                 TravelService()
                                     .addTravel(country!.name, city!.name,
                                         selectedDate, selectedEndDate)
@@ -228,9 +215,10 @@ class _CreateTravelState extends State<CreateTravel> {
                                                       context,
                                                     ) =>
                                                         Screen(
-                                                      city: city,
-                                                      country: country,
+                                                      city: city!.name,
+                                                      country: country!.name,
                                                       date: selectedDate,
+                                                      endDate: selectedEndDate,
                                                     ),
                                                   ))
                                               : print("error")

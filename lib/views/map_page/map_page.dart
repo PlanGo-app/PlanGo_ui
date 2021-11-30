@@ -9,6 +9,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:link_text/link_text.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 import 'package:plango_front/model/place_info.dart';
+import 'package:plango_front/service/country_city_service.dart';
 import 'package:plango_front/views/map_page/map_view.dart';
 import 'package:plango_front/views/nav_bar/nav_bar_bloc/nav_bar_bloc.dart';
 import 'package:plango_front/views/nav_bar/search_text_field.dart';
@@ -18,9 +19,15 @@ import 'package:url_launcher/url_launcher.dart';
 import 'map_page_bloc/map_page_bloc.dart';
 
 class MapPage extends StatelessWidget {
-  const MapPage({Key? key}) : super(key: key);
+  final String country;
+  final String city;
+  const MapPage({Key? key, required this.country, required this.city})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
+    print("aaaaaaaaaaaaaa" + country);
+    print("aaaaaaaaaaaaaa" + city);
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -31,29 +38,16 @@ class MapPage extends StatelessWidget {
               MapPageBloc(nvb: context.read<NavBarBloc>()),
         ),
       ],
-      child: MapPageView(),
+      child: MapViewBody(country: country, city: city),
     );
   }
 }
 
-class MapPageView extends StatefulWidget {
-  const MapPageView({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  _MapPageViewState createState() => _MapPageViewState();
-}
-
-class _MapPageViewState extends State<MapPageView> {
-  @override
-  Widget build(BuildContext context) {
-    return MapViewBody();
-  }
-}
-
 class MapViewBody extends StatefulWidget {
-  const MapViewBody({Key? key}) : super(key: key);
+  final String country;
+  final String city;
+  const MapViewBody({Key? key, required this.country, required this.city})
+      : super(key: key);
 
   @override
   _MapViewBodyState createState() => _MapViewBodyState();
@@ -66,6 +60,10 @@ class _MapViewBodyState extends State<MapViewBody> {
   @override
   void initState() {
     super.initState();
+    CountryCityService().getLatLng(widget.city, widget.country).then((value) =>
+        {
+          map.mapController.move(LatLng(value.latitude, value.longitude), 16.0)
+        });
     panelController = PanelController();
   }
 

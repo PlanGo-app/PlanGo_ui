@@ -1,17 +1,20 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:plango_front/model/city.dart';
-import 'package:plango_front/model/country.dart';
 import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/views/calendar/calendar.dart';
 import 'package:plango_front/views/map_page/map_page.dart';
 
 class Screen extends StatefulWidget {
-  final City? city;
-  final Country? country;
-  final DateTime? date;
+  final String city;
+  final String country;
+  final DateTime date;
+  final DateTime endDate;
   const Screen(
-      {Key? key, required this.city, required this.country, required this.date})
+      {Key? key,
+      required this.city,
+      required this.country,
+      required this.date,
+      required this.endDate})
       : super(key: key);
 
   @override
@@ -20,10 +23,14 @@ class Screen extends StatefulWidget {
 
 class _ScreenState extends State<Screen> {
   int _currentIndex = 0;
-  final List _children = [
-    const MapPage(),
-    Calendar(),
-  ];
+  late List _children;
+  @override
+  void initState() {
+    _children = [
+      MapPage(country: widget.country, city: widget.city),
+      Calendar(dateBegin: widget.date, dateEnd: widget.endDate),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -42,14 +42,7 @@ class TravelService {
         },
       );
     }).then((response) {
-      print(response.statusCode);
-      if (response.statusCode == 201) {
-        print("ajouté");
-        return true;
-      } else {
-        return false;
-        // throw Exception("Failed to load travels");
-      }
+      return response.statusCode == 201;
     });
   }
 }

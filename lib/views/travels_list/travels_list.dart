@@ -214,10 +214,12 @@ class TravelsListBuilder extends StatelessWidget {
                         style: const TextStyle(color: Colors.white)),
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => Screen(
-                              city: null,
-                              country: null,
-                              date: snapshot.data![index].date_start)));
+                        builder: (context) => Screen(
+                            city: snapshot.data![index].city,
+                            country: snapshot.data![index].country,
+                            date: snapshot.data![index].date_start,
+                            endDate: snapshot.data![index].date_end),
+                      ));
                     },
                   ),
                 ),
