@@ -26,6 +26,8 @@ class _CreateTravelState extends State<CreateTravel> {
   City? city;
   bool? datePicked;
   bool? dateEndPicked;
+  DateTime selectedDate = DateTime.now();
+  late DateTime selectedEndDate = DateTime.now();
 
   final searchControllerCountry = TextEditingController();
   final searchControllerCity = TextEditingController();
@@ -37,13 +39,13 @@ class _CreateTravelState extends State<CreateTravel> {
     city = City(name: "", latlng: LatLng(0, 0));
     datePicked = false;
     dateEndPicked = false;
+    selectedDate = DateTime.now();
+    selectedEndDate = DateTime.now();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    DateTime selectedDate = DateTime.now();
-    DateTime selectedEndDate = DateTime.now();
     Future<void> _selectDate(BuildContext context, bool isEndDate) async {
       final DateTime? picked = await showDatePicker(
           context: context,
@@ -213,8 +215,7 @@ class _CreateTravelState extends State<CreateTravel> {
                                 city!.latlng = LatLng(
                                     double.parse(res[0]["lat"]),
                                     double.parse(res[0]["lon"]));
-                                //Add loading
-                                //Pass city to next page
+
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
