@@ -225,6 +225,7 @@ class TravelsListBuilder extends StatelessWidget {
                   icon: const Icon(Icons.share),
                   color: Colors.white,
                   onPressed: () {
+                    print(snapshot.data![index].invitationCode);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -232,7 +233,8 @@ class TravelsListBuilder extends StatelessWidget {
                             context,
                           ) =>
                               SharingPage(
-                                  name: snapshot.data![index].invitationCode),
+                                  invitationCode:
+                                      snapshot.data![index].invitationCode),
                         ));
                   },
                 ),
