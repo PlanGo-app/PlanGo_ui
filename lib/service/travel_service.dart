@@ -12,13 +12,16 @@ class TravelService {
         Uri.parse(HTTP + "user/travels"),
         headers: {'Authorization': 'Bearer $token'},
       );
-    }).then((value) {
-      print(value.body);
-      List<Travel> travels = [];
-      for (dynamic travel in json.decode(value.body)["travels"]) {
-        travels.add(Travel.fromJson(travel));
+    }).then((response) {
+      if (response.statusCode == 200) {
+        List<Travel> travels = [];
+        for (dynamic travel in json.decode(response.body)["travels"]) {
+          travels.add(Travel.fromJson(travel));
+        }
+        return travels;
+      } else {
+        throw Exception("Failed to load travels");
       }
-      return travels;
     });
   }
 }
