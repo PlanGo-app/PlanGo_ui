@@ -67,6 +67,7 @@ class _TravelsListState extends State<TravelsList> {
                             return Center(child: const Text('Aucun voyage'));
                           } else {
                             // return Text(snapshot.data!);
+                            print(snapshot.data![0].id);
                             return TravelsListBuilder(
                                 dateFormat: dateFormat, snapshot: snapshot);
                           }

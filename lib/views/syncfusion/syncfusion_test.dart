@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plango_front/service/planning_event_service.dart';
+import 'package:plango_front/util/constant.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class SyncfusionTest extends StatefulWidget {
@@ -38,17 +39,18 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                             color: Colors.deepPurpleAccent,
                             child: Center(child: Text(marker.name))),
                         onTap: () {
-                          Appointment app = Appointment(
-                            notes: 2.toString(),
-                            startTime: DateTime.now(),
-                            endTime: DateTime.now().add(Duration(hours: 2)),
-                            subject: marker.name,
-                            color: Colors.blue,
-                          );
-                          print(app);
-                          widget._dataSource!.appointments!.add(app);
-                          widget._dataSource!.notifyListeners(
-                              CalendarDataSourceAction.add, <Appointment>[app]);
+                          bottomSheet();
+                          // Appointment app = Appointment(
+                          //   notes: 2.toString(),
+                          //   startTime: DateTime.now(),
+                          //   endTime: DateTime.now().add(Duration(hours: 2)),
+                          //   subject: marker.name,
+                          //   color: Colors.blue,
+                          // );
+                          // print(app);
+                          // widget._dataSource!.appointments!.add(app);
+                          // widget._dataSource!.notifyListeners(
+                          //     CalendarDataSourceAction.add, <Appointment>[app]);
                         },
                       ))
                   .toList(),
@@ -69,8 +71,68 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
     ));
   }
 
+  bottomSheet() {
+    showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+        ),
+        context: context,
+        builder: (BuildContext context) {
+          return Material(
+              elevation: 20,
+              child: SizedBox(
+                height: 300,
+                child: Column(children: [
+                  Row(
+                    children: [
+                      FloatingActionButton(
+                        onPressed: () {
+                          _selectDate(context, false);
+                        },
+                        child: const Icon(Icons.date_range),
+                        mini: true,
+                        backgroundColor: kPrimaryColor,
+                      ),
+                      TextInputDate(),
+                    ],
+                  )
+                ]),
+              ));
+        });
+  }
+
+  Future<void> _selectDate(BuildContext context, bool isEndDate) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2101));
+  }
+
+  Flexible TextInputDate() {
+    return Flexible(
+        child: TextField(
+      enabled: false,
+      decoration: const InputDecoration(
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide.none,
+        ),
+      ),
+      // controller: widget.searchController,
+      onChanged: (text) {
+        setState(() {});
+        // getPlaces(searchController.text);
+      },
+    ));
+  }
+
   void dragEnd(AppointmentDragEndDetails appointmentDragEndDetails) {
     dynamic appointment = appointmentDragEndDetails.appointment;
+    print(appointment);
     print(appointment.startTime);
     print(appointment.endTime);
     // print((appointment as planningEvent).idEvent);
