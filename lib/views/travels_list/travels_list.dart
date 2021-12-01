@@ -8,6 +8,7 @@ import 'package:plango_front/util/loading.dart';
 import 'package:plango_front/util/storage.dart';
 import 'package:plango_front/views/components/small_rounded_button.dart';
 import 'package:plango_front/views/create_travel/create_travel.dart';
+import 'package:plango_front/views/join_travel/join_page.dart';
 import 'package:plango_front/views/screen/screen.dart';
 import 'package:plango_front/views/sharing/sharing_page.dart';
 
@@ -116,7 +117,14 @@ class _TravelsListState extends State<TravelsList> {
                                       SmallRoundedButton(
                                           text: "Rejoindre",
                                           press: () {
-                                            Navigator.pop(context);
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (
+                                                    context,
+                                                  ) =>
+                                                      JoinPage(),
+                                                ));
                                           }),
                                       SmallRoundedButton(
                                           text: "Créer",

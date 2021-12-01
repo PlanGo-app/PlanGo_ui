@@ -25,6 +25,26 @@ class TravelService {
     });
   }
 
+  Future<Travel> joinTravel(code) async {
+    return Storage.getToken().then((token) async {
+      return await http.post(
+        Uri.parse(HTTP + "travel/invitation?code=$code"),
+        headers: {
+          'Authorization': 'Bearer $token',
+          "Content-Type": "application/json"
+        },
+      );
+    }).then((response) {
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode == 200) {
+        return Travel.fromJson(json.decode(response.body));
+      } else {
+        throw Exception("Failed to join travels");
+      }
+    });
+  }
+
   Future<bool> addTravel(
       String country, String city, DateTime dateStart, DateTime dateEnd) async {
     return Storage.getToken().then((token) async {

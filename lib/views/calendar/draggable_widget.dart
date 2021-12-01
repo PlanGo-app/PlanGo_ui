@@ -14,8 +14,8 @@ class DraggableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => LongPressDraggable<Marker>(
         data: marker,
-        feedback: buildImage(150.0, context),
-        child: buildImage(size, context),
+        feedback: buildImage(150.0, context, true),
+        child: buildImage(size, context, false),
         childWhenDragging: Container(
           height: size,
         ),
@@ -45,42 +45,46 @@ class DraggableWidget extends StatelessWidget {
           )),
         );
 
-  Widget buildImage(double width, BuildContext context) => marker == null
-      ? Container()
-      : onData.call(marker)
-          ? buildActivities(width)
-          : Container(
-              width: MediaQuery.of(context).size.width * .7,
-              // width: double.infinity,
-              height: 100,
-              color: Colors.blueGrey,
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 4,
-                    child: Text(
-                      marker!.name,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontSize: 20,
-                          color: Colors.white,
-                          decoration: TextDecoration.none,
-                          fontWeight: FontWeight.normal),
-                    ),
-                  ),
-                  Expanded(
-                      flex: 3,
-                      child: IconButton(
-                        iconSize: 45,
-                        icon: const Icon(
-                          Icons.access_time,
-                          color: Colors.white,
+  Widget buildImage(double width, BuildContext context, bool moved) =>
+      marker == null
+          ? Container()
+          : onData.call(marker)
+              ? buildActivities(width)
+              : Container(
+                  width: MediaQuery.of(context).size.width * .7,
+                  // width: double.infinity,
+                  height: 100,
+                  color: Colors.blueGrey,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: Text(
+                          marker!.name,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontSize: 20,
+                              color: Colors.white,
+                              decoration: TextDecoration.none,
+                              fontWeight: FontWeight.normal),
                         ),
-                        onPressed: () {},
-                      )),
-                ],
-              ),
-            );
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: moved
+                            ? Container()
+                            : IconButton(
+                                iconSize: 45,
+                                icon: const Icon(
+                                  Icons.access_time,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {},
+                              ),
+                      ),
+                    ],
+                  ),
+                );
 }

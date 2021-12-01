@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/views/calendar/calendar.dart';
 import 'package:plango_front/views/map_page/map_page.dart';
+import 'package:plango_front/views/syncfusion/syncfusion_test.dart';
 
 class Screen extends StatefulWidget {
   final String city;
@@ -25,10 +26,12 @@ class _ScreenState extends State<Screen> {
   int _currentIndex = 0;
   late List _children;
   @override
+  // ignore: must_call_super
   void initState() {
     _children = [
       MapPage(country: widget.country, city: widget.city),
       Calendar(dateBegin: widget.date, dateEnd: widget.endDate),
+      SyncfusionTest(),
     ];
   }
 
@@ -52,6 +55,11 @@ class _ScreenState extends State<Screen> {
             BottomNavyBarItem(
                 icon: const Icon(Icons.calendar_today),
                 title: const Text('Calendrier'),
+                activeColor: kPrimaryLightColor,
+                inactiveColor: kPrimaryColor),
+            BottomNavyBarItem(
+                icon: const Icon(Icons.calendar_view_day),
+                title: const Text('Syncfusion'),
                 activeColor: kPrimaryLightColor,
                 inactiveColor: kPrimaryColor),
           ],
