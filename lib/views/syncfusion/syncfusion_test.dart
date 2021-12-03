@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plango_front/service/planning_event_service.dart';
 import 'package:plango_front/util/constant.dart';
+import 'package:plango_front/views/syncfusion/time_picker_widget.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class SyncfusionTest extends StatefulWidget {
@@ -18,6 +19,7 @@ class SyncfusionTest extends StatefulWidget {
 
 class _SyncfusionTestState extends State<SyncfusionTest> {
   late DateTime selectedDate;
+  late TimeOfDay beginHour;
   TextEditingController searchController = TextEditingController();
 
   @override
@@ -82,10 +84,13 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                                 ),
                                                 Expanded(
                                                   flex: 4,
-                                                  child: Container(
-                                                      height: 100,
-                                                      width: 100,
-                                                      color: Colors.red),
+                                                  child: TimePickerWidget(
+                                                    onDateTimeChanged:
+                                                        (newDateTime) {
+                                                      beginHour = newDateTime;
+                                                      print(beginHour);
+                                                    },
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -117,7 +122,6 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
               allowDragAndDrop: true,
               onDragEnd: dragEnd,
               initialDisplayDate: selectedDate,
-              viewNavigationMode: ViewNavigationMode.snap,
             ),
           ),
         ],
