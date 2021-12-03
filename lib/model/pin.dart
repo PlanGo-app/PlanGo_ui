@@ -1,10 +1,8 @@
-import 'package:plango_front/model/travel.dart';
-
 class Pin {
   String name;
   double latitude;
   double longitude;
-  Travel travel; // maybe never used on the front
+  int travel;
 
   Pin(
       {required this.name,
@@ -17,6 +15,6 @@ class Pin {
         name: parsedJson["name"],
         latitude: parsedJson["latitude"],
         longitude: parsedJson["longitude"],
-        travel: Travel.fromJson(parsedJson["travel"]));
+        travel: parsedJson["travel"]);
   }
 }
