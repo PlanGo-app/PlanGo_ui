@@ -31,7 +31,7 @@ class _ScreenState extends State<Screen> {
     _children = [
       MapPage(country: widget.country, city: widget.city),
       Calendar(dateBegin: widget.date, dateEnd: widget.endDate),
-      SyncfusionTest(),
+      SyncfusionTest(dateBegin: widget.date, dateEnd: widget.endDate),
     ];
   }
 
