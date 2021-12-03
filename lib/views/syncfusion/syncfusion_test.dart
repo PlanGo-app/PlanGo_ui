@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plango_front/service/planning_event_service.dart';
-import 'package:plango_front/util/constant.dart';
+import 'package:plango_front/views/components/rounded_button.dart';
+import 'package:plango_front/views/syncfusion/date_picker_widget.dart';
 import 'package:plango_front/views/syncfusion/time_picker_widget.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -18,9 +19,9 @@ class SyncfusionTest extends StatefulWidget {
 }
 
 class _SyncfusionTestState extends State<SyncfusionTest> {
-  late DateTime selectedDate;
-  late TimeOfDay beginHour;
-  late TimeOfDay endHour;
+  DateTime? selectedDate;
+  TimeOfDay? beginHour;
+  TimeOfDay? endHour;
   TextEditingController searchController = TextEditingController();
 
   @override
@@ -65,28 +66,25 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                       child: Column(
                                         children: [
                                           Expanded(
-                                              flex: 5,
+                                              flex: 3,
                                               child: Row(children: [
                                                 Expanded(
-                                                  flex: 10,
-                                                  child: Row(children: [
-                                                    FloatingActionButton(
-                                                      onPressed: () {
-                                                        _selectDate(context);
+                                                    flex: 10,
+                                                    child: DatePickerWidget(
+                                                      text:
+                                                          "Date de l'activité",
+                                                      beginDate:
+                                                          widget.dateBegin,
+                                                      endDate: widget.dateEnd,
+                                                      onDateTimeChanged:
+                                                          (newDate) {
+                                                        selectedDate = newDate;
+                                                        print(newDate);
                                                       },
-                                                      child: const Icon(
-                                                          Icons.date_range),
-                                                      mini: true,
-                                                      backgroundColor:
-                                                          kPrimaryColor,
-                                                    ),
-                                                    TextInputDate(
-                                                        searchController),
-                                                  ]),
-                                                )
+                                                    ))
                                               ])),
                                           Expanded(
-                                            flex: 5,
+                                            flex: 3,
                                             child: Row(
                                               children: [
                                                 Expanded(
@@ -104,6 +102,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                                   flex: 5,
                                                   child: TimePickerWidget(
                                                     text: "Heure de fin",
+                                                    beginTime: beginHour,
                                                     onDateTimeChanged:
                                                         (newDateTime) {
                                                       endHour = newDateTime;
@@ -114,6 +113,24 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                               ],
                                             ),
                                           ),
+                                          Expanded(
+                                              flex: 3,
+                                              child: Row(children: [
+                                                Expanded(
+                                                    flex: 5,
+                                                    child: RoundedButton(
+                                                        text: "Ajouter",
+                                                        press: () {
+                                                          if (selectedDate !=
+                                                                  null &&
+                                                              beginHour !=
+                                                                  null &&
+                                                              endHour != null) {
+                                                            createPin(marker,
+                                                                context);
+                                                          }
+                                                        }))
+                                              ])),
                                         ],
                                       ),
                                     ));
@@ -150,40 +167,29 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
     ));
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: widget.dateBegin,
-        firstDate: widget.dateBegin,
-        lastDate: widget.dateEnd);
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-        searchController.text =
-            '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}';
-        print(selectedDate);
-      });
-    }
-  }
-
-  Flexible TextInputDate(searchController) {
-    return Flexible(
-        child: TextField(
-      enabled: false,
-      decoration: const InputDecoration(
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide.none,
-        ),
-      ),
-      controller: searchController,
-      onChanged: (text) {
-        setState(() {});
-        // getPlaces(searchController.text);
-      },
-    ));
+  void createPin(marker, context) {
+    DateTime startTime = DateTime(selectedDate!.year, selectedDate!.month,
+        selectedDate!.day, beginHour!.hour, beginHour!.minute);
+    DateTime endTime = DateTime(selectedDate!.year, selectedDate!.month,
+        selectedDate!.day, endHour!.hour, endHour!.minute);
+    Appointment app = Appointment(
+      notes: 2.toString(),
+      startTime: startTime,
+      endTime: endTime,
+      subject: marker.name,
+      color: Colors.purple,
+    );
+    print(app);
+    widget._dataSource!.appointments!.add(app);
+    widget._dataSource!
+        .notifyListeners(CalendarDataSourceAction.add, <Appointment>[app]);
+    setState(() {
+      widget.all.remove(marker);
+      selectedDate = null;
+      beginHour = null;
+      endHour = null;
+    });
+    Navigator.of(context).pop();
   }
 }
 
