@@ -20,6 +20,7 @@ class SyncfusionTest extends StatefulWidget {
 class _SyncfusionTestState extends State<SyncfusionTest> {
   late DateTime selectedDate;
   late TimeOfDay beginHour;
+  late TimeOfDay endHour;
   TextEditingController searchController = TextEditingController();
 
   @override
@@ -60,13 +61,14 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                 return Material(
                                     elevation: 20,
                                     child: SizedBox(
-                                        height: 300,
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              children: [
+                                      height: 300,
+                                      child: Column(
+                                        children: [
+                                          Expanded(
+                                              flex: 5,
+                                              child: Row(children: [
                                                 Expanded(
-                                                  flex: 6,
+                                                  flex: 10,
                                                   child: Row(children: [
                                                     FloatingActionButton(
                                                       onPressed: () {
@@ -81,10 +83,16 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                                     TextInputDate(
                                                         searchController),
                                                   ]),
-                                                ),
+                                                )
+                                              ])),
+                                          Expanded(
+                                            flex: 5,
+                                            child: Row(
+                                              children: [
                                                 Expanded(
-                                                  flex: 4,
+                                                  flex: 5,
                                                   child: TimePickerWidget(
+                                                    text: "Heure de debut",
                                                     onDateTimeChanged:
                                                         (newDateTime) {
                                                       beginHour = newDateTime;
@@ -92,10 +100,23 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                                     },
                                                   ),
                                                 ),
+                                                Expanded(
+                                                  flex: 5,
+                                                  child: TimePickerWidget(
+                                                    text: "Heure de fin",
+                                                    onDateTimeChanged:
+                                                        (newDateTime) {
+                                                      endHour = newDateTime;
+                                                      print(endHour);
+                                                    },
+                                                  ),
+                                                ),
                                               ],
                                             ),
-                                          ],
-                                        )));
+                                          ),
+                                        ],
+                                      ),
+                                    ));
                               });
                           // Appointment app = Appointment(
                           //   notes: 2.toString(),
