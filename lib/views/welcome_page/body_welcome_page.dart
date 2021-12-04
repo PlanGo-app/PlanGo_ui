@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plango_front/service/account_service.dart';
 import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/util/storage.dart';
+import 'package:plango_front/views/components/error_text.dart';
 import 'package:plango_front/views/components/label.dart';
 import 'package:plango_front/views/components/rounded_button.dart';
 import 'package:plango_front/views/create_account/create_account.dart';
@@ -122,7 +124,9 @@ class _FormLoginState extends State<FormLogin> {
               }
             },
           ),
-          error ? Text("Error") : Container(),
+          error
+              ? ErrorText(title: "Login ou mot de passe inexistant")
+              : Container(),
         ],
       ),
     );
