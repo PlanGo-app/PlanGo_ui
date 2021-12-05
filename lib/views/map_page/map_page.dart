@@ -30,9 +30,6 @@ class MapPage extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    print("aaaaaaaaaaaaaa" + country);
-    print("aaaaaaaaaaaaaa" + city);
-
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -94,7 +91,6 @@ class _MapViewBodyState extends State<MapViewBody> {
               .move(LatLng(state.place!.lat, state.place!.lon), 16.0);
         }
       }
-      print(state);
 
       return SlidingUpPanel(
         controller: panelController,
@@ -123,8 +119,6 @@ class _MapViewBodyState extends State<MapViewBody> {
     if (place == null) {
       panelController.hide();
       return;
-    } else if (place.osmId == 0) {
-      print("guig");
     } else {
       return FutureBuilder(
           future: getInfoPlace(place.osmType, place.osmId),
@@ -134,8 +128,8 @@ class _MapViewBodyState extends State<MapViewBody> {
                 return Align(
                     alignment: Alignment.topCenter,
                     child: Container(
-                        padding: EdgeInsets.only(top: 30),
-                        child: CircularProgressIndicator()));
+                        padding: const EdgeInsets.only(top: 30),
+                        child: const CircularProgressIndicator()));
               default:
                 if (snapshot.hasError) {
                   panelController.hide();
@@ -160,8 +154,8 @@ class _MapViewBodyState extends State<MapViewBody> {
                               Expanded(
                                   flex: 9,
                                   child: Container(
-                                      padding:
-                                          EdgeInsets.only(left: 15, top: 15),
+                                      padding: const EdgeInsets.only(
+                                          left: 15, top: 15),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -200,8 +194,6 @@ class _MapViewBodyState extends State<MapViewBody> {
                                                     color: Colors.red,
                                                   ),
                                             onPressed: () {
-                                              print(
-                                                  "AAAAAAAAAAAAAAAAAAAAAaa $save");
                                               if (save) {
                                                 map.addMarker(point, true);
                                               } else {

@@ -8,6 +8,7 @@ import 'package:plango_front/views/nav_bar/nav_bar_bloc/nav_bar_bloc.dart';
 import 'package:provider/src/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+// ignore: must_be_immutable
 class MapView extends StatefulWidget {
   int travelId;
   PanelController panelController;
@@ -42,10 +43,7 @@ class _MapState extends State<MapView> {
             size: 35.0,
           ),
         );
-        print("DATA LOAD");
         if (save) {
-          // appel nominatim pour name
-          print("SAVE");
           CountryCityService()
               .revserseSearch(point.latitude, point.longitude)
               .then((value) => {
@@ -65,7 +63,6 @@ class _MapState extends State<MapView> {
       };
 
       widget.deleteMarker = (LatLng point, travelId) {
-        print("DELETE $point");
         setState(() {
           widget.panelController.hide();
           widget.markers.removeWhere((marker) => marker.point == point);
@@ -75,7 +72,6 @@ class _MapState extends State<MapView> {
     });
 
     PinService().getPins(widget.travelId).then((value) {
-      print("VALUE AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ${value}");
       for (Pin p in value) {
         widget.addMarker(LatLng(p.latitude, p.longitude), false);
       }
@@ -89,16 +85,13 @@ class _MapState extends State<MapView> {
       options: MapOptions(
           onLongPress: (_, latLng) {
             try {
-              Marker? existingMarker = null;
+              Marker? existingMarker;
               for (Marker mk in widget.markers) {
                 if (mk.point.latitude.toStringAsFixed(3) ==
                         latLng.latitude.toStringAsFixed(3) &&
                     mk.point.longitude.toStringAsFixed(3) ==
                         latLng.longitude.toStringAsFixed(3)) {
                   existingMarker = mk;
-                  print(
-                      "Existing POINT ${LatLng(mk.point.latitude, mk.point.longitude)}");
-
                   break;
                 }
               }
@@ -114,9 +107,8 @@ class _MapState extends State<MapView> {
               });
               if (existingMarker == null) {
                 widget.addMarker(latLng, true);
-                print(
-                    "SAVE POINT ${LatLng(latLng.latitude, latLng.longitude)}");
               }
+              // ignore: empty_catches
             } catch (e) {}
           },
           center: LatLng(50.62925, 3.057256),
