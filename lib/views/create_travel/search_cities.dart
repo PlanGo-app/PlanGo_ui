@@ -115,6 +115,9 @@ class _TextSearchCityState extends State<TextSearchCity> {
     try {
       var result = await http.read(Uri.parse(address + text));
       var builder = result.substring(1, result.length - 1).split(',');
+      if (result.contains("error")) {
+        return [];
+      }
       for (var elm in builder) {
         cities.add(
             City(name: elm.substring(1, elm.length - 1), latlng: LatLng(0, 0)));
