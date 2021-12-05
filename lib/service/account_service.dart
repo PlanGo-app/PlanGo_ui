@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:plango_front/util/constant.dart';
+import 'package:plango_front/util/storage.dart';
 
 class AccountService {
   Future<http.Response> CreateUser(username, email, password) async {
@@ -14,6 +15,18 @@ class AccountService {
         'password': password,
       }),
     );
+  }
+
+  Future<http.Response> GetUser() async {
+    return Storage.getToken().then((token) async {
+      return await http.get(
+        Uri.parse(HTTP + "user"),
+        headers: {
+          'Authorization': 'Bearer $token',
+          "Content-Type": "application/json"
+        },
+      );
+    });
   }
 
   Future<http.Response> Login(pseudo, password) async {

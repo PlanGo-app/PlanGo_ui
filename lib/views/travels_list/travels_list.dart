@@ -23,8 +23,7 @@ class TravelsList extends StatefulWidget {
 class _TravelsListState extends State<TravelsList> {
   @override
   Widget build(BuildContext context) {
-    TravelService().getTravels();
-
+    // Storage.deleteToken();
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
     return Scaffold(
       body: Column(

@@ -10,6 +10,8 @@ class Storage {
   static Future setToken(dynamic token) async => await _storage.write(
       key: _keyToken, value: json.decode(token.body)["token"]);
 
+  static Future deleteToken() async => await _storage.delete(key: _keyToken);
+
   static Future<String?> getToken() async =>
       await _storage.read(key: _keyToken);
 }

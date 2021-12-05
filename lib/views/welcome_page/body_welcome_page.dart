@@ -48,6 +48,19 @@ class _FormLoginState extends State<FormLogin> {
 
   @override
   Widget build(BuildContext context) {
+    AccountService().GetUser().then((value) => {
+          if (value.statusCode == 200)
+            {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (
+                    context,
+                  ) =>
+                          TravelsList()))
+            }
+        });
+
     return widget._loading
         ? const Loading()
         : Form(
