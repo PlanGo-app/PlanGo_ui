@@ -10,12 +10,14 @@ class Screen extends StatefulWidget {
   final String country;
   final DateTime date;
   final DateTime endDate;
+  final int travelId;
   const Screen(
       {Key? key,
       required this.city,
       required this.country,
       required this.date,
-      required this.endDate})
+      required this.endDate,
+      required this.travelId})
       : super(key: key);
 
   @override
@@ -29,7 +31,11 @@ class _ScreenState extends State<Screen> {
   // ignore: must_call_super
   void initState() {
     _children = [
-      MapPage(country: widget.country, city: widget.city),
+      MapPage(
+        country: widget.country,
+        city: widget.city,
+        travelId: widget.travelId,
+      ),
       Calendar(dateBegin: widget.date, dateEnd: widget.endDate),
       SyncfusionTest(dateBegin: widget.date, dateEnd: widget.endDate),
     ];

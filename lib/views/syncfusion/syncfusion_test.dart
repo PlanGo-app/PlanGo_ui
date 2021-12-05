@@ -135,17 +135,6 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                       ),
                                     ));
                               });
-                          // Appointment app = Appointment(
-                          //   notes: 2.toString(),
-                          //   startTime: DateTime.now(),
-                          //   endTime: DateTime.now().add(Duration(hours: 2)),
-                          //   subject: marker.name,
-                          //   color: Colors.purple,
-                          // );
-                          // print(app);
-                          // widget._dataSource!.appointments!.add(app);
-                          // widget._dataSource!.notifyListeners(
-                          //     CalendarDataSourceAction.add, <Appointment>[app]);
                         },
                       ))
                   .toList(),
@@ -160,6 +149,9 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
               allowDragAndDrop: true,
               onDragEnd: dragEnd,
               initialDisplayDate: selectedDate,
+              timeSlotViewSettings:
+                  TimeSlotViewSettings(timeIntervalHeight: 60),
+              showWeekNumber: true,
             ),
           ),
         ],

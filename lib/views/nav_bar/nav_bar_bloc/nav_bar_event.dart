@@ -21,5 +21,8 @@ class NavBarEventList extends NavBarEvent {
 // ignore: must_be_immutable
 class NavBarEventPlaceFound extends NavBarEvent {
   Place place;
-  NavBarEventPlaceFound({required this.place});
+  bool save;
+  LatLng point;
+  NavBarEventPlaceFound(
+      {required this.place, required this.save, required this.point});
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:meta/meta.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 import 'package:plango_front/views/nav_bar/nav_bar_bloc/nav_bar_bloc.dart';
@@ -16,7 +17,8 @@ class MapPageBloc extends Bloc<MapPageEvent, MapPageState> {
   MapPageBloc({required this.nvb}) : super(MapPageInitialState(null)) {
     navBarSubscription = nvb.stream.listen((state) {
       if (state is NavBarPlaceFound) {
-        add(MapPageEventPanel(place: state.place));
+        add(MapPageEventPanel(
+            place: state.place, point: state.point, save: state.save));
       }
     });
     on<MapPageEventInitial>(_onInitial);
@@ -30,7 +32,7 @@ class MapPageBloc extends Bloc<MapPageEvent, MapPageState> {
 
   FutureOr<void> _onPanel(MapPageEventPanel event, Emitter<MapPageState> emit) {
     print("ON PANEL");
-    emit(MapPagePanelState(event.place));
+    emit(MapPagePanelState(event.place, event.point, event.save));
   }
 
   @override

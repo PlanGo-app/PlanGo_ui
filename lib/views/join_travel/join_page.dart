@@ -83,6 +83,7 @@ class JoinPage extends StatelessWidget {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => Screen(
+                                                travelId: value.id,
                                                 city: value.city,
                                                 country: value.country,
                                                 date: value.date_start,

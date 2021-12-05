@@ -55,12 +55,9 @@ class _CreateTravelState extends State<CreateTravel> {
           if (!isEndDate) {
             selectedDate = picked;
             datePicked = true;
-            print(selectedDate);
           } else {
             selectedEndDate = picked;
             dateEndPicked = true;
-            print("aaaaaaaaaaaaaa ");
-            print(selectedEndDate);
           }
         });
       }
@@ -207,7 +204,7 @@ class _CreateTravelState extends State<CreateTravel> {
                                     .addTravel(country!.name, city!.name,
                                         selectedDate, selectedEndDate)
                                     .then((value) => {
-                                          value
+                                          value != null // ERROR
                                               ? Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
@@ -215,6 +212,7 @@ class _CreateTravelState extends State<CreateTravel> {
                                                       context,
                                                     ) =>
                                                         Screen(
+                                                      travelId: value.id,
                                                       city: city!.name,
                                                       country: country!.name,
                                                       date: selectedDate,

@@ -45,7 +45,7 @@ class TravelService {
     });
   }
 
-  Future<bool> addTravel(
+  Future<Travel?> addTravel(
       String country, String city, DateTime dateStart, DateTime dateEnd) async {
     return Storage.getToken().then((token) async {
       return await http.post(
@@ -62,7 +62,11 @@ class TravelService {
         },
       );
     }).then((response) {
-      return response.statusCode == 201;
+      if (response.statusCode == 201) {
+        return Travel.fromJson(jsonDecode(response.body));
+      } else {
+        return null;
+      }
     });
   }
 }

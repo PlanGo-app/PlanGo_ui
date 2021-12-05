@@ -1,42 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:plango_front/model/pin.dart';
+import 'package:plango_front/service/country_city_service.dart';
+import 'package:plango_front/service/pin_service.dart';
+import 'package:plango_front/views/nav_bar/nav_bar_bloc/nav_bar_bloc.dart';
+import 'package:provider/src/provider.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MapView extends StatefulWidget {
-  MapView({Key? key}) : super(key: key);
+  int travelId;
+  PanelController panelController;
+  MapView({Key? key, required this.travelId, required this.panelController})
+      : super(key: key);
+
   MapController mapController = MapController();
   bool isReady = false;
   List<Marker> markers = [];
   // ignore: prefer_function_declarations_over_variables
   Function addMarker = () {};
+  // ignore: prefer_function_declarations_over_variables
+  Function deleteMarker = () {};
 
   @override
   _MapState createState() => _MapState();
 }
 
 class _MapState extends State<MapView> {
-  List<Marker> markers = [];
-
   @override
   void initState() {
     super.initState();
-    widget.mapController.onReady.then((value) => widget.isReady = true);
-    widget.addMarker = (LatLng point) {
-      Marker m = Marker(
-        width: 45.0,
-        height: 45.0,
-        point: point,
-        builder: (ctx) => const Icon(
-          Icons.location_on,
-          color: Colors.red,
-          size: 35.0,
-        ),
-      );
-      print(point);
-      setState(() {
-        markers.add(m);
-      });
-    };
+    widget.mapController.onReady.then((value) {
+      widget.addMarker = (LatLng point, bool save) {
+        Marker m = Marker(
+          width: 45.0,
+          height: 45.0,
+          point: point,
+          builder: (ctx) => const Icon(
+            Icons.location_on,
+            color: Colors.red,
+            size: 35.0,
+          ),
+        );
+        print("DATA LOAD");
+        if (save) {
+          // appel nominatim pour name
+          print("SAVE");
+          CountryCityService()
+              .revserseSearch(point.latitude, point.longitude)
+              .then((value) => {
+                    PinService().CreatePin(
+                        value.displayName ??
+                            "${point.latitude} - ${point.longitude}",
+                        point.longitude,
+                        point.latitude,
+                        widget.travelId)
+                  });
+        }
+        widget.isReady = true;
+        setState(() {
+          widget.panelController.show();
+          widget.markers.add(m);
+        });
+      };
+
+      widget.deleteMarker = (LatLng point, travelId) {
+        print("DELETE $point");
+        setState(() {
+          widget.panelController.hide();
+          widget.markers.removeWhere((marker) => marker.point == point);
+          PinService().DeletePin(point.longitude, point.latitude, travelId);
+        });
+      };
+    });
+
+    PinService().getPins(widget.travelId).then((value) {
+      print("VALUE AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ${value}");
+      for (Pin p in value) {
+        widget.addMarker(LatLng(p.latitude, p.longitude), false);
+      }
+    });
   }
 
   @override
@@ -45,10 +88,19 @@ class _MapState extends State<MapView> {
       mapController: widget.mapController,
       options: MapOptions(
           onLongPress: (_, latLng) {
-            widget.addMarker(latLng);
+            try {
+              CountryCityService()
+                  .revserseSearch(latLng.latitude, latLng.longitude)
+                  .then((value) {
+                context.read<NavBarBloc>().add(NavBarEventPlaceFound(
+                    place: value, point: latLng, save: false));
+                widget.addMarker(latLng, true);
+                print("SAVED POINT ${LatLng(value.lat, value.lon)}");
+              });
+            } catch (e) {}
           },
-          // center: LatLng(50.62925, 3.057256),
-          minZoom: 5.0,
+          center: LatLng(50.62925, 3.057256),
+          minZoom: 1.0,
           maxZoom: 20.0,
           zoom: 16.0),
       layers: [
@@ -56,7 +108,7 @@ class _MapState extends State<MapView> {
           urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
           subdomains: ['a', 'b', 'c'],
         ),
-        MarkerLayerOptions(markers: markers),
+        MarkerLayerOptions(markers: widget.markers),
       ],
     );
   }

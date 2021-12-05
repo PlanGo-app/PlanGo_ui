@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 
 part 'nav_bar_event.dart';
@@ -31,6 +32,6 @@ class NavBarBloc extends Bloc<NavBarEvent, NavBarState> {
   FutureOr<void> _onPlaceFound(
       NavBarEventPlaceFound event, Emitter<NavBarState> emit) {
     emit(NavBarInitial());
-    emit(NavBarPlaceFound(event.place));
+    emit(NavBarPlaceFound(event.place, event.save, event.point));
   }
 }

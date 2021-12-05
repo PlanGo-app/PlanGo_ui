@@ -21,4 +21,19 @@ class CountryCityService {
         // country: country,
         );
   }
+
+  Future<Place> revserseSearch(double latitude, double longitude) {
+    return Nominatim.reverseSearch(lat: latitude, lon: longitude, zoom: 18);
+  }
+
+  Future<dynamic> getParentInfo(parentId) async {
+    var result = await http.get(Uri.parse(
+        'https://nominatim.openstreetmap.org/details?place_id=$parentId&format=json'));
+    var res = json.decode(result.body);
+    try {
+      return res["names"]["name:en"];
+    } catch (_) {
+      return res["localname"];
+    }
+  }
 }

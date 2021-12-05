@@ -14,5 +14,7 @@ class NavBarList extends NavBarState {}
 
 class NavBarPlaceFound extends NavBarState {
   Place place;
-  NavBarPlaceFound(this.place);
+  bool save;
+  LatLng point;
+  NavBarPlaceFound(this.place, this.save, this.point);
 }

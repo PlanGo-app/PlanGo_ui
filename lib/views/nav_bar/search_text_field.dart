@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 import 'package:plango_front/service/country_city_service.dart';
 import 'package:provider/src/provider.dart';
@@ -58,7 +59,11 @@ class _SearchTextFieldState extends State<SearchTextField> {
                                     onTap: () {
                                       context.read<NavBarBloc>().add(
                                           NavBarEventPlaceFound(
-                                              place: snapshot.data![index]));
+                                              place: snapshot.data![index],
+                                              point: LatLng(
+                                                  snapshot.data![index].lat,
+                                                  snapshot.data![index].lon),
+                                              save: true));
                                       searchController.text = "";
                                       FocusScope.of(context)
                                           .requestFocus(FocusNode());

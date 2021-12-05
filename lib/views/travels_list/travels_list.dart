@@ -5,7 +5,6 @@ import 'package:plango_front/model/travel.dart';
 import 'package:plango_front/service/travel_service.dart';
 import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/util/loading.dart';
-import 'package:plango_front/util/storage.dart';
 import 'package:plango_front/views/components/small_rounded_button.dart';
 import 'package:plango_front/views/create_travel/create_travel.dart';
 import 'package:plango_front/views/join_travel/join_page.dart';
@@ -22,8 +21,6 @@ class TravelsList extends StatefulWidget {
 class _TravelsListState extends State<TravelsList> {
   @override
   Widget build(BuildContext context) {
-    Storage.getToken()
-        .then((value) => print("aaaaaaaaaaaaaaaaaaa" + value.toString()));
     TravelService().getTravels();
 
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
@@ -64,7 +61,7 @@ class _TravelsListState extends State<TravelsList> {
                               ),
                             );
                           } else if (snapshot.data!.isEmpty) {
-                            return Center(child: const Text('Aucun voyage'));
+                            return const Center(child: Text('Aucun voyage'));
                           } else {
                             // return Text(snapshot.data!);
                             print(snapshot.data![0].id);
@@ -224,6 +221,7 @@ class TravelsListBuilder extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => Screen(
+                            travelId: snapshot.data![index].id,
                             city: snapshot.data![index].city,
                             country: snapshot.data![index].country,
                             date: snapshot.data![index].date_start,

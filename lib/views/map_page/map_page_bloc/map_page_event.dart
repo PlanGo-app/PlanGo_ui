@@ -15,5 +15,8 @@ class MapPageEventInitial extends MapPageEvent {
 // ignore: must_be_immutable
 class MapPageEventPanel extends MapPageEvent {
   Place place;
-  MapPageEventPanel({required this.place});
+  bool save;
+  LatLng point;
+  MapPageEventPanel(
+      {required this.place, required this.point, required this.save});
 }

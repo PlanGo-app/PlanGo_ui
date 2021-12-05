@@ -21,7 +21,12 @@ import 'map_page_bloc/map_page_bloc.dart';
 class MapPage extends StatelessWidget {
   final String country;
   final String city;
-  const MapPage({Key? key, required this.country, required this.city})
+  final int travelId;
+  const MapPage(
+      {Key? key,
+      required this.country,
+      required this.city,
+      required this.travelId})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -38,7 +43,11 @@ class MapPage extends StatelessWidget {
               MapPageBloc(nvb: context.read<NavBarBloc>()),
         ),
       ],
-      child: MapViewBody(country: country, city: city),
+      child: MapViewBody(
+        country: country,
+        city: city,
+        travelId: travelId,
+      ),
     );
   }
 }
@@ -46,7 +55,13 @@ class MapPage extends StatelessWidget {
 class MapViewBody extends StatefulWidget {
   final String country;
   final String city;
-  const MapViewBody({Key? key, required this.country, required this.city})
+  final int travelId;
+
+  const MapViewBody(
+      {Key? key,
+      required this.country,
+      required this.city,
+      required this.travelId})
       : super(key: key);
 
   @override
@@ -55,16 +70,17 @@ class MapViewBody extends StatefulWidget {
 
 class _MapViewBodyState extends State<MapViewBody> {
   late PanelController panelController;
-  MapView map = MapView();
+  late MapView map;
 
   @override
   void initState() {
     super.initState();
+    panelController = PanelController();
+    map = MapView(travelId: widget.travelId, panelController: panelController);
     CountryCityService().getLatLng(widget.city, widget.country).then((value) =>
         {
           map.mapController.move(LatLng(value.latitude, value.longitude), 16.0)
         });
-    panelController = PanelController();
   }
 
   @override
@@ -78,6 +94,7 @@ class _MapViewBodyState extends State<MapViewBody> {
               .move(LatLng(state.place!.lat, state.place!.lon), 16.0);
         }
       }
+      print(state);
 
       return SlidingUpPanel(
         controller: panelController,
@@ -86,7 +103,8 @@ class _MapViewBodyState extends State<MapViewBody> {
           topRight: Radius.circular(18.0),
         ),
         maxHeight: 300,
-        panelBuilder: (sc) => _panel(sc, context, state.place),
+        panelBuilder: (sc) =>
+            _panel(sc, context, state.place, state.point, state.save),
         backdropEnabled: true,
         body: SafeArea(
           child: Stack(
@@ -100,122 +118,135 @@ class _MapViewBodyState extends State<MapViewBody> {
     });
   }
 
-  _panel(
-    ScrollController sc,
-    BuildContext context,
-    Place? place,
-  ) {
+  _panel(ScrollController sc, BuildContext context, Place? place, LatLng point,
+      bool save) {
     if (place == null) {
       panelController.hide();
       return;
-    }
-    return FutureBuilder(
-        future: getInfoPlace(place.osmType, place.osmId),
-        builder: (BuildContext context, AsyncSnapshot<PlaceInfo> snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              return Align(
-                  alignment: Alignment.topCenter,
-                  child: Container(
-                      padding: EdgeInsets.only(top: 30),
-                      child: CircularProgressIndicator()));
-            default:
-              if (snapshot.hasError) {
-                panelController.hide();
-                return Container();
-              } else if (snapshot.data == null) {
-                return const Text('Pas d\'info sur ce lieu');
-              } else {
-                return MediaQuery.removePadding(
-                  context: context,
-                  removeTop: true,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(18.0)),
-                    ),
-                    child: ListView(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                                flex: 9,
-                                child: Container(
-                                    padding: EdgeInsets.only(left: 15, top: 15),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(snapshot.data!.name,
-                                            style: GoogleFonts.montserrat(
-                                                fontSize: 25)),
-                                        Text(snapshot.data!.street,
-                                            style: GoogleFonts.montserrat(
-                                                fontSize: 15)),
-                                        Text(snapshot.data!.city,
-                                            style: GoogleFonts.montserrat(
-                                                fontSize: 15,
-                                                color: Colors.black)),
-                                      ],
-                                    ))),
-                            Expanded(
-                              flex: 1,
-                              child: Column(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: IconButton(
-                                        icon: const Icon(Icons.close),
-                                        onPressed: () {
-                                          panelController.hide();
-                                        }),
-                                  ),
-                                  Align(
-                                      alignment: Alignment.bottomRight,
+    } else if (place.osmId == 0) {
+      print("guig");
+    } else {
+      return FutureBuilder(
+          future: getInfoPlace(place.osmType, place.osmId),
+          builder: (BuildContext context, AsyncSnapshot<PlaceInfo> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                        padding: EdgeInsets.only(top: 30),
+                        child: CircularProgressIndicator()));
+              default:
+                if (snapshot.hasError) {
+                  panelController.hide();
+                  return Container();
+                } else if (snapshot.data == null) {
+                  return const Text('Pas d\'info sur ce lieu');
+                } else {
+                  return MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(18.0)),
+                      ),
+                      child: ListView(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                  flex: 9,
+                                  child: Container(
+                                      padding:
+                                          EdgeInsets.only(left: 15, top: 15),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(snapshot.data!.name,
+                                              style: GoogleFonts.montserrat(
+                                                  fontSize: 25)),
+                                          Text(snapshot.data!.street,
+                                              style: GoogleFonts.montserrat(
+                                                  fontSize: 15)),
+                                          Text(snapshot.data!.city,
+                                              style: GoogleFonts.montserrat(
+                                                  fontSize: 15,
+                                                  color: Colors.black)),
+                                        ],
+                                      ))),
+                              Expanded(
+                                flex: 1,
+                                child: Column(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.topRight,
                                       child: IconButton(
-                                        icon: const Icon(Icons.add),
-                                        onPressed: () =>
-                                            map.addMarker(snapshot.data!.point),
-                                      )),
-                                ],
+                                          icon: const Icon(Icons.close),
+                                          onPressed: () {
+                                            panelController.hide();
+                                          }),
+                                    ),
+                                    Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: IconButton(
+                                            icon: save
+                                                ? const Icon(Icons.add)
+                                                : const Icon(
+                                                    Icons.delete,
+                                                    color: Colors.red,
+                                                  ),
+                                            onPressed: () {
+                                              print(
+                                                  "AAAAAAAAAAAAAAAAAAAAAaa $save");
+                                              if (save) {
+                                                map.addMarker(point, true);
+                                              } else {
+                                                map.deleteMarker(
+                                                    point, widget.travelId);
+                                              }
+                                            })),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        ListTile(
-                            title: LinkText(
-                          "Website : " +
-                              (snapshot.data!.website.isNotEmpty
-                                  ? snapshot.data!.website
-                                  : "-"),
-                          onLinkTap: (url) async {
-                            if (await canLaunch(url)) {
-                              await launch(
-                                url,
-                                forceSafariVC: false,
-                              );
-                            }
-                          },
-                        )),
-                        ListTile(
-                            title: Text("Prix : " +
-                                (snapshot.data!.price.isNotEmpty
-                                    ? snapshot.data!.price
-                                    : "-"))),
-                        ListTile(
-                            title: Text("Heure d'ouverture : " +
-                                (snapshot.data!.openingHours.isNotEmpty
-                                    ? snapshot.data!.openingHours
-                                    : "-"))),
-                      ],
+                            ],
+                          ),
+                          ListTile(
+                              title: LinkText(
+                            "Website : " +
+                                (snapshot.data!.website.isNotEmpty
+                                    ? snapshot.data!.website
+                                    : "-"),
+                            onLinkTap: (url) async {
+                              if (await canLaunch(url)) {
+                                await launch(
+                                  url,
+                                  forceSafariVC: false,
+                                );
+                              }
+                            },
+                          )),
+                          ListTile(
+                              title: Text("Prix : " +
+                                  (snapshot.data!.price.isNotEmpty
+                                      ? snapshot.data!.price
+                                      : "-"))),
+                          ListTile(
+                              title: Text("Heure d'ouverture : " +
+                                  (snapshot.data!.openingHours.isNotEmpty
+                                      ? snapshot.data!.openingHours
+                                      : "-"))),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }
-          }
-        });
+                  );
+                }
+            }
+          });
+    }
   }
 
   Future<PlaceInfo> getInfoPlace(osmType, osmId) async {

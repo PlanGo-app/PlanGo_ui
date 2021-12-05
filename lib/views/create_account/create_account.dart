@@ -89,8 +89,9 @@ class _CreateAccountState extends State<CreateAccount> {
                             AccountService()
                                 .CreateUser(pseudo, email, password)
                                 .then((value) {
+                              print(value.statusCode);
                               switch (value.statusCode) {
-                                case 200:
+                                case 201:
                                   // var token = json.decode(value.body)["token"];
                                   Storage.setToken(value);
                                   // storage.write(key: "kplango", value: token);

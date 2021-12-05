@@ -20,15 +20,15 @@ class PlaceInfo {
   });
 
   factory PlaceInfo.fromJson(dynamic parsedJson) {
-    // print(parsedJson);
-    String name = parsedJson['localname'];
+    LatLng point = LatLng(parsedJson["geometry"]["coordinates"][1],
+        parsedJson["geometry"]["coordinates"][0]);
+    String name =
+        parsedJson['localname'] ?? "${point.latitude} - ${point.longitude}";
     String? street;
     String? city;
     String? price;
     String? openingHours;
     String? website;
-    LatLng point = LatLng(parsedJson["geometry"]["coordinates"][1],
-        parsedJson["geometry"]["coordinates"][0]);
 
     try {
       street = [
