@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plango_front/service/account_service.dart';
 import 'package:plango_front/util/constant.dart';
+import 'package:plango_front/util/loading.dart';
 import 'package:plango_front/util/storage.dart';
 import 'package:plango_front/views/components/label.dart';
 import 'package:plango_front/views/components/rounded_button.dart';
@@ -31,7 +32,7 @@ class FormLogin extends StatefulWidget {
   FormLogin({
     Key? key,
   }) : super(key: key);
-
+  bool _loading = false;
   @override
   State<FormLogin> createState() => _FormLoginState();
 }
@@ -43,94 +44,104 @@ class _FormLoginState extends State<FormLogin> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Stack(
-            children: [
-              const Label(
-                  text: "Votre adresse mail :", color: kPrimaryLightColor),
-              Login(
-                hide: false,
-                controller: pseudoController,
-              ),
-            ],
-          ),
-          Stack(
-            children: [
-              const Label(
-                text: "Votre mot de passe :",
-                color: kPrimaryLightColor,
-              ),
-              Login(
-                hide: true,
-                controller: passwordController,
-              ),
-            ],
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (
-                      context,
-                    ) =>
-                        CreateAccount(),
-                  ));
-            },
-            child: Container(
-              width: 200,
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(10.0),
-              margin: const EdgeInsets.only(bottom: 5),
-              child: const Label(
-                text: "Créer un compte",
-                color: kPrimaryLightColor,
-              ),
+    return widget._loading
+        ? const Loading()
+        : Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Stack(
+                  children: [
+                    const Label(
+                        text: "Votre adresse mail :",
+                        color: kPrimaryLightColor),
+                    Login(
+                      hide: false,
+                      controller: pseudoController,
+                    ),
+                  ],
+                ),
+                Stack(
+                  children: [
+                    const Label(
+                      text: "Votre mot de passe :",
+                      color: kPrimaryLightColor,
+                    ),
+                    Login(
+                      hide: true,
+                      controller: passwordController,
+                    ),
+                  ],
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (
+                            context,
+                          ) =>
+                              CreateAccount(),
+                        ));
+                  },
+                  child: Container(
+                    width: 200,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10.0),
+                    margin: const EdgeInsets.only(bottom: 5),
+                    child: const Label(
+                      text: "Créer un compte",
+                      color: kPrimaryLightColor,
+                    ),
+                  ),
+                ),
+                RoundedButton(
+                  text: "Connexion",
+                  press: () {
+                    setState(() {
+                      widget._loading = true;
+                    });
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
+                      AccountService()
+                          .Login(pseudoController.text, passwordController.text)
+                          .then((value) {
+                        setState(() {
+                          widget._loading = false;
+                        });
+                        switch (value.statusCode) {
+                          case 200:
+                            Storage.setToken(value);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TravelsList(),
+                                ));
+                            break;
+                          default:
+                            showModalBottomSheet(
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(25),
+                                      topRight: Radius.circular(25)),
+                                ),
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return WarningModal(
+                                    text: "Login ou mot de passe inexistant",
+                                    url_animation:
+                                        'assets/lottieanimate/error.json',
+                                  );
+                                });
+                        }
+                      });
+                    }
+                  },
+                ),
+              ],
             ),
-          ),
-          RoundedButton(
-            text: "Connexion",
-            press: () {
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
-                AccountService()
-                    .Login(pseudoController.text, passwordController.text)
-                    .then((value) {
-                  switch (value.statusCode) {
-                    case 200:
-                      Storage.setToken(value);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TravelsList(),
-                          ));
-                      break;
-                    default:
-                      showModalBottomSheet(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25),
-                                topRight: Radius.circular(25)),
-                          ),
-                          context: context,
-                          builder: (BuildContext context) {
-                            return WarningModal(
-                              text: "Login ou mot de passe inexistant",
-                              url_animation: 'assets/lottieanimate/error.json',
-                            );
-                          });
-                  }
-                });
-              }
-            },
-          ),
-        ],
-      ),
-    );
+          );
   }
 }
 
