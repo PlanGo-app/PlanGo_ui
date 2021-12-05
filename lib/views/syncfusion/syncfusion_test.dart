@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:plango_front/model/planning_event.dart';
 import 'package:plango_front/service/planning_event_service.dart';
 import 'package:plango_front/views/components/rounded_button.dart';
 import 'package:plango_front/views/syncfusion/date_picker_widget.dart';
@@ -35,8 +36,15 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
     selectedDate = widget.dateBegin;
     widget._dataSource = _getCalendarDataSource();
     PlanningEventService().getPlanningEvents(widget.travelId).then((value) {
+      print(value.first.date_start);
       setState(() {
-        widget.all = value;
+        for (PlanningEvent planningEvent in value) {
+          if (planningEvent.date_start != null) {
+            createPlanningEvent(planningEvent, context, false);
+          } else {
+            widget.all.add(planningEvent);
+          }
+        }
       });
     });
   }
@@ -52,7 +60,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
             height: 40,
             child: ListView(scrollDirection: Axis.horizontal, children: [
               ...widget.all
-                  .map((marker) => InkWell(
+                  .map((planningEvent) => InkWell(
                         child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18),
@@ -60,7 +68,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                             ),
                             margin: const EdgeInsets.symmetric(horizontal: 4),
                             padding: const EdgeInsets.symmetric(horizontal: 6),
-                            child: Center(child: Text(marker.name))),
+                            child: Center(child: Text(planningEvent.name))),
                         onTap: () {
                           showModalBottomSheet(
                               shape: const RoundedRectangleBorder(
@@ -137,8 +145,10 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                                               beginHour !=
                                                                   null &&
                                                               endHour != null) {
-                                                            createPin(marker,
-                                                                context);
+                                                            createPlanningEvent(
+                                                                planningEvent,
+                                                                context,
+                                                                true);
                                                           }
                                                         }))
                                               ])),
@@ -170,29 +180,36 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
     ));
   }
 
-  void createPin(marker, context) {
-    DateTime startTime = DateTime(selectedDate!.year, selectedDate!.month,
-        selectedDate!.day, beginHour!.hour, beginHour!.minute);
-    DateTime endTime = DateTime(selectedDate!.year, selectedDate!.month,
-        selectedDate!.day, endHour!.hour, endHour!.minute);
+  void createPlanningEvent(PlanningEvent planningEvent, context, bool save) {
+    DateTime startTime = planningEvent.date_start ??
+        DateTime(selectedDate!.year, selectedDate!.month, selectedDate!.day,
+            beginHour!.hour, beginHour!.minute);
+    DateTime endTime = planningEvent.date_end ??
+        DateTime(selectedDate!.year, selectedDate!.month, selectedDate!.day,
+            endHour!.hour, endHour!.minute);
     Appointment app = Appointment(
-      notes: 2.toString(),
+      notes: planningEvent.id.toString(),
       startTime: startTime,
       endTime: endTime,
-      subject: marker.name,
+      subject: planningEvent.name,
       color: Colors.purple,
     );
     print(app);
+    if (save) {
+      PlanningEventService().updatePlanningEvent(
+          int.parse(app.notes!), app.subject, app.startTime, app.endTime);
+    }
     widget._dataSource!.appointments!.add(app);
     widget._dataSource!
         .notifyListeners(CalendarDataSourceAction.add, <Appointment>[app]);
     setState(() {
-      widget.all.remove(marker);
+      widget.all.remove(planningEvent);
       selectedDate = null;
       beginHour = null;
       endHour = null;
     });
-    Navigator.of(context).pop();
+
+    if (save) Navigator.of(context).pop();
   }
 }
 
@@ -202,6 +219,8 @@ void dragEnd(AppointmentDragEndDetails appointmentDragEndDetails) {
   print(appointment.startTime);
   print(appointment.endTime);
   print(int.parse((appointment).notes));
+  PlanningEventService().updatePlanningEvent(int.parse(appointment.notes),
+      appointment.subject, appointment.startTime, appointment.endTime);
 }
 
 _AppointmentDataSource _getCalendarDataSource() {

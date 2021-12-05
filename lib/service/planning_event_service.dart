@@ -25,4 +25,25 @@ class PlanningEventService {
       }
     });
   }
+
+  Future<http.Response> updatePlanningEvent(
+      int id, String name, DateTime dateStart, DateTime dateEnd) async {
+    return Storage.getToken().then((token) async {
+      return await http.put(Uri.parse(HTTP + "planning_event"),
+          headers: {
+            'Authorization': 'Bearer $token',
+            "Content-Type": "application/json"
+          },
+          body: jsonEncode(<String, String>{
+            'id': id.toString(),
+            'name': name,
+            "dateStart": dateStart.toIso8601String(),
+            "dateEnd": dateEnd.toIso8601String(),
+          }));
+    }).then((response) {
+      print(response.statusCode);
+      print(response.body);
+      return response;
+    });
+  }
 }
