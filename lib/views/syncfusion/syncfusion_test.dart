@@ -42,13 +42,19 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
         body: SafeArea(
       child: Column(
         children: [
-          Expanded(
-            flex: 1,
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 3),
+            height: 40,
             child: ListView(scrollDirection: Axis.horizontal, children: [
               ...widget.all
                   .map((marker) => InkWell(
                         child: Container(
-                            color: Colors.deepPurpleAccent,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18),
+                              color: Colors.deepPurpleAccent,
+                            ),
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
                             child: Center(child: Text(marker.name))),
                         onTap: () {
                           showModalBottomSheet(
