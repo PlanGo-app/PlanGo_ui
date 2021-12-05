@@ -13,11 +13,10 @@ class PinService {
         headers: {'Authorization': 'Bearer $token'},
       );
     }).then((response) {
-      print("get pin ${response.statusCode}");
-      print("get pin ${response.body}");
       if (response.statusCode == 200) {
         List<Pin> pins = [];
-        for (dynamic pin in json.decode(response.body)["pins"]) {
+        for (dynamic pin
+            in json.decode(utf8.decode(response.bodyBytes))["pins"]) {
           pins.add(Pin.fromJson(pin));
         }
         return pins;
@@ -61,7 +60,6 @@ class PinService {
           'Authorization': 'Bearer $token'
         },
       ).then((value) {
-        print(value.statusCode);
         return value;
       });
     });

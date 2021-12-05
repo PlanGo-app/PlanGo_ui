@@ -34,7 +34,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
     super.initState();
     selectedDate = widget.dateBegin;
     widget._dataSource = _getCalendarDataSource();
-    PlanningEventService().getPins(widget.travelId).then((value) {
+    PlanningEventService().getPlanningEvents(widget.travelId).then((value) {
       setState(() {
         widget.all = value;
       });

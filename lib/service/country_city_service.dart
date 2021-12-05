@@ -12,7 +12,7 @@ class CountryCityService {
             '&country=' +
             country +
             '&format=jsonv2'));
-    var res = json.decode(result.body);
+    var res = json.decode(utf8.decode(result.bodyBytes));
     return LatLng(double.parse(res[0]["lat"]), double.parse(res[0]["lon"]));
   }
 
@@ -29,7 +29,7 @@ class CountryCityService {
     if (jsonDecode(result.body)["error"] != null) {
       return null;
     }
-    return Place.fromJson(jsonDecode(result.body));
+    return Place.fromJson(jsonDecode(utf8.decode(result.bodyBytes)));
   }
 
   Future<dynamic> getParentInfo(parentId) async {
@@ -40,7 +40,7 @@ class CountryCityService {
     } catch (e) {
       throw ("Unable to get Info");
     }
-    var res = json.decode(result.body);
+    var res = json.decode(utf8.decode(result.bodyBytes));
     try {
       return res["names"]["name:en"];
     } catch (_) {

@@ -120,8 +120,6 @@ class _MapViewBodyState extends State<MapViewBody> {
       panelController.hide();
       return;
     } else {
-      print("oihho");
-      print(place!.osmId);
       return FutureBuilder(
           future: getInfoPlace(place.osmType, place.osmId),
           builder: (BuildContext context, AsyncSnapshot<PlaceInfo> snapshot) {
