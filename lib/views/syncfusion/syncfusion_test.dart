@@ -6,12 +6,17 @@ import 'package:plango_front/views/syncfusion/time_picker_widget.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class SyncfusionTest extends StatefulWidget {
+  int travelId;
   List all = [];
   CalendarDataSource? _dataSource;
   final DateTime dateBegin;
   final DateTime dateEnd;
 
-  SyncfusionTest({Key? key, required this.dateBegin, required this.dateEnd})
+  SyncfusionTest(
+      {Key? key,
+      required this.dateBegin,
+      required this.dateEnd,
+      required this.travelId})
       : super(key: key);
 
   @override
@@ -29,7 +34,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
     super.initState();
     selectedDate = widget.dateBegin;
     widget._dataSource = _getCalendarDataSource();
-    PlanningEventService().loadMarkers().then((value) {
+    PlanningEventService().getPins(widget.travelId).then((value) {
       setState(() {
         widget.all = value;
       });
@@ -155,8 +160,8 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
               allowDragAndDrop: true,
               onDragEnd: dragEnd,
               initialDisplayDate: selectedDate,
-              timeSlotViewSettings:
-                  TimeSlotViewSettings(timeIntervalHeight: 60),
+              timeSlotViewSettings: TimeSlotViewSettings(
+                  timeIntervalHeight: 60, timeFormat: "hh:mm"),
               showWeekNumber: true,
             ),
           ),
@@ -201,14 +206,6 @@ void dragEnd(AppointmentDragEndDetails appointmentDragEndDetails) {
 
 _AppointmentDataSource _getCalendarDataSource() {
   List<Appointment> appointments = <Appointment>[];
-  appointments.add(Appointment(
-    notes: 1.toString(),
-    startTime: DateTime.now(),
-    endTime: DateTime.now().add(Duration(minutes: 60)),
-    subject: 'Meeting',
-    color: Colors.blue,
-  ));
-
   return _AppointmentDataSource(appointments);
 }
 

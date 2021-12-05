@@ -46,20 +46,23 @@ class _MapState extends State<MapView> {
         if (save) {
           CountryCityService()
               .revserseSearch(point.latitude, point.longitude)
-              .then((value) => {
-                    PinService().CreatePin(
-                        value.displayName ??
-                            "${point.latitude} - ${point.longitude}",
-                        point.longitude,
-                        point.latitude,
-                        widget.travelId)
-                  });
+              .then((value) {
+            if (value != null) {
+              PinService().CreatePin(value.displayName, point.longitude,
+                  point.latitude, widget.travelId);
+              setState(() {
+                widget.panelController.show();
+                widget.markers.add(m);
+              });
+            }
+          });
+        } else {
+          setState(() {
+            widget.panelController.show();
+            widget.markers.add(m);
+          });
         }
         widget.isReady = true;
-        setState(() {
-          widget.panelController.show();
-          widget.markers.add(m);
-        });
       };
 
       widget.deleteMarker = (LatLng point, travelId) {
@@ -99,17 +102,22 @@ class _MapState extends State<MapView> {
               CountryCityService()
                   .revserseSearch(latLng.latitude, latLng.longitude)
                   .then((value) {
-                context.read<NavBarBloc>().add(NavBarEventPlaceFound(
-                    place: value,
-                    point:
-                        existingMarker == null ? latLng : existingMarker.point,
-                    save: false));
+                if (value != null) {
+                  context.read<NavBarBloc>().add(NavBarEventPlaceFound(
+                      place: value,
+                      point: existingMarker == null
+                          ? latLng
+                          : existingMarker.point,
+                      save: false));
+                }
               });
               if (existingMarker == null) {
                 widget.addMarker(latLng, true);
               }
               // ignore: empty_catches
-            } catch (e) {}
+            } catch (e) {
+              print("hoihio");
+            }
           },
           center: LatLng(50.62925, 3.057256),
           minZoom: 1.0,

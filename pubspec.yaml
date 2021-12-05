@@ -42,10 +42,6 @@ dependencies:
   intl: ^0.17.0
   lottie: ^1.2.1
   google_fonts: ^2.1.0
-#  mapbox_gl: ^0.14.0
-#  mapbox_search_flutter: any
-#  mapbox_search: ^3.0.0-nullsafety.0
-#  flutter_mapbox_navigation: ^0.0.26
   sliding_up_panel: ^2.0.0+1
   flutter_map: ^0.14.0
   osm_nominatim: ^2.0.1

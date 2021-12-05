@@ -1,7 +1,6 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:plango_front/util/constant.dart';
-import 'package:plango_front/views/calendar/calendar.dart';
 import 'package:plango_front/views/map_page/map_page.dart';
 import 'package:plango_front/views/syncfusion/syncfusion_test.dart';
 
@@ -36,8 +35,11 @@ class _ScreenState extends State<Screen> {
         city: widget.city,
         travelId: widget.travelId,
       ),
-      Calendar(dateBegin: widget.date, dateEnd: widget.endDate),
-      SyncfusionTest(dateBegin: widget.date, dateEnd: widget.endDate),
+      SyncfusionTest(
+        dateBegin: widget.date,
+        dateEnd: widget.endDate,
+        travelId: widget.travelId,
+      ),
     ];
   }
 
@@ -60,11 +62,6 @@ class _ScreenState extends State<Screen> {
                 inactiveColor: kPrimaryColor),
             BottomNavyBarItem(
                 icon: const Icon(Icons.calendar_today),
-                title: const Text('Calendrier'),
-                activeColor: kPrimaryLightColor,
-                inactiveColor: kPrimaryColor),
-            BottomNavyBarItem(
-                icon: const Icon(Icons.calendar_view_day),
                 title: const Text('Syncfusion'),
                 activeColor: kPrimaryLightColor,
                 inactiveColor: kPrimaryColor),

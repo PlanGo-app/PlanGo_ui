@@ -22,13 +22,24 @@ class CountryCityService {
         );
   }
 
-  Future<Place> revserseSearch(double latitude, double longitude) {
-    return Nominatim.reverseSearch(lat: latitude, lon: longitude, zoom: 18);
+  Future<Place?> revserseSearch(double latitude, double longitude) async {
+    var result = await http.get(Uri.parse(
+        "https://nominatim.openstreetmap.org/reverse?lat=$latitude&lon=$longitude&format=json"));
+
+    if (jsonDecode(result.body)["error"] != null) {
+      return null;
+    }
+    return Place.fromJson(jsonDecode(result.body));
   }
 
   Future<dynamic> getParentInfo(parentId) async {
-    var result = await http.get(Uri.parse(
-        'https://nominatim.openstreetmap.org/details?place_id=$parentId&format=json'));
+    var result;
+    try {
+      var result = await http.get(Uri.parse(
+          'https://nominatim.openstreetmap.org/details?place_id=$parentId&format=json'));
+    } catch (e) {
+      throw ("Unable to get Info");
+    }
     var res = json.decode(result.body);
     try {
       return res["names"]["name:en"];
