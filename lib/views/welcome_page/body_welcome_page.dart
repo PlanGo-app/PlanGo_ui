@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plango_front/service/account_service.dart';
 import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/util/storage.dart';
-import 'package:plango_front/views/components/error_text.dart';
 import 'package:plango_front/views/components/label.dart';
 import 'package:plango_front/views/components/rounded_button.dart';
+import 'package:plango_front/views/components/warning_animation.dart';
 import 'package:plango_front/views/create_account/create_account.dart';
 import 'package:plango_front/views/travels_list/travels_list.dart';
 import 'package:plango_front/views/welcome_page/welcome_page_bloc/welcome_page_bloc.dart';
@@ -40,12 +40,6 @@ class _FormLoginState extends State<FormLogin> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController pseudoController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  late bool error;
-  @override
-  void initState() {
-    super.initState();
-    error = false;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,17 +110,24 @@ class _FormLoginState extends State<FormLogin> {
                           ));
                       break;
                     default:
-                      setState(() {
-                        error = true;
-                      });
+                      showModalBottomSheet(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25),
+                                topRight: Radius.circular(25)),
+                          ),
+                          context: context,
+                          builder: (BuildContext context) {
+                            return WarningModal(
+                              text: "Login ou mot de passe inexistant",
+                              url_animation: 'assets/lottieanimate/error.json',
+                            );
+                          });
                   }
                 });
               }
             },
           ),
-          error
-              ? ErrorText(title: "Login ou mot de passe inexistant")
-              : Container(),
         ],
       ),
     );
