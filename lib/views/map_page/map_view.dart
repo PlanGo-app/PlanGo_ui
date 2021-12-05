@@ -89,14 +89,34 @@ class _MapState extends State<MapView> {
       options: MapOptions(
           onLongPress: (_, latLng) {
             try {
+              Marker? existingMarker = null;
+              for (Marker mk in widget.markers) {
+                if (mk.point.latitude.toStringAsFixed(3) ==
+                        latLng.latitude.toStringAsFixed(3) &&
+                    mk.point.longitude.toStringAsFixed(3) ==
+                        latLng.longitude.toStringAsFixed(3)) {
+                  existingMarker = mk;
+                  print(
+                      "Existing POINT ${LatLng(mk.point.latitude, mk.point.longitude)}");
+
+                  break;
+                }
+              }
+
               CountryCityService()
                   .revserseSearch(latLng.latitude, latLng.longitude)
                   .then((value) {
                 context.read<NavBarBloc>().add(NavBarEventPlaceFound(
-                    place: value, point: latLng, save: false));
-                widget.addMarker(latLng, true);
-                print("SAVED POINT ${LatLng(value.lat, value.lon)}");
+                    place: value,
+                    point:
+                        existingMarker == null ? latLng : existingMarker.point,
+                    save: false));
               });
+              if (existingMarker == null) {
+                widget.addMarker(latLng, true);
+                print(
+                    "SAVE POINT ${LatLng(latLng.latitude, latLng.longitude)}");
+              }
             } catch (e) {}
           },
           center: LatLng(50.62925, 3.057256),
