@@ -55,6 +55,7 @@ dependencies:
   scrollable_positioned_list: ^0.2.3
   flutter_secure_storage: ^5.0.2
   syncfusion_flutter_calendar: ^19.3.56
+  flutter_slidable: ^1.1.0
 
 dev_dependencies:
   flutter_test:

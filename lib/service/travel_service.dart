@@ -15,7 +15,8 @@ class TravelService {
     }).then((response) {
       if (response.statusCode == 200) {
         List<Travel> travels = [];
-        for (dynamic travel in json.decode(response.body)["travels"]) {
+        for (dynamic travel
+            in json.decode(utf8.decode(response.bodyBytes))["travels"]) {
           travels.add(Travel.fromJson(travel));
         }
         return travels;
@@ -35,10 +36,8 @@ class TravelService {
         },
       );
     }).then((response) {
-      print(response.statusCode);
-      print(response.body);
       if (response.statusCode == 200) {
-        return Travel.fromJson(json.decode(response.body));
+        return Travel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
       } else {
         throw Exception("Failed to join travels");
       }
@@ -63,9 +62,27 @@ class TravelService {
       );
     }).then((response) {
       if (response.statusCode == 201) {
-        return Travel.fromJson(jsonDecode(response.body));
+        return Travel.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
       } else {
         return null;
+      }
+    });
+  }
+
+  Future<Travel> deleteTravel(code) async {
+    return Storage.getToken().then((token) async {
+      return await http.delete(
+        Uri.parse(HTTP + "travel/invitation?code=$code"),
+        headers: {
+          'Authorization': 'Bearer $token',
+          "Content-Type": "application/json"
+        },
+      );
+    }).then((response) {
+      if (response.statusCode == 200) {
+        return Travel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
+      } else {
+        throw Exception("Failed to join travels");
       }
     });
   }

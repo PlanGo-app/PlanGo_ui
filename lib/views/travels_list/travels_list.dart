@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:plango_front/model/travel.dart';
@@ -165,25 +166,9 @@ class _TravelsListState extends State<TravelsList> {
       ),
     );
   }
-
-  // Future<String> _loadTravelsAssets() async {
-  //   return await rootBundle
-  //       .loadString('assets/travels.json'); // return your response
-  // }
-
-  // Future<List<Travel>> loadTravels() async {
-  //   await Future.delayed(const Duration(seconds: 1), () => {});
-  //   String jsonString = await _loadTravelsAssets();
-  //   final jsonResponse = json.decode(jsonString);
-  //   List<Travel> travels = [];
-  //   for (dynamic travel in jsonResponse) {
-  //     travels.add(Travel.fromJson(travel));
-  //   }
-  //   return travels;
-  // }
 }
 
-class TravelsListBuilder extends StatelessWidget {
+class TravelsListBuilder extends StatefulWidget {
   const TravelsListBuilder({
     Key? key,
     required this.dateFormat,
@@ -194,58 +179,87 @@ class TravelsListBuilder extends StatelessWidget {
   final AsyncSnapshot<List<Travel>> snapshot;
 
   @override
+  State<TravelsListBuilder> createState() => _TravelsListBuilderState();
+}
+
+class _TravelsListBuilderState extends State<TravelsListBuilder> {
+  @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: snapshot.data!.length,
+        itemCount: widget.snapshot.data!.length,
         itemBuilder: (context, index) {
-          return Container(
-            color: kPrimaryColor,
-            margin: const EdgeInsets.only(bottom: 1.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: ListTile(
-                    title: Text(
-                      snapshot.data![index].city +
-                          " ( " +
-                          snapshot.data![index].country +
-                          " )",
-                      style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+          return Slidable(
+            child: Container(
+              color: kPrimaryColor,
+              margin: const EdgeInsets.only(bottom: 1.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ListTile(
+                      title: Text(
+                        widget.snapshot.data![index].city +
+                            " ( " +
+                            widget.snapshot.data![index].country +
+                            " )",
+                        style: const TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                          widget.dateFormat.format(
+                                  widget.snapshot.data![index].date_start) +
+                              " -- " +
+                              widget.dateFormat.format(
+                                  widget.snapshot.data![index].date_end),
+                          style: const TextStyle(color: Colors.white)),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => Screen(
+                              travelId: widget.snapshot.data![index].id,
+                              city: widget.snapshot.data![index].city,
+                              country: widget.snapshot.data![index].country,
+                              date: widget.snapshot.data![index].date_start,
+                              endDate: widget.snapshot.data![index].date_end),
+                        ));
+                      },
                     ),
-                    subtitle: Text(
-                        dateFormat.format(snapshot.data![index].date_start) +
-                            " -- " +
-                            dateFormat.format(snapshot.data![index].date_end),
-                        style: const TextStyle(color: Colors.white)),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => Screen(
-                            travelId: snapshot.data![index].id,
-                            city: snapshot.data![index].city,
-                            country: snapshot.data![index].country,
-                            date: snapshot.data![index].date_start,
-                            endDate: snapshot.data![index].date_end),
-                      ));
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.share),
+                    color: Colors.white,
+                    onPressed: () {
+                      print(widget.snapshot.data![index].invitationCode);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (
+                              context,
+                            ) =>
+                                SharingPage(
+                                    invitationCode: widget
+                                        .snapshot.data![index].invitationCode),
+                          ));
                     },
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.share),
-                  color: Colors.white,
-                  onPressed: () {
-                    print(snapshot.data![index].invitationCode);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (
-                            context,
-                          ) =>
-                              SharingPage(
-                                  invitationCode:
-                                      snapshot.data![index].invitationCode),
-                        ));
+                ],
+              ),
+            ),
+            endActionPane: ActionPane(
+              motion: ScrollMotion(),
+              children: [
+                SlidableAction(
+                  // An action can be bigger than the others.
+                  flex: 2,
+                  onPressed: (_) {
+                    setState(() {
+                      TravelService()
+                          .deleteTravel(widget.snapshot.data![index].id);
+                      widget.snapshot.data!.removeAt(index);
+                    });
                   },
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                  icon: Icons.delete_forever,
+                  label: 'delete',
                 ),
               ],
             ),
