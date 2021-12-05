@@ -80,16 +80,18 @@ class JoinPage extends StatelessWidget {
                                   .joinTravel(controller.text)
                                   .then((value) => {
                                         Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => Screen(
-                                                travelId: value.id,
-                                                city: value.city,
-                                                country: value.country,
-                                                date: value.date_start,
-                                                endDate: value.date_end,
-                                              ),
-                                            ))
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => Screen(
+                                                    travelId: value.id,
+                                                    city: value.city,
+                                                    country: value.country,
+                                                    date: value.date_start,
+                                                    endDate: value.date_end,
+                                                  ),
+                                                ))
+                                            .then((value) =>
+                                                Navigator.of(context).pop())
                                       });
                             }),
                       ),

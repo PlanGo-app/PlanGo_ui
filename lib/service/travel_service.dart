@@ -69,21 +69,16 @@ class TravelService {
     });
   }
 
-  Future<Travel> deleteTravel(code) async {
+  Future<http.Response> deleteTravel(travelId) async {
     return Storage.getToken().then((token) async {
       return await http.delete(
-        Uri.parse(HTTP + "travel/invitation?code=$code"),
+        Uri.parse(HTTP + "travel/$travelId/me"),
         headers: {
           'Authorization': 'Bearer $token',
-          "Content-Type": "application/json"
         },
       );
     }).then((response) {
-      if (response.statusCode == 200) {
-        return Travel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
-      } else {
-        throw Exception("Failed to join travels");
-      }
+      return response;
     });
   }
 }

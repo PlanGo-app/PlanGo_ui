@@ -1,4 +1,8 @@
+import 'dart:io' show Platform, exit;
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:plango_front/service/account_service.dart';
@@ -117,7 +121,13 @@ class _FormLoginState extends State<FormLogin> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => TravelsList(),
-                                ));
+                                )).then((value) {
+                              if (Platform.isAndroid) {
+                                SystemNavigator.pop();
+                              } else {
+                                exit(0);
+                              }
+                            });
                             break;
                           default:
                             showModalBottomSheet(

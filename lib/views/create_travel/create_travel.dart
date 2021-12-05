@@ -218,7 +218,9 @@ class _CreateTravelState extends State<CreateTravel> {
                                                       date: selectedDate,
                                                       endDate: selectedEndDate,
                                                     ),
-                                                  ))
+                                                  )).then((value) => Navigator
+                                                      .of(context)
+                                                  .pop())
                                               : print("error")
                                         });
                               },

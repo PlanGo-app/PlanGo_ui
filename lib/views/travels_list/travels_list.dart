@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:plango_front/model/travel.dart';
 import 'package:plango_front/service/travel_service.dart';
@@ -123,7 +124,10 @@ class _TravelsListState extends State<TravelsList> {
                                                     context,
                                                   ) =>
                                                       JoinPage(),
-                                                ));
+                                                )).then((_) {
+                                              Navigator.of(context).pop();
+                                              setState(() {});
+                                            });
                                           }),
                                       SmallRoundedButton(
                                           text: "Créer",
@@ -135,7 +139,10 @@ class _TravelsListState extends State<TravelsList> {
                                                     context,
                                                   ) =>
                                                       const CreateTravel(),
-                                                ));
+                                                )).then((_) {
+                                              Navigator.of(context).pop();
+                                              setState(() {});
+                                            });
                                           }),
                                     ],
                                   ),
@@ -212,14 +219,17 @@ class _TravelsListBuilderState extends State<TravelsListBuilder> {
                                   widget.snapshot.data![index].date_end),
                           style: const TextStyle(color: Colors.white)),
                       onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => Screen(
-                              travelId: widget.snapshot.data![index].id,
-                              city: widget.snapshot.data![index].city,
-                              country: widget.snapshot.data![index].country,
-                              date: widget.snapshot.data![index].date_start,
-                              endDate: widget.snapshot.data![index].date_end),
-                        ));
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(
+                              builder: (context) => Screen(
+                                  travelId: widget.snapshot.data![index].id,
+                                  city: widget.snapshot.data![index].city,
+                                  country: widget.snapshot.data![index].country,
+                                  date: widget.snapshot.data![index].date_start,
+                                  endDate:
+                                      widget.snapshot.data![index].date_end),
+                            ))
+                            .then((_) => setState(() {}));
                       },
                     ),
                   ),
@@ -237,7 +247,7 @@ class _TravelsListBuilderState extends State<TravelsListBuilder> {
                                 SharingPage(
                                     invitationCode: widget
                                         .snapshot.data![index].invitationCode),
-                          ));
+                          )).then((_) => setState(() {}));
                     },
                   ),
                 ],
@@ -249,12 +259,18 @@ class _TravelsListBuilderState extends State<TravelsListBuilder> {
                 SlidableAction(
                   // An action can be bigger than the others.
                   flex: 2,
-                  onPressed: (_) {
-                    setState(() {
-                      TravelService()
-                          .deleteTravel(widget.snapshot.data![index].id);
-                      widget.snapshot.data!.removeAt(index);
-                    });
+                  onPressed: (_) async {
+                    http.Response response = await TravelService()
+                        .deleteTravel(widget.snapshot.data![index].id);
+                    if (response.statusCode == 200) {
+                      setState(() {
+                        widget.snapshot.data!.removeAt(index);
+                      });
+                    } else {
+                      print(response.statusCode);
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("Le voyage n'a pas pu être supprimé")));
+                    }
                   },
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
