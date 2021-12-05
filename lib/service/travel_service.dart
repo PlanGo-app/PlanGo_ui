@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:plango_front/model/travel.dart';
+import 'package:plango_front/model/user.dart';
 import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/util/storage.dart';
 
@@ -79,6 +80,27 @@ class TravelService {
       );
     }).then((response) {
       return response;
+    });
+  }
+
+  Future<List<User>> getMembers(int travelId) async {
+    return Storage.getToken().then((token) async {
+      return await http.get(
+        Uri.parse(HTTP + "travel/$travelId/members"),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+    }).then((response) {
+      if (response.statusCode == 200) {
+        List<User> members = [];
+        for (dynamic member
+            in json.decode(utf8.decode(response.bodyBytes))["members"]) {
+          // members.add(member["user"]["pseudo"]);
+          members.add(User.fromJson(member));
+        }
+        return members;
+      } else {
+        throw Exception("Failed to get members");
+      }
     });
   }
 }

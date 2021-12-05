@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io' show Platform, exit;
 
 import 'package:flutter/foundation.dart';
@@ -49,6 +50,7 @@ class _FormLoginState extends State<FormLogin> {
   @override
   Widget build(BuildContext context) {
     AccountService().GetUser().then((value) => {
+          USER_NAME = json.decode(value.body)["pseudo"],
           if (value.statusCode == 200)
             {
               Navigator.push(
@@ -57,7 +59,13 @@ class _FormLoginState extends State<FormLogin> {
                       builder: (
                     context,
                   ) =>
-                          TravelsList()))
+                          TravelsList())).then((value) {
+                if (Platform.isAndroid) {
+                  SystemNavigator.pop();
+                } else {
+                  exit(0);
+                }
+              })
             }
         });
 

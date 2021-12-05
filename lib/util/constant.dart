@@ -7,3 +7,4 @@ const kPrimaryLightColor = Color(0xffcb5310); // #CB5310
 //     'SkpEbndWNVBiblVpZkNvWnZyMzhvNlc5MUVZVkh6RG1ZU1lNM2o0aA==';
 
 const HTTP = "https://plango-api.herokuapp.com/";
+late String USER_NAME;
