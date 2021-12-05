@@ -88,7 +88,7 @@ class _MapViewBodyState extends State<MapViewBody> {
         panelController.show();
         if (map.isReady) {
           map.mapController
-              .move(LatLng(state.place!.lat, state.place!.lon), 16.0);
+              .move(LatLng(state.point.latitude, state.point.longitude), 16.0);
         }
       }
 

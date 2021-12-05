@@ -115,9 +115,7 @@ class _MapState extends State<MapView> {
                 widget.addMarker(latLng, true);
               }
               // ignore: empty_catches
-            } catch (e) {
-              print("hoihio");
-            }
+            } catch (e) {}
           },
           center: LatLng(50.62925, 3.057256),
           minZoom: 1.0,
