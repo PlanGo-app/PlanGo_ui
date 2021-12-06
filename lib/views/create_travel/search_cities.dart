@@ -49,21 +49,26 @@ class _TextSearchCityState extends State<TextSearchCity> {
                             } else if (snapshot.data!.isEmpty) {
                               return const Text('Pas de ville de ce nom');
                             } else {
-                              return ListView.separated(
-                                  separatorBuilder: (context, index) {
-                                    return const Divider();
-                                  },
-                                  shrinkWrap: true,
-                                  itemCount: snapshot.data!.length,
-                                  itemBuilder: (context, index) {
-                                    return ListTile(
-                                      title: Text(snapshot.data![index].name),
-                                      onTap: () {
-                                        // widget.searchController.text =
-                                        widget.search(snapshot.data![index]);
+                              return MediaQuery.removePadding(
+                                  context: context,
+                                  removeTop: true,
+                                  child: ListView.separated(
+                                      separatorBuilder: (context, index) {
+                                        return const Divider();
                                       },
-                                    );
-                                  });
+                                      shrinkWrap: true,
+                                      itemCount: snapshot.data!.length,
+                                      itemBuilder: (context, index) {
+                                        return ListTile(
+                                          title:
+                                              Text(snapshot.data![index].name),
+                                          onTap: () {
+                                            // widget.searchController.text =
+                                            widget
+                                                .search(snapshot.data![index]);
+                                          },
+                                        );
+                                      }));
                             }
                         }
                       }),

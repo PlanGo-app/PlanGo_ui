@@ -51,38 +51,45 @@ class _TextSearchCountryState extends State<TextSearchCountry> {
                             } else if (snapshot.data!.isEmpty) {
                               return const Text('Pas de pays de ce nom');
                             } else {
-                              return ListView.separated(
-                                  separatorBuilder: (context, index) {
-                                    return const Divider();
-                                  },
-                                  shrinkWrap: true,
-                                  itemCount: snapshot.data!.length,
-                                  itemBuilder: (context, index) {
-                                    return ListTile(
-                                      title: Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(5),
-                                            child: SvgPicture.network(
-                                              snapshot.data![index].add_flag,
-                                              width: 20,
-                                            ),
-                                          ),
-                                          Flexible(
-                                            child: Text(
-                                              snapshot.data![index].name,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      onTap: () {
-                                        // widget.searchController.text =
-                                        //     snapshot.data![index].name;
-                                        widget.search(snapshot.data![index]);
+                              return MediaQuery.removePadding(
+                                  context: context,
+                                  removeTop: true,
+                                  child: ListView.separated(
+                                      separatorBuilder: (context, index) {
+                                        return const Divider();
                                       },
-                                    );
-                                  });
+                                      shrinkWrap: true,
+                                      itemCount: snapshot.data!.length,
+                                      itemBuilder: (context, index) {
+                                        return ListTile(
+                                          title: Row(
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.all(5),
+                                                child: SvgPicture.network(
+                                                  snapshot
+                                                      .data![index].add_flag,
+                                                  width: 20,
+                                                ),
+                                              ),
+                                              Flexible(
+                                                child: Text(
+                                                  snapshot.data![index].name,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          onTap: () {
+                                            // widget.searchController.text =
+                                            //     snapshot.data![index].name;
+                                            widget
+                                                .search(snapshot.data![index]);
+                                          },
+                                        );
+                                      }));
                             }
                         }
                       }),
