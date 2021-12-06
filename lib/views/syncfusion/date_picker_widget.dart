@@ -26,7 +26,6 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
       return widget.text;
     } else {
       return DateFormat('dd/MM/yyyy').format(date!);
-      // return '${date.month}/${date.day}/${date.year}';
     }
   }
 

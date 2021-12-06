@@ -38,7 +38,6 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
     widget.all = [];
     widget._dataSource = _getCalendarDataSource();
     PlanningEventService().getPlanningEvents(widget.travelId).then((value) {
-      print(value.first.date_start);
       setState(() {
         for (PlanningEvent planningEvent in value) {
           if (planningEvent.date_start != null) {
@@ -234,6 +233,12 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
               showWeekNumber: true,
               minDate: widget.dateBegin,
               maxDate: widget.dateEnd,
+              onTap: (CalendarTapDetails details) {
+                if (details.targetElement == CalendarElement.appointment) {
+                  print(details.appointments!.first);
+                  modal(details.appointments!.first);
+                }
+              },
             ),
           ),
         ],
@@ -259,7 +264,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
         DateTime(selectedDate!.year, selectedDate!.month, selectedDate!.day,
             endHour!.hour, endHour!.minute);
     Appointment app = Appointment(
-      notes: planningEvent.id.toString(),
+      notes: "${planningEvent.id}, ${planningEvent.pinId}",
       startTime: startTime,
       endTime: endTime,
       subject: planningEvent.name,
@@ -268,7 +273,10 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
     print(app);
     if (save) {
       PlanningEventService().updatePlanningEvent(
-          int.parse(app.notes!), app.subject, app.startTime, app.endTime);
+          int.parse(app.notes!.split(",").first),
+          app.subject,
+          app.startTime,
+          app.endTime);
     }
     widget._dataSource!.appointments!.add(app);
     widget._dataSource!
@@ -282,16 +290,231 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
 
     // if (save) Navigator.of(context).pop();
   }
+
+  modal(Appointment appointment) {
+    setState(() {
+      selectedDate = DateTime(appointment.startTime.year,
+          appointment.startTime.month, appointment.startTime.day);
+      beginHour = TimeOfDay(
+          hour: appointment.startTime.hour,
+          minute: appointment.startTime.minute);
+      endHour = TimeOfDay(
+          hour: appointment.endTime.hour, minute: appointment.endTime.minute);
+    });
+    showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setModalState) {
+          return Material(
+              elevation: 20,
+              child: SizedBox(
+                height: 300,
+                child: Column(
+                  children: [
+                    Expanded(
+                        flex: 2,
+                        child: Row(children: [
+                          Expanded(
+                              flex: 5,
+                              child: SmallRoundedButton(
+                                  text: "Supprimer du planning",
+                                  press: () {
+                                    print("DELETE");
+                                    PlanningEventService().updatePlanningEvent(
+                                        int.parse(appointment.notes
+                                            .toString()
+                                            .split(",")
+                                            .first),
+                                        appointment.subject,
+                                        null,
+                                        null);
+                                  })),
+                          Expanded(
+                              flex: 5,
+                              child: SmallRoundedButton(
+                                  text: "Supprimer du voyage",
+                                  press: () {
+                                    print("DELETE");
+                                    PlanningEventService()
+                                        .deletePlanningEvent(int.parse(
+                                            appointment.notes!.split(",").last))
+                                        .then((value) {
+                                      Navigator.of(context).pop();
+                                      if (value.statusCode == 200) {
+                                        widget._dataSource!.appointments!
+                                            .remove(appointment);
+                                        widget._dataSource!.notifyListeners(
+                                            CalendarDataSourceAction.remove,
+                                            <Appointment>[appointment]);
+                                      } else {
+                                        WarningModal(
+                                            text:
+                                                "Le planning event n'a pas pu être supprimé",
+                                            url_animation:
+                                                "assets/lottieanimate/error.json");
+                                      }
+                                    });
+                                  }))
+                        ])),
+                    Expanded(
+                        flex: 3,
+                        child: Row(children: [
+                          Expanded(
+                              flex: 10,
+                              child: DatePickerWidget(
+                                text:
+                                    "${appointment.startTime.day.toString().padLeft(2, '0')}/${appointment.startTime.month.toString().padLeft(2, '0')}/${appointment.startTime.year}",
+                                beginDate: widget.dateBegin,
+                                endDate: widget.dateEnd,
+                                onDateTimeChanged: (newDate) {
+                                  setModalState(() {
+                                    selectedDate = newDate;
+                                    print(newDate);
+                                  });
+                                },
+                              ))
+                        ])),
+                    Expanded(
+                      flex: 3,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: TimePickerWidget(
+                              text:
+                                  "${appointment.startTime.hour.toString().padLeft(2, '0')}:${appointment.startTime.minute.toString().padLeft(2, '0')}",
+                              onDateTimeChanged: (newDateTime) {
+                                setModalState(() {
+                                  beginHour = newDateTime;
+                                  print(beginHour);
+                                });
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            flex: 5,
+                            child: TimePickerWidget(
+                              text:
+                                  "${appointment.endTime.hour.toString().padLeft(2, '0')}:${appointment.endTime.minute.toString().padLeft(2, '0')}",
+                              beginTime: beginHour,
+                              onDateTimeChanged: (newDateTime) {
+                                setModalState(() {
+                                  endHour = newDateTime;
+                                  print(endHour);
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                        flex: 2,
+                        child: !verifyData()
+                            ? Container()
+                            : compareData()
+                                ? const Text(
+                                    "L'heure de debut doit être inferieur à l'heure de fin",
+                                    style: TextStyle(color: Colors.red),
+                                  )
+                                : Row(children: [
+                                    Expanded(
+                                        flex: 5,
+                                        child: RoundedButton(
+                                            text: "Modifier",
+                                            press: () {
+                                              if (selectedDate != null &&
+                                                  beginHour != null &&
+                                                  endHour != null) {
+                                                DateTime startTime = DateTime(
+                                                    selectedDate!.year,
+                                                    selectedDate!.month,
+                                                    selectedDate!.day,
+                                                    beginHour!.hour,
+                                                    beginHour!.minute);
+                                                DateTime endTime = DateTime(
+                                                    selectedDate!.year,
+                                                    selectedDate!.month,
+                                                    selectedDate!.day,
+                                                    endHour!.hour,
+                                                    endHour!.minute);
+                                                PlanningEventService()
+                                                    .updatePlanningEvent(
+                                                        int.parse(appointment
+                                                            .notes!
+                                                            .split(",")
+                                                            .first),
+                                                        appointment.subject,
+                                                        startTime,
+                                                        endTime)
+                                                    .then((value) {
+                                                  Navigator.of(context).pop();
+
+                                                  if (value.statusCode == 200) {
+                                                    widget._dataSource!
+                                                        .appointments!
+                                                        .remove(appointment);
+                                                    widget._dataSource!
+                                                        .notifyListeners(
+                                                            CalendarDataSourceAction
+                                                                .remove,
+                                                            <Appointment>[
+                                                          appointment
+                                                        ]);
+
+                                                    Appointment app =
+                                                        appointment;
+                                                    app.startTime = startTime;
+                                                    app.endTime = endTime;
+                                                    widget._dataSource!
+                                                        .appointments!
+                                                        .add(app);
+
+                                                    widget._dataSource!
+                                                        .notifyListeners(
+                                                            CalendarDataSourceAction
+                                                                .add,
+                                                            <Appointment>[app]);
+                                                  } else {
+                                                    WarningModal(
+                                                        text:
+                                                            "Le planning event n'a pas pu être supprimé",
+                                                        url_animation:
+                                                            "assets/lottieanimate/error.json");
+                                                  }
+                                                });
+                                              }
+                                            }))
+                                  ])),
+                  ],
+                ),
+              ));
+        });
+      },
+    ).whenComplete(() {
+      selectedDate = null;
+      beginHour = null;
+      endHour = null;
+    });
+  }
 }
 
 void dragEnd(AppointmentDragEndDetails appointmentDragEndDetails) {
   dynamic appointment = appointmentDragEndDetails.appointment;
-  print(appointment);
-  print(appointment.startTime);
-  print(appointment.endTime);
-  print(int.parse((appointment).notes));
-  PlanningEventService().updatePlanningEvent(int.parse(appointment.notes),
-      appointment.subject, appointment.startTime, appointment.endTime);
+  // print(appointment);
+  // print(appointment.startTime);
+  // print(appointment.endTime);
+  // print(int.parse((appointment).notes));
+  PlanningEventService().updatePlanningEvent(
+      int.parse(appointment.notes.toString().split(",").first),
+      appointment.subject,
+      appointment.startTime,
+      appointment.endTime);
 }
 
 _AppointmentDataSource _getCalendarDataSource() {
