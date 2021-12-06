@@ -144,7 +144,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                             child: !verifyData()
                                                 ? Container()
                                                 : compareData()
-                                                    ? Text(
+                                                    ? const Text(
                                                         "L'heure de debut doit être inferieur à l'heure de fin",
                                                         style: TextStyle(
                                                             color: Colors.red),
@@ -187,8 +187,12 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
               onDragEnd: dragEnd,
               initialDisplayDate: selectedDate,
               timeSlotViewSettings: const TimeSlotViewSettings(
-                  timeIntervalHeight: 60, timeFormat: "hh:mm"),
+                timeIntervalHeight: 60,
+                timeFormat: "hh:mm",
+              ),
               showWeekNumber: true,
+              minDate: widget.dateBegin,
+              maxDate: widget.dateEnd,
             ),
           ),
         ],
