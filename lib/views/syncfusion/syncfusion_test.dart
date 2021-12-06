@@ -99,10 +99,10 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                               Expanded(
                                                   flex: 5,
                                                   child: TextButton.icon(
-                                                      icon: Icon(
+                                                      icon: const Icon(
                                                           Icons.delete_forever,
                                                           color: kPrimaryColor),
-                                                      label: Text(
+                                                      label: const Text(
                                                         "Supprimer du voyage",
                                                         style: TextStyle(
                                                             color:
@@ -373,11 +373,11 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                           Expanded(
                               flex: 5,
                               child: TextButton.icon(
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.delete,
                                     color: kPrimaryColor,
                                   ),
-                                  label: Text(
+                                  label: const Text(
                                     "Retirer du planning",
                                     style: TextStyle(color: kPrimaryColor),
                                   ),

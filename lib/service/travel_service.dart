@@ -107,7 +107,6 @@ class TravelService {
         List<User> members = [];
         for (dynamic member
             in json.decode(utf8.decode(response.bodyBytes))["members"]) {
-          // members.add(member["user"]["pseudo"]);
           members.add(User.fromJson(member));
         }
         return members;
