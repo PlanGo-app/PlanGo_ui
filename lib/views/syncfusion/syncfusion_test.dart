@@ -10,7 +10,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class SyncfusionTest extends StatefulWidget {
   int travelId;
-  List all = [];
+  List<PlanningEvent> all = [];
   CalendarDataSource? _dataSource;
   final DateTime dateBegin;
   final DateTime dateEnd;
@@ -287,8 +287,6 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
       beginHour = null;
       endHour = null;
     });
-
-    // if (save) Navigator.of(context).pop();
   }
 
   modal(Appointment appointment) {
@@ -325,14 +323,37 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                   text: "Supprimer du planning",
                                   press: () {
                                     print("DELETE");
-                                    PlanningEventService().updatePlanningEvent(
-                                        int.parse(appointment.notes
-                                            .toString()
-                                            .split(",")
-                                            .first),
-                                        appointment.subject,
-                                        null,
-                                        null);
+                                    PlanningEventService()
+                                        .updatePlanningEvent(
+                                            int.parse(appointment.notes
+                                                .toString()
+                                                .split(",")
+                                                .first),
+                                            appointment.subject,
+                                            null,
+                                            null)
+                                        .then((value) {
+                                      print(value.statusCode);
+                                      PlanningEventService()
+                                          .getPlanningEvent(int.parse(
+                                              appointment.notes
+                                                  .toString()
+                                                  .split(",")
+                                                  .first))
+                                          .then((value) {
+                                        if (value is PlanningEvent) {
+                                          widget._dataSource!.appointments!
+                                              .remove(appointment);
+                                          widget._dataSource!.notifyListeners(
+                                              CalendarDataSourceAction.remove,
+                                              <Appointment>[appointment]);
+                                          setState(() {
+                                            widget.all.add(value);
+                                          });
+                                        }
+                                        Navigator.of(context).pop();
+                                      });
+                                    });
                                   })),
                           Expanded(
                               flex: 5,
@@ -506,10 +527,6 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
 
 void dragEnd(AppointmentDragEndDetails appointmentDragEndDetails) {
   dynamic appointment = appointmentDragEndDetails.appointment;
-  // print(appointment);
-  // print(appointment.startTime);
-  // print(appointment.endTime);
-  // print(int.parse((appointment).notes));
   PlanningEventService().updatePlanningEvent(
       int.parse(appointment.notes.toString().split(",").first),
       appointment.subject,

@@ -63,4 +63,20 @@ class PlanningEventService {
       return response;
     });
   }
+
+  Future<PlanningEvent> getPlanningEvent(int id) async {
+    return Storage.getToken().then((token) async {
+      return await http.get(
+        Uri.parse(HTTP + "planning_event/$id"),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+    }).then((response) {
+      if (response.statusCode == 200) {
+        return PlanningEvent.fromJson(
+            json.decode(utf8.decode(response.bodyBytes)));
+      } else {
+        throw Exception("Failed to load planningEvent");
+      }
+    });
+  }
 }
