@@ -88,7 +88,14 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                           ),
                           margin: const EdgeInsets.symmetric(horizontal: 4),
                           padding: const EdgeInsets.symmetric(horizontal: 6),
-                          child: Center(child: Text(planningEvent.name))),
+                          child: Container(
+                            width: 150,
+                            child: Center(
+                                child: Text(
+                              planningEvent.name,
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                          )),
                       onTap: () {
                         showModalBottomSheet(
                           shape: const RoundedRectangleBorder(
