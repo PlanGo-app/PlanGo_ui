@@ -27,7 +27,7 @@ class TravelService {
     });
   }
 
-  Future<Travel> joinTravel(code) async {
+  Future<Travel?> joinTravel(code) async {
     return Storage.getToken().then((token) async {
       return await http.post(
         Uri.parse(HTTP + "travel/invitation?code=$code"),
@@ -40,7 +40,7 @@ class TravelService {
       if (response.statusCode == 200) {
         return Travel.fromJson(json.decode(utf8.decode(response.bodyBytes)));
       } else {
-        throw Exception("Failed to join travels");
+        return null;
       }
     });
   }

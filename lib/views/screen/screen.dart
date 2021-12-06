@@ -71,7 +71,7 @@ class _ScreenState extends State<Screen> {
                 inactiveColor: kPrimaryColor),
             BottomNavyBarItem(
                 icon: const Icon(Icons.calendar_today),
-                title: const Text('Syncfusion'),
+                title: const Text('Calendrier'),
                 activeColor: kPrimaryLightColor,
                 inactiveColor: kPrimaryColor),
           ],
