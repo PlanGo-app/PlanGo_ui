@@ -4,6 +4,7 @@ import 'package:plango_front/service/travel_service.dart';
 import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/util/loading.dart';
 import 'package:plango_front/views/components/warning_animation.dart';
+import 'package:plango_front/views/travels_list/travels_list.dart';
 
 class Group extends StatefulWidget {
   late int travelId;
@@ -83,8 +84,6 @@ class _GroupState extends State<Group> {
                                     TravelService()
                                         .deleteTravel(widget.travelId)
                                         .then((value) => {
-                                              print("aaaaaaaaa" +
-                                                  value.statusCode.toString()),
                                               if (value.statusCode != 200)
                                                 {
                                                   showModalBottomSheet(
@@ -116,14 +115,14 @@ class _GroupState extends State<Group> {
                                                 {
                                                   Navigator.of(context).pop(),
                                                   Navigator.of(context).pop(),
-                                                  // Navigator.push(
-                                                  //     context,
-                                                  //     MaterialPageRoute(
-                                                  //       builder: (
-                                                  //         context,
-                                                  //       ) =>
-                                                  //           TravelsList(),
-                                                  //     ))
+                                                  Navigator.pushReplacement(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (
+                                                          context,
+                                                        ) =>
+                                                            TravelsList(),
+                                                      )),
                                                 }
                                             });
                                   },

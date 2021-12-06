@@ -132,25 +132,21 @@ class _CreateTravelState extends State<CreateTravel> {
                                   : Container(),
                             ),
                       city!.name != "" && datePicked == false
-                          ? Container(
-                              width: 240,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black),
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Colors.white),
-                              child: Row(
-                                children: [
-                                  FloatingActionButton(
-                                    onPressed: () {
-                                      _selectDate(context, false);
-                                    },
-                                    child: const Icon(Icons.date_range),
-                                    mini: true,
-                                    backgroundColor: kPrimaryColor,
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                FloatingActionButton(
+                                  onPressed: () {
+                                    _selectDate(context, false);
+                                  },
+                                  child: const Icon(
+                                    Icons.date_range,
+                                    size: 40,
                                   ),
-                                  TextInputDate(),
-                                ],
-                              ),
+                                  backgroundColor: kPrimaryColor,
+                                ),
+                                // TextInputDate(),
+                              ],
                             )
                           : Container(),
                       datePicked == true
@@ -168,7 +164,7 @@ class _CreateTravelState extends State<CreateTravel> {
                                           "/" +
                                           selectedEndDate.year.toString()
                                       : ""),
-                              size: 20,
+                              size: 15,
                               child: const RoundedIcon(
                                   child: Icon(
                                 Icons.calendar_today,
@@ -176,25 +172,20 @@ class _CreateTravelState extends State<CreateTravel> {
                               )))
                           : Container(),
                       datePicked == true && dateEndPicked == false
-                          ? Container(
-                              width: 240,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black),
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: Colors.white),
-                              child: Row(
-                                children: [
-                                  FloatingActionButton(
-                                    onPressed: () {
-                                      _selectDate(context, true);
-                                    },
-                                    child: const Icon(Icons.date_range),
-                                    mini: true,
-                                    backgroundColor: kPrimaryColor,
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                FloatingActionButton(
+                                  onPressed: () {
+                                    _selectDate(context, true);
+                                  },
+                                  child: const Icon(
+                                    Icons.date_range,
+                                    size: 40,
                                   ),
-                                  TextInputDate(),
-                                ],
-                              ),
+                                  backgroundColor: kPrimaryColor,
+                                ),
+                              ],
                             )
                           : Container(),
                       dateEndPicked == true
@@ -204,7 +195,7 @@ class _CreateTravelState extends State<CreateTravel> {
                                     .addTravel(country!.name, city!.name,
                                         selectedDate, selectedEndDate)
                                     .then((value) => {
-                                          value != null // ERROR
+                                          value != null
                                               ? Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
@@ -296,14 +287,18 @@ class ObjectTextDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+        width: 330,
         margin: const EdgeInsets.all(30),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             child,
-            Text(
-              res!,
-              style: TextStyle(fontSize: size, fontWeight: FontWeight.bold),
+            Flexible(
+              child: Text(
+                res!,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: size, fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ));

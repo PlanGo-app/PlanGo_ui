@@ -217,17 +217,17 @@ class _TravelsListBuilderState extends State<TravelsListBuilder> {
                                   widget.snapshot.data![index].date_end),
                           style: const TextStyle(color: Colors.white)),
                       onTap: () {
-                        Navigator.of(context)
-                            .push(MaterialPageRoute(
-                              builder: (context) => Screen(
-                                  travelId: widget.snapshot.data![index].id,
-                                  city: widget.snapshot.data![index].city,
-                                  country: widget.snapshot.data![index].country,
-                                  date: widget.snapshot.data![index].date_start,
-                                  endDate:
-                                      widget.snapshot.data![index].date_end),
-                            ))
-                            .then((_) => setState(() {}));
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => Screen(
+                              travelId: widget.snapshot.data![index].id,
+                              city: widget.snapshot.data![index].city,
+                              country: widget.snapshot.data![index].country,
+                              date: widget.snapshot.data![index].date_start,
+                              endDate: widget.snapshot.data![index].date_end),
+                        ));
+                        // .then((_) => setState(() {
+                        //       print("setSTate");
+                        //     }));
                       },
                     ),
                   ),
