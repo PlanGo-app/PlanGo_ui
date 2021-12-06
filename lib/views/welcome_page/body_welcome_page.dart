@@ -117,6 +117,7 @@ class _FormLoginState extends State<FormLogin> {
                         switch (value.statusCode) {
                           case 200:
                             Storage.setToken(value);
+                            USER_NAME = pseudoController.text;
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(

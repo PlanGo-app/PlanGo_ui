@@ -6,7 +6,7 @@ import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/util/storage.dart';
 
 class PlanningEventService {
-  Future<List<PlanningEvent>> getPlanningEvents(int travelId) async {
+  Future<List<PlanningEvent>?> getPlanningEvents(int travelId) async {
     return Storage.getToken().then((token) async {
       return await http.get(
         Uri.parse(HTTP + "travel/$travelId/planningEvents"),
@@ -21,7 +21,7 @@ class PlanningEventService {
         }
         return planningEvents;
       } else {
-        throw Exception("Failed to load planningEvent");
+        return null;
       }
     });
   }
@@ -64,7 +64,7 @@ class PlanningEventService {
     });
   }
 
-  Future<PlanningEvent> getPlanningEvent(int id) async {
+  Future<PlanningEvent?> getPlanningEvent(int id) async {
     return Storage.getToken().then((token) async {
       return await http.get(
         Uri.parse(HTTP + "planning_event/$id"),
@@ -75,7 +75,7 @@ class PlanningEventService {
         return PlanningEvent.fromJson(
             json.decode(utf8.decode(response.bodyBytes)));
       } else {
-        throw Exception("Failed to load planningEvent");
+        return null;
       }
     });
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plango_front/service/account_service.dart';
+import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/util/storage.dart';
 import 'package:plango_front/views/components/rounded_button.dart';
 import 'package:plango_front/views/create_account/create_account_background.dart';
@@ -98,6 +99,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                 case 201:
                                   // var token = json.decode(value.body)["token"];
                                   Storage.setToken(value);
+                                  USER_NAME = pseudo!;
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) => TravelsList()));
                                   break;

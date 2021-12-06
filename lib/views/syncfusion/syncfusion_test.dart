@@ -41,15 +41,31 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
     widget.all = [];
     widget._dataSource = _getCalendarDataSource();
     PlanningEventService().getPlanningEvents(widget.travelId).then((value) {
-      setState(() {
-        for (PlanningEvent planningEvent in value) {
-          if (planningEvent.date_start != null) {
-            createPlanningEvent(planningEvent, context, false);
-          } else {
-            widget.all.add(planningEvent);
+      if (value is List<PlanningEvent>) {
+        setState(() {
+          for (PlanningEvent planningEvent in value) {
+            if (planningEvent.date_start != null) {
+              createPlanningEvent(planningEvent, context, false);
+            } else {
+              widget.all.add(planningEvent);
+            }
           }
-        }
-      });
+        });
+      } else {
+        showModalBottomSheet(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+            ),
+            context: context,
+            builder: (BuildContext context) {
+              return WarningModal(
+                text:
+                    "Impossible de charger les plannings event pour le moment",
+                url_animation: 'assets/lottieanimate/error.json',
+              );
+            });
+      }
     });
   }
 
@@ -447,8 +463,27 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                           setState(() {
                                             widget.all.add(value);
                                           });
+                                          Navigator.of(context).pop();
+                                        } else {
+                                          showModalBottomSheet(
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(25),
+                                                    topRight:
+                                                        Radius.circular(25)),
+                                              ),
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return WarningModal(
+                                                  text:
+                                                      "Impossible de charger le planning event pour le moment",
+                                                  url_animation:
+                                                      'assets/lottieanimate/error.json',
+                                                );
+                                              });
                                         }
-                                        Navigator.of(context).pop();
                                       });
                                     });
                                   })),

@@ -31,20 +31,4 @@ class CountryCityService {
     }
     return Place.fromJson(jsonDecode(utf8.decode(result.bodyBytes)));
   }
-
-  Future<dynamic> getParentInfo(parentId) async {
-    var result;
-    try {
-      var result = await http.get(Uri.parse(
-          'https://nominatim.openstreetmap.org/details?place_id=$parentId&format=json'));
-    } catch (e) {
-      throw ("Unable to get Info");
-    }
-    var res = json.decode(utf8.decode(result.bodyBytes));
-    try {
-      return res["names"]["name:en"];
-    } catch (_) {
-      return res["localname"];
-    }
-  }
 }

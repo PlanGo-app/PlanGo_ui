@@ -19,7 +19,7 @@ class AccountService {
 
   Future<http.Response> GetUser() async {
     return Storage.getToken().then((token) async {
-      if (token != null)
+      if (token != null) {
         return await http.get(
           Uri.parse(HTTP + "user"),
           headers: {
@@ -27,6 +27,7 @@ class AccountService {
             "Content-Type": "application/json"
           },
         );
+      }
       return http.Response("", 400);
     });
   }

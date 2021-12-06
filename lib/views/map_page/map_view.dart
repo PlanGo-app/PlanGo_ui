@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:plango_front/model/pin.dart';
 import 'package:plango_front/service/country_city_service.dart';
 import 'package:plango_front/service/pin_service.dart';
+import 'package:plango_front/views/components/warning_animation.dart';
 import 'package:plango_front/views/nav_bar/nav_bar_bloc/nav_bar_bloc.dart';
 import 'package:provider/src/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -75,8 +76,23 @@ class _MapState extends State<MapView> {
     });
 
     PinService().getPins(widget.travelId).then((value) {
-      for (Pin p in value) {
-        widget.addMarker(LatLng(p.latitude, p.longitude), false);
+      if (value is List<Pin>) {
+        for (Pin p in value) {
+          widget.addMarker(LatLng(p.latitude, p.longitude), false);
+        }
+      } else {
+        showModalBottomSheet(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+            ),
+            context: context,
+            builder: (BuildContext context) {
+              return WarningModal(
+                text: "Impossible de charger les pins pour le moment",
+                url_animation: 'assets/lottieanimate/error.json',
+              );
+            });
       }
     });
   }

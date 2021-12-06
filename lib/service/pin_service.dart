@@ -6,7 +6,7 @@ import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/util/storage.dart';
 
 class PinService {
-  Future<List<Pin>> getPins(int travelId) async {
+  Future<List<Pin>?> getPins(int travelId) async {
     return Storage.getToken().then((token) async {
       return await http.get(
         Uri.parse(HTTP + "travel/$travelId/pins"),
@@ -21,7 +21,7 @@ class PinService {
         }
         return pins;
       } else {
-        throw Exception("Failed to load Pins");
+        return null;
       }
     });
   }
