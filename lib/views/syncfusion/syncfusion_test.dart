@@ -446,45 +446,67 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                             null,
                                             null)
                                         .then((value) {
-                                      print(value.statusCode);
-                                      PlanningEventService()
-                                          .getPlanningEvent(int.parse(
-                                              appointment.notes
-                                                  .toString()
-                                                  .split(",")
-                                                  .first))
-                                          .then((value) {
-                                        if (value is PlanningEvent) {
-                                          widget._dataSource!.appointments!
-                                              .remove(appointment);
-                                          widget._dataSource!.notifyListeners(
-                                              CalendarDataSourceAction.remove,
-                                              <Appointment>[appointment]);
-                                          setState(() {
-                                            widget.all.add(value);
-                                          });
-                                          Navigator.of(context).pop();
-                                        } else {
-                                          showModalBottomSheet(
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(25),
-                                                    topRight:
-                                                        Radius.circular(25)),
-                                              ),
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return WarningModal(
-                                                  text:
-                                                      "Impossible de charger le planning event pour le moment",
-                                                  url_animation:
-                                                      'assets/lottieanimate/error.json',
-                                                );
-                                              });
-                                        }
-                                      });
+                                      if (value.statusCode == 200) {
+                                        PlanningEventService()
+                                            .getPlanningEvent(int.parse(
+                                                appointment.notes
+                                                    .toString()
+                                                    .split(",")
+                                                    .first))
+                                            .then((value) {
+                                          if (value is PlanningEvent) {
+                                            widget._dataSource!.appointments!
+                                                .remove(appointment);
+                                            widget._dataSource!.notifyListeners(
+                                                CalendarDataSourceAction.remove,
+                                                <Appointment>[appointment]);
+                                            setState(() {
+                                              widget.all.add(value);
+                                            });
+                                            Navigator.of(context).pop();
+                                          } else {
+                                            showModalBottomSheet(
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  25),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  25)),
+                                                ),
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return WarningModal(
+                                                    text:
+                                                        "Impossible de charger le planning event pour le moment",
+                                                    url_animation:
+                                                        'assets/lottieanimate/error.json',
+                                                  );
+                                                });
+                                          }
+                                        });
+                                      } else {
+                                        showModalBottomSheet(
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(25),
+                                                  topRight:
+                                                      Radius.circular(25)),
+                                            ),
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return WarningModal(
+                                                text:
+                                                    "Impossible de supprimer le planning event pour le moment",
+                                                url_animation:
+                                                    'assets/lottieanimate/error.json',
+                                              );
+                                            });
+                                      }
                                     });
                                   })),
                           Expanded(

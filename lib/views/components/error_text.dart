@@ -18,7 +18,7 @@ class ErrorText extends StatelessWidget {
               color: Colors.red,
               fontWeight: FontWeight.bold,
               fontSize: 20,
-              overflow: TextOverflow.ellipsis),
+              overflow: TextOverflow.visible),
         ));
   }
 }
