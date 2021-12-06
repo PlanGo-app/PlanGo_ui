@@ -3,6 +3,7 @@ import 'package:plango_front/model/user.dart';
 import 'package:plango_front/service/travel_service.dart';
 import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/util/loading.dart';
+import 'package:plango_front/views/components/warning_animation.dart';
 
 class Group extends StatefulWidget {
   late int travelId;
@@ -58,50 +59,180 @@ class _GroupState extends State<Group> {
                     _isAdmin = true;
                   }
                 }
-                return ListView.separated(
-                  separatorBuilder: (context, index) {
-                    return const Divider();
-                  },
-                  itemBuilder: (context, index) {
-                    return Container(
-                      color: Colors.blue,
-                      child: Container(
-                        width: size.height * 0.7,
+                return Column(
+                  children: [
+                    Expanded(
+                      flex: 7,
+                      child: ListOfMembers(size, snapshot, _isAdmin),
+                    ),
+                    Container(
+                        height: 40,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 8,
-                              child: Center(
-                                child: Text(
-                                  snapshot.data![index].pseudo,
-                                  style: const TextStyle(
-                                      fontSize: 60, color: Colors.red),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ),
-                            _isAdmin
-                                ? const Expanded(
-                                    flex: 2,
-                                    child: Icon(
-                                      Icons.delete_forever_rounded,
-                                      size: 40,
-                                      color: Colors.white,
-                                    ))
-                                : Container()
-                          ],
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.red,
                         ),
-                      ),
-                    );
-                  },
-                  itemCount: snapshot.data!.length,
+                        margin: const EdgeInsets.all(10),
+                        child: TextButton.icon(
+                          icon: const Icon(Icons.leave_bags_at_home,
+                              size: 25, color: Colors.white),
+                          onPressed: () {
+                            AlertDialog alert = AlertDialog(
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    TravelService()
+                                        .deleteTravel(widget.travelId)
+                                        .then((value) => {
+                                              print("aaaaaaaaa" +
+                                                  value.statusCode.toString()),
+                                              if (value.statusCode != 200)
+                                                {
+                                                  showModalBottomSheet(
+                                                      shape:
+                                                          const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        25),
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        25)),
+                                                      ),
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return WarningModal(
+                                                          text:
+                                                              "Impossible de quitter le voyage",
+                                                          url_animation:
+                                                              'assets/lottieanimate/error.json',
+                                                        );
+                                                      }),
+                                                  // Navigator.of(context).pop(),
+                                                  // Navigator.of(context).pop(),
+                                                }
+                                              else
+                                                {
+                                                  Navigator.of(context).pop(),
+                                                  Navigator.of(context).pop(),
+                                                  // Navigator.push(
+                                                  //     context,
+                                                  //     MaterialPageRoute(
+                                                  //       builder: (
+                                                  //         context,
+                                                  //       ) =>
+                                                  //           TravelsList(),
+                                                  //     ))
+                                                }
+                                            });
+                                  },
+                                  child: const Text(
+                                    'Quitter le voyage',
+                                    style: TextStyle(color: kPrimaryLightColor),
+                                  ),
+                                ),
+                                TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                    child: const Text('Annuler',
+                                        style:
+                                            TextStyle(color: kPrimaryColor))),
+                              ],
+                              title: const Text(
+                                'Etes-vous sûr de vouloir quitter le voyage ?',
+                                style: TextStyle(color: kPrimaryColor),
+                              ),
+                            );
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return alert;
+                              },
+                            );
+                          },
+                          label: const Text(
+                            "QUITTER LE GROUPE",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                        )),
+                  ],
                 );
               }
           }
         },
       ),
+    );
+  }
+
+  ListView ListOfMembers(
+      Size size, AsyncSnapshot<List<User>> snapshot, bool _isAdmin) {
+    return ListView.separated(
+      separatorBuilder: (context, index) {
+        return const Divider();
+      },
+      itemBuilder: (context, index) {
+        return Container(
+          color: Colors.blue,
+          child: Container(
+            width: size.height * 0.7,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 8,
+                  child: Center(
+                    child: Text(
+                      snapshot.data![index].pseudo,
+                      style: const TextStyle(fontSize: 60, color: Colors.red),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                _isAdmin && snapshot.data![index].pseudo != USER_NAME
+                    ? Expanded(
+                        flex: 2,
+                        child: IconButton(
+                            onPressed: () {
+                              TravelService()
+                                  .kickMember(
+                                      snapshot.data![index].id, widget.travelId)
+                                  .then((value) => {
+                                        setState(() {}),
+                                        showModalBottomSheet(
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(25),
+                                                  topRight:
+                                                      Radius.circular(25)),
+                                            ),
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return WarningModal(
+                                                text: value.statusCode == 200
+                                                    ? "Membre retiré"
+                                                    : "Impossible de retirer ce membre",
+                                                url_animation: value
+                                                            .statusCode ==
+                                                        200
+                                                    ? 'assets/lottieanimate/done.json'
+                                                    : 'assets/lottieanimate/error.json',
+                                              );
+                                            })
+                                      });
+                            },
+                            icon: const Icon(
+                              Icons.delete_forever_rounded,
+                              size: 40,
+                              color: Colors.white,
+                            )))
+                    : Container()
+              ],
+            ),
+          ),
+        );
+      },
+      itemCount: snapshot.data!.length,
     );
   }
 }

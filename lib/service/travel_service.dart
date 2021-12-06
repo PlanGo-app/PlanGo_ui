@@ -83,6 +83,19 @@ class TravelService {
     });
   }
 
+  Future<http.Response> kickMember(userId, travelId) async {
+    return Storage.getToken().then((token) async {
+      return await http.delete(
+        Uri.parse(HTTP + "travel/$travelId/member/$userId"),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+    }).then((response) {
+      return response;
+    });
+  }
+
   Future<List<User>> getMembers(int travelId) async {
     return Storage.getToken().then((token) async {
       return await http.get(
