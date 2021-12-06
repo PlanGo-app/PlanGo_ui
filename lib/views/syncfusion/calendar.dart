@@ -84,7 +84,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                       child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(18),
-                            color: Colors.deepPurpleAccent,
+                            color: kPrimaryColor,
                           ),
                           margin: const EdgeInsets.symmetric(horizontal: 4),
                           padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -93,6 +93,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                             child: Center(
                                 child: Text(
                               planningEvent.name,
+                              style: const TextStyle(color: Colors.white),
                               overflow: TextOverflow.ellipsis,
                             )),
                           )),
@@ -271,7 +272,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                               ? Container()
                                               : compareData()
                                                   ? const Text(
-                                                      "L'heure de debut doit être inferieur à l'heure de fin",
+                                                      "L'heure de debut doit être inferieure à l'heure de fin",
                                                       style: TextStyle(
                                                           color: Colors.red),
                                                     )
@@ -381,7 +382,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
       startTime: startTime,
       endTime: endTime,
       subject: planningEvent.name,
-      color: Colors.purple,
+      color: kPrimaryColor,
     );
     print(app);
     if (save) {
