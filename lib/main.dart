@@ -37,20 +37,22 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget> {
   @override
   Widget build(BuildContext context) {
     return SplashScreen(
-        navigateAfterFuture: loadFromFuture(),
-        title: const Text(
-          'Bienvenue Dans Plango',
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0,
-              color: kPrimaryColor),
-        ),
-        image: Image.asset("assets/image/plango_logo.png"),
-        backgroundColor: Colors.white,
-        styleTextUnderTheLoader: const TextStyle(),
-        photoSize: 100.0,
-        loadingText: const Text("Loading ..."),
-        loaderColor: Colors.red);
+      navigateAfterFuture: loadFromFuture(),
+      title: const Text(
+        'Bienvenue Dans Plango',
+        style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 20.0, color: kPrimaryColor),
+      ),
+      image: Image.asset("assets/image/plango_logo.png"),
+      backgroundColor: Colors.white,
+      styleTextUnderTheLoader: const TextStyle(),
+      photoSize: 200.0,
+      loadingText: const Text(
+        "Loading ...",
+        style: TextStyle(color: kPrimaryColor),
+      ),
+      loaderColor: kPrimaryLightColor,
+    );
   }
 
   Future<Widget> loadFromFuture() async {

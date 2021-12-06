@@ -109,47 +109,84 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                                                 kPrimaryColor),
                                                       ),
                                                       onPressed: () {
-                                                        print(planningEvent
-                                                            .pinId);
-                                                        PlanningEventService()
-                                                            .deletePlanningEvent(
-                                                                planningEvent
-                                                                    .pinId)
-                                                            .then((value) {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                          if (value
-                                                                  .statusCode ==
-                                                              200) {
-                                                            setState(() {
-                                                              widget.all.remove(
-                                                                  planningEvent);
-                                                            });
-                                                          } else {
-                                                            showModalBottomSheet(
-                                                                shape:
-                                                                    const RoundedRectangleBorder(
-                                                                  borderRadius: BorderRadius.only(
-                                                                      topLeft: Radius
-                                                                          .circular(
-                                                                              25),
-                                                                      topRight:
-                                                                          Radius.circular(
-                                                                              25)),
-                                                                ),
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (BuildContext
-                                                                        context) {
-                                                                  return WarningModal(
-                                                                      text:
-                                                                          "Le planning event n'a pas pu être supprimé",
-                                                                      url_animation:
-                                                                          "assets/lottieanimate/error.json");
+                                                        AlertDialog alert =
+                                                            AlertDialog(
+                                                          actions: <Widget>[
+                                                            TextButton(
+                                                              onPressed: () {
+                                                                print(
+                                                                    planningEvent
+                                                                        .pinId);
+                                                                PlanningEventService()
+                                                                    .deletePlanningEvent(
+                                                                        planningEvent
+                                                                            .pinId)
+                                                                    .then(
+                                                                        (value) {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                  if (value
+                                                                          .statusCode ==
+                                                                      200) {
+                                                                    setState(
+                                                                        () {
+                                                                      widget.all
+                                                                          .remove(
+                                                                              planningEvent);
+                                                                    });
+                                                                  } else {
+                                                                    showModalBottomSheet(
+                                                                        shape:
+                                                                            const RoundedRectangleBorder(
+                                                                          borderRadius: BorderRadius.only(
+                                                                              topLeft: Radius.circular(25),
+                                                                              topRight: Radius.circular(25)),
+                                                                        ),
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (BuildContext
+                                                                                context) {
+                                                                          return WarningModal(
+                                                                              text: "Le planning event n'a pas pu être supprimé",
+                                                                              url_animation: "assets/lottieanimate/error.json");
+                                                                        });
+                                                                  }
                                                                 });
-                                                          }
-                                                        });
+                                                              },
+                                                              child: const Text(
+                                                                'Supprimer du voyage',
+                                                                style: TextStyle(
+                                                                    color:
+                                                                        kPrimaryLightColor),
+                                                              ),
+                                                            ),
+                                                            TextButton(
+                                                                onPressed: () =>
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop(),
+                                                                child: const Text(
+                                                                    'Annuler',
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                            kPrimaryColor))),
+                                                          ],
+                                                          title: const Text(
+                                                            'Etes-vous sûr de vouloir supprimer ce planning event du voyage ?',
+                                                            style: TextStyle(
+                                                                color:
+                                                                    kPrimaryColor),
+                                                          ),
+                                                        );
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return alert;
+                                                          },
+                                                        );
                                                       }))
                                             ])),
                                         Expanded(
@@ -418,45 +455,85 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                           Expanded(
                               flex: 5,
                               child: TextButton.icon(
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.delete_forever,
                                     color: kPrimaryColor,
                                   ),
-                                  label: Text(
+                                  label: const Text(
                                     "Supprimer du voyage",
                                     style: TextStyle(color: kPrimaryColor),
                                   ),
                                   onPressed: () {
-                                    print("DELETE");
-                                    PlanningEventService()
-                                        .deletePlanningEvent(int.parse(
-                                            appointment.notes!.split(",").last))
-                                        .then((value) {
-                                      Navigator.of(context).pop();
-                                      if (value.statusCode == 200) {
-                                        widget._dataSource!.appointments!
-                                            .remove(appointment);
-                                        widget._dataSource!.notifyListeners(
-                                            CalendarDataSourceAction.remove,
-                                            <Appointment>[appointment]);
-                                      } else {
-                                        showModalBottomSheet(
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(25),
-                                                  topRight:
-                                                      Radius.circular(25)),
-                                            ),
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return WarningModal(
-                                                  text:
-                                                      "Le planning event n'a pas pu être supprimé",
-                                                  url_animation:
-                                                      "assets/lottieanimate/error.json");
+                                    AlertDialog alert = AlertDialog(
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            PlanningEventService()
+                                                .deletePlanningEvent(int.parse(
+                                                    appointment.notes!
+                                                        .split(",")
+                                                        .last))
+                                                .then((value) {
+                                              Navigator.of(context).pop();
+                                              if (value.statusCode == 200) {
+                                                widget
+                                                    ._dataSource!.appointments!
+                                                    .remove(appointment);
+                                                widget._dataSource!
+                                                    .notifyListeners(
+                                                        CalendarDataSourceAction
+                                                            .remove,
+                                                        <Appointment>[
+                                                      appointment
+                                                    ]);
+                                              } else {
+                                                showModalBottomSheet(
+                                                    shape:
+                                                        const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                              topLeft: Radius
+                                                                  .circular(25),
+                                                              topRight: Radius
+                                                                  .circular(
+                                                                      25)),
+                                                    ),
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return WarningModal(
+                                                          text:
+                                                              "Le planning event n'a pas pu être supprimé",
+                                                          url_animation:
+                                                              "assets/lottieanimate/error.json");
+                                                    });
+                                              }
                                             });
-                                      }
-                                    });
+                                          },
+                                          child: const Text(
+                                            'Supprimer du voyage',
+                                            style: TextStyle(
+                                                color: kPrimaryLightColor),
+                                          ),
+                                        ),
+                                        TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            child: const Text('Annuler',
+                                                style: TextStyle(
+                                                    color: kPrimaryColor))),
+                                      ],
+                                      title: const Text(
+                                        'Etes-vous sûr de vouloir supprimer ce planning event du voyage ?',
+                                        style: TextStyle(color: kPrimaryColor),
+                                      ),
+                                    );
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return alert;
+                                      },
+                                    );
                                   }))
                         ])),
                     Expanded(
