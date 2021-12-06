@@ -3,6 +3,7 @@ import 'package:plango_front/model/user.dart';
 import 'package:plango_front/service/travel_service.dart';
 import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/util/loading.dart';
+import 'package:plango_front/views/components/warning_animation.dart';
 
 class Group extends StatefulWidget {
   late int travelId;
@@ -82,14 +83,52 @@ class _GroupState extends State<Group> {
                                 ),
                               ),
                             ),
-                            _isAdmin
-                                ? const Expanded(
+                            _isAdmin &&
+                                    snapshot.data![index].pseudo != USER_NAME
+                                ? Expanded(
                                     flex: 2,
-                                    child: Icon(
-                                      Icons.delete_forever_rounded,
-                                      size: 40,
-                                      color: Colors.white,
-                                    ))
+                                    child: IconButton(
+                                        onPressed: () {
+                                          TravelService()
+                                              .kickMember(
+                                                  snapshot.data![index].id,
+                                                  widget.travelId)
+                                              .then((value) => {
+                                                    setState(() {}),
+                                                    showModalBottomSheet(
+                                                        shape:
+                                                            const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          25),
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          25)),
+                                                        ),
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return WarningModal(
+                                                            text: value.statusCode ==
+                                                                    200
+                                                                ? "Membre retiré"
+                                                                : "Impossible de retirer ce membre",
+                                                            url_animation: value
+                                                                        .statusCode ==
+                                                                    200
+                                                                ? 'assets/lottieanimate/done.json'
+                                                                : 'assets/lottieanimate/error.json',
+                                                          );
+                                                        })
+                                                  });
+                                        },
+                                        icon: const Icon(
+                                          Icons.delete_forever_rounded,
+                                          size: 40,
+                                          color: Colors.white,
+                                        )))
                                 : Container()
                           ],
                         ),
