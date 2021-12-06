@@ -46,4 +46,21 @@ class PlanningEventService {
       return response;
     });
   }
+
+  Future<http.Response> deletePlanningEvent(
+    int pinId,
+  ) async {
+    return Storage.getToken().then((token) async {
+      return await http.delete(
+        Uri.parse(HTTP + "pin/$pinId"),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+    }).then((response) {
+      print(response.statusCode);
+      print(response.body);
+      return response;
+    });
+  }
 }

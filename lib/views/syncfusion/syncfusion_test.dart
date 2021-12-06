@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:plango_front/model/planning_event.dart';
 import 'package:plango_front/service/planning_event_service.dart';
 import 'package:plango_front/views/components/rounded_button.dart';
+import 'package:plango_front/views/components/small_rounded_button.dart';
+import 'package:plango_front/views/components/warning_animation.dart';
 import 'package:plango_front/views/syncfusion/date_picker_widget.dart';
 import 'package:plango_front/views/syncfusion/time_picker_widget.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -88,6 +90,42 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                     child: Column(
                                       children: [
                                         Expanded(
+                                            flex: 2,
+                                            child: Row(children: [
+                                              Expanded(
+                                                  flex: 5, child: Container()),
+                                              Expanded(
+                                                  flex: 5,
+                                                  child: SmallRoundedButton(
+                                                      text: "Supprimer",
+                                                      press: () {
+                                                        print(planningEvent
+                                                            .pinId);
+                                                        PlanningEventService()
+                                                            .deletePlanningEvent(
+                                                                planningEvent
+                                                                    .pinId)
+                                                            .then((value) {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          if (value
+                                                                  .statusCode ==
+                                                              200) {
+                                                            setState(() {
+                                                              widget.all.remove(
+                                                                  planningEvent);
+                                                            });
+                                                          } else {
+                                                            WarningModal(
+                                                                text:
+                                                                    "Le planning event n'a pas pu être supprimé",
+                                                                url_animation:
+                                                                    "assets/lottieanimate/error.json");
+                                                          }
+                                                        });
+                                                      }))
+                                            ])),
+                                        Expanded(
                                             flex: 3,
                                             child: Row(children: [
                                               Expanded(
@@ -140,7 +178,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                           ),
                                         ),
                                         Expanded(
-                                            flex: 3,
+                                            flex: 2,
                                             child: !verifyData()
                                                 ? Container()
                                                 : compareData()
@@ -164,6 +202,9 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                                                         planningEvent,
                                                                         context,
                                                                         true);
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
                                                                   }
                                                                 }))
                                                       ])),
@@ -188,7 +229,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
               initialDisplayDate: selectedDate,
               timeSlotViewSettings: const TimeSlotViewSettings(
                 timeIntervalHeight: 60,
-                timeFormat: "hh:mm",
+                timeFormat: "HH:mm",
               ),
               showWeekNumber: true,
               minDate: widget.dateBegin,
@@ -239,7 +280,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
       endHour = null;
     });
 
-    if (save) Navigator.of(context).pop();
+    // if (save) Navigator.of(context).pop();
   }
 }
 
