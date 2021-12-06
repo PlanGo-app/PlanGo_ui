@@ -225,8 +225,7 @@ class _GroupState extends State<Group> {
                               color: Colors.white,
                             )))
                     : Container(),
-                snapshot.data![index].pseudo == USER_NAME &&
-                        snapshot.data![index].role == "ADMIN"
+                snapshot.data![index].role == "ADMIN"
                     ? Flexible(
                         flex: 2,
                         child: IconButton(
