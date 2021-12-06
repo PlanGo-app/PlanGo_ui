@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:plango_front/model/planning_event.dart';
 import 'package:plango_front/service/planning_event_service.dart';
+import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/views/components/rounded_button.dart';
-import 'package:plango_front/views/components/small_rounded_button.dart';
 import 'package:plango_front/views/components/warning_animation.dart';
 import 'package:plango_front/views/syncfusion/date_picker_widget.dart';
 import 'package:plango_front/views/syncfusion/time_picker_widget.dart';
@@ -14,6 +15,7 @@ class SyncfusionTest extends StatefulWidget {
   CalendarDataSource? _dataSource;
   final DateTime dateBegin;
   final DateTime dateEnd;
+  final CalendarController _calendarController = CalendarController();
 
   SyncfusionTest(
       {Key? key,
@@ -30,6 +32,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
   DateTime? selectedDate;
   TimeOfDay? beginHour;
   TimeOfDay? endHour;
+  DateTime? currentTime;
   TextEditingController searchController = TextEditingController();
 
   @override
@@ -95,9 +98,17 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                                   flex: 5, child: Container()),
                                               Expanded(
                                                   flex: 5,
-                                                  child: SmallRoundedButton(
-                                                      text: "Supprimer",
-                                                      press: () {
+                                                  child: TextButton.icon(
+                                                      icon: Icon(
+                                                          Icons.delete_forever,
+                                                          color: kPrimaryColor),
+                                                      label: Text(
+                                                        "Supprimer du voyage",
+                                                        style: TextStyle(
+                                                            color:
+                                                                kPrimaryColor),
+                                                      ),
+                                                      onPressed: () {
                                                         print(planningEvent
                                                             .pinId);
                                                         PlanningEventService()
@@ -115,11 +126,28 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                                                   planningEvent);
                                                             });
                                                           } else {
-                                                            WarningModal(
-                                                                text:
-                                                                    "Le planning event n'a pas pu être supprimé",
-                                                                url_animation:
-                                                                    "assets/lottieanimate/error.json");
+                                                            showModalBottomSheet(
+                                                                shape:
+                                                                    const RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.only(
+                                                                      topLeft: Radius
+                                                                          .circular(
+                                                                              25),
+                                                                      topRight:
+                                                                          Radius.circular(
+                                                                              25)),
+                                                                ),
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return WarningModal(
+                                                                      text:
+                                                                          "Le planning event n'a pas pu être supprimé",
+                                                                      url_animation:
+                                                                          "assets/lottieanimate/error.json");
+                                                                });
                                                           }
                                                         });
                                                       }))
@@ -130,7 +158,8 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                               Expanded(
                                                   flex: 10,
                                                   child: DatePickerWidget(
-                                                    text: "Date de l'activité",
+                                                    text:
+                                                        "${currentTime!.day.toString().padLeft(2, '0')}/${currentTime!.month.toString().padLeft(2, '0')}/${currentTime!.year}",
                                                     beginDate: widget.dateBegin,
                                                     endDate: widget.dateEnd,
                                                     onDateTimeChanged:
@@ -177,18 +206,25 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                           ),
                                         ),
                                         Expanded(
-                                            flex: 2,
-                                            child: !verifyData()
-                                                ? Container()
-                                                : compareData()
-                                                    ? const Text(
-                                                        "L'heure de debut doit être inferieur à l'heure de fin",
-                                                        style: TextStyle(
-                                                            color: Colors.red),
-                                                      )
-                                                    : Row(children: [
+                                          flex: 2,
+                                          child: !verifyData()
+                                              ? Container()
+                                              : compareData()
+                                                  ? const Text(
+                                                      "L'heure de debut doit être inferieur à l'heure de fin",
+                                                      style: TextStyle(
+                                                          color: Colors.red),
+                                                    )
+                                                  : Row(
+                                                      children: [
                                                         Expanded(
-                                                            flex: 5,
+                                                          flex: 5,
+                                                          child: Container(
+                                                            margin:
+                                                                const EdgeInsets
+                                                                        .symmetric(
+                                                                    horizontal:
+                                                                        10),
                                                             child: RoundedButton(
                                                                 text: "Ajouter",
                                                                 press: () {
@@ -205,14 +241,22 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                                                             context)
                                                                         .pop();
                                                                   }
-                                                                }))
-                                                      ])),
+                                                                }),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                        ),
                                       ],
                                     ),
                                   ));
                             });
                           },
-                        );
+                        ).whenComplete(() {
+                          selectedDate = currentTime;
+                          beginHour = null;
+                          endHour = null;
+                        });
                       }))
                   .toList(),
               // IgnorePointer(child: Center(child: buildText(text))),
@@ -223,6 +267,8 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
             child: SfCalendar(
               view: CalendarView.day,
               dataSource: widget._dataSource,
+              controller: widget._calendarController,
+              onViewChanged: viewChanged,
               allowDragAndDrop: true,
               onDragEnd: dragEnd,
               initialDisplayDate: selectedDate,
@@ -244,6 +290,13 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
         ],
       ),
     ));
+  }
+
+  void viewChanged(ViewChangedDetails viewChangedDetails) {
+    SchedulerBinding.instance!.addPostFrameCallback((Duration duration) {
+      currentTime = viewChangedDetails.visibleDates.first;
+      selectedDate = currentTime;
+    });
   }
 
   bool verifyData() {
@@ -283,7 +336,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
         .notifyListeners(CalendarDataSourceAction.add, <Appointment>[app]);
     setState(() {
       widget.all.remove(planningEvent);
-      selectedDate = null;
+      selectedDate = currentTime;
       beginHour = null;
       endHour = null;
     });
@@ -319,9 +372,16 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                         child: Row(children: [
                           Expanded(
                               flex: 5,
-                              child: SmallRoundedButton(
-                                  text: "Supprimer du planning",
-                                  press: () {
+                              child: TextButton.icon(
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: kPrimaryColor,
+                                  ),
+                                  label: Text(
+                                    "Retirer du planning",
+                                    style: TextStyle(color: kPrimaryColor),
+                                  ),
+                                  onPressed: () {
                                     print("DELETE");
                                     PlanningEventService()
                                         .updatePlanningEvent(
@@ -357,9 +417,16 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                   })),
                           Expanded(
                               flex: 5,
-                              child: SmallRoundedButton(
-                                  text: "Supprimer du voyage",
-                                  press: () {
+                              child: TextButton.icon(
+                                  icon: Icon(
+                                    Icons.delete_forever,
+                                    color: kPrimaryColor,
+                                  ),
+                                  label: Text(
+                                    "Supprimer du voyage",
+                                    style: TextStyle(color: kPrimaryColor),
+                                  ),
+                                  onPressed: () {
                                     print("DELETE");
                                     PlanningEventService()
                                         .deletePlanningEvent(int.parse(
@@ -373,11 +440,21 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                             CalendarDataSourceAction.remove,
                                             <Appointment>[appointment]);
                                       } else {
-                                        WarningModal(
-                                            text:
-                                                "Le planning event n'a pas pu être supprimé",
-                                            url_animation:
-                                                "assets/lottieanimate/error.json");
+                                        showModalBottomSheet(
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(25),
+                                                  topRight:
+                                                      Radius.circular(25)),
+                                            ),
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return WarningModal(
+                                                  text:
+                                                      "Le planning event n'a pas pu être supprimé",
+                                                  url_animation:
+                                                      "assets/lottieanimate/error.json");
+                                            });
                                       }
                                     });
                                   }))
@@ -446,71 +523,93 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                                 : Row(children: [
                                     Expanded(
                                         flex: 5,
-                                        child: RoundedButton(
-                                            text: "Modifier",
-                                            press: () {
-                                              if (selectedDate != null &&
-                                                  beginHour != null &&
-                                                  endHour != null) {
-                                                DateTime startTime = DateTime(
-                                                    selectedDate!.year,
-                                                    selectedDate!.month,
-                                                    selectedDate!.day,
-                                                    beginHour!.hour,
-                                                    beginHour!.minute);
-                                                DateTime endTime = DateTime(
-                                                    selectedDate!.year,
-                                                    selectedDate!.month,
-                                                    selectedDate!.day,
-                                                    endHour!.hour,
-                                                    endHour!.minute);
-                                                PlanningEventService()
-                                                    .updatePlanningEvent(
-                                                        int.parse(appointment
-                                                            .notes!
-                                                            .split(",")
-                                                            .first),
-                                                        appointment.subject,
-                                                        startTime,
-                                                        endTime)
-                                                    .then((value) {
-                                                  Navigator.of(context).pop();
+                                        child: Container(
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 5),
+                                          child: RoundedButton(
+                                              text: "Modifier",
+                                              press: () {
+                                                if (selectedDate != null &&
+                                                    beginHour != null &&
+                                                    endHour != null) {
+                                                  DateTime startTime = DateTime(
+                                                      selectedDate!.year,
+                                                      selectedDate!.month,
+                                                      selectedDate!.day,
+                                                      beginHour!.hour,
+                                                      beginHour!.minute);
+                                                  DateTime endTime = DateTime(
+                                                      selectedDate!.year,
+                                                      selectedDate!.month,
+                                                      selectedDate!.day,
+                                                      endHour!.hour,
+                                                      endHour!.minute);
+                                                  PlanningEventService()
+                                                      .updatePlanningEvent(
+                                                          int.parse(appointment
+                                                              .notes!
+                                                              .split(",")
+                                                              .first),
+                                                          appointment.subject,
+                                                          startTime,
+                                                          endTime)
+                                                      .then((value) {
+                                                    Navigator.of(context).pop();
 
-                                                  if (value.statusCode == 200) {
-                                                    widget._dataSource!
-                                                        .appointments!
-                                                        .remove(appointment);
-                                                    widget._dataSource!
-                                                        .notifyListeners(
-                                                            CalendarDataSourceAction
-                                                                .remove,
-                                                            <Appointment>[
-                                                          appointment
-                                                        ]);
+                                                    if (value.statusCode ==
+                                                        200) {
+                                                      widget._dataSource!
+                                                          .appointments!
+                                                          .remove(appointment);
+                                                      widget._dataSource!
+                                                          .notifyListeners(
+                                                              CalendarDataSourceAction
+                                                                  .remove,
+                                                              <Appointment>[
+                                                            appointment
+                                                          ]);
 
-                                                    Appointment app =
-                                                        appointment;
-                                                    app.startTime = startTime;
-                                                    app.endTime = endTime;
-                                                    widget._dataSource!
-                                                        .appointments!
-                                                        .add(app);
+                                                      Appointment app =
+                                                          appointment;
+                                                      app.startTime = startTime;
+                                                      app.endTime = endTime;
+                                                      widget._dataSource!
+                                                          .appointments!
+                                                          .add(app);
 
-                                                    widget._dataSource!
-                                                        .notifyListeners(
-                                                            CalendarDataSourceAction
-                                                                .add,
-                                                            <Appointment>[app]);
-                                                  } else {
-                                                    WarningModal(
-                                                        text:
-                                                            "Le planning event n'a pas pu être supprimé",
-                                                        url_animation:
-                                                            "assets/lottieanimate/error.json");
-                                                  }
-                                                });
-                                              }
-                                            }))
+                                                      widget._dataSource!
+                                                          .notifyListeners(
+                                                              CalendarDataSourceAction
+                                                                  .add,
+                                                              <Appointment>[
+                                                            app
+                                                          ]);
+                                                    } else {
+                                                      showModalBottomSheet(
+                                                          shape:
+                                                              const RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.only(
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        25),
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        25)),
+                                                          ),
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return WarningModal(
+                                                                text:
+                                                                    "Le planning event n'a pas pu être supprimé",
+                                                                url_animation:
+                                                                    "assets/lottieanimate/error.json");
+                                                          });
+                                                    }
+                                                  });
+                                                }
+                                              }),
+                                        ))
                                   ])),
                   ],
                 ),
@@ -518,7 +617,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
         });
       },
     ).whenComplete(() {
-      selectedDate = null;
+      selectedDate = currentTime;
       beginHour = null;
       endHour = null;
     });

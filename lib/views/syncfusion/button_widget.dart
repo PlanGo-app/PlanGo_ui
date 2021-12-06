@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:plango_front/util/constant.dart';
 
 class ButtonHeaderWidget extends StatelessWidget {
   final String title;
@@ -41,7 +42,7 @@ class ButtonWidget extends StatelessWidget {
         child: FittedBox(
           child: Text(
             text,
-            style: TextStyle(fontSize: 20, color: Colors.black),
+            style: TextStyle(fontSize: 20, color: kPrimaryColor),
           ),
         ),
         onPressed: onClicked,
