@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:plango_front/util/constant.dart';
 import 'package:plango_front/views/group_travel/group_travel.dart';
 import 'package:plango_front/views/map_page/map_page.dart';
-import 'package:plango_front/views/syncfusion/syncfusion_test.dart';
+import 'package:plango_front/views/syncfusion/calendar.dart';
 
 class Screen extends StatefulWidget {
   final String city;
