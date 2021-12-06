@@ -62,17 +62,20 @@ class _ScreenState extends State<Screen> {
             BottomNavyBarItem(
                 icon: const Icon(Icons.group),
                 title: const Text('Groupe'),
+                textAlign: TextAlign.center,
                 activeColor: kPrimaryLightColor,
                 inactiveColor: kPrimaryColor),
             BottomNavyBarItem(
                 icon: const Icon(Icons.map),
                 title: const Text('Map'),
+                textAlign: TextAlign.center,
                 activeColor: kPrimaryLightColor,
                 inactiveColor: kPrimaryColor),
             BottomNavyBarItem(
                 icon: const Icon(Icons.calendar_today),
                 title: const Text('Calendrier'),
                 activeColor: kPrimaryLightColor,
+                textAlign: TextAlign.center,
                 inactiveColor: kPrimaryColor),
           ],
         ));
