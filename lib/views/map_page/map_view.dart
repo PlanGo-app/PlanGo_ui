@@ -58,8 +58,8 @@ class _MapState extends State<MapView> {
           });
         } else {
           setState(() {
-            widget.panelController.show();
             widget.markers.add(m);
+            widget.panelController.show();
           });
         }
         widget.isReady = true;

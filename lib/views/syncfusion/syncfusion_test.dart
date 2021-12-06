@@ -33,7 +33,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
   @override
   void initState() {
     super.initState();
-    selectedDate = widget.dateBegin;
+    widget.all = [];
     widget._dataSource = _getCalendarDataSource();
     PlanningEventService().getPlanningEvents(widget.travelId).then((value) {
       print(value.first.date_start);
@@ -61,103 +61,119 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
             child: ListView(scrollDirection: Axis.horizontal, children: [
               ...widget.all
                   .map((planningEvent) => InkWell(
-                        child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18),
-                              color: Colors.deepPurpleAccent,
-                            ),
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            padding: const EdgeInsets.symmetric(horizontal: 6),
-                            child: Center(child: Text(planningEvent.name))),
-                        onTap: () {
-                          showModalBottomSheet(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(25),
-                                    topRight: Radius.circular(25)),
-                              ),
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Material(
-                                    elevation: 20,
-                                    child: SizedBox(
-                                      height: 300,
-                                      child: Column(
-                                        children: [
-                                          Expanded(
-                                              flex: 3,
-                                              child: Row(children: [
-                                                Expanded(
-                                                    flex: 10,
-                                                    child: DatePickerWidget(
-                                                      text:
-                                                          "Date de l'activité",
-                                                      beginDate:
-                                                          widget.dateBegin,
-                                                      endDate: widget.dateEnd,
-                                                      onDateTimeChanged:
-                                                          (newDate) {
+                      child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18),
+                            color: Colors.deepPurpleAccent,
+                          ),
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          child: Center(child: Text(planningEvent.name))),
+                      onTap: () {
+                        showModalBottomSheet(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25),
+                                topRight: Radius.circular(25)),
+                          ),
+                          context: context,
+                          builder: (BuildContext context) {
+                            return StatefulBuilder(builder:
+                                (BuildContext context,
+                                    StateSetter setModalState) {
+                              return Material(
+                                  elevation: 20,
+                                  child: SizedBox(
+                                    height: 300,
+                                    child: Column(
+                                      children: [
+                                        Expanded(
+                                            flex: 3,
+                                            child: Row(children: [
+                                              Expanded(
+                                                  flex: 10,
+                                                  child: DatePickerWidget(
+                                                    text: "Date de l'activité",
+                                                    beginDate: widget.dateBegin,
+                                                    endDate: widget.dateEnd,
+                                                    onDateTimeChanged:
+                                                        (newDate) {
+                                                      setModalState(() {
                                                         selectedDate = newDate;
                                                         print(newDate);
-                                                      },
-                                                    ))
-                                              ])),
-                                          Expanded(
-                                            flex: 3,
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  flex: 5,
-                                                  child: TimePickerWidget(
-                                                    text: "Heure de debut",
-                                                    onDateTimeChanged:
-                                                        (newDateTime) {
+                                                      });
+                                                    },
+                                                  ))
+                                            ])),
+                                        Expanded(
+                                          flex: 3,
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 5,
+                                                child: TimePickerWidget(
+                                                  text: "Heure de debut",
+                                                  onDateTimeChanged:
+                                                      (newDateTime) {
+                                                    setModalState(() {
                                                       beginHour = newDateTime;
                                                       print(beginHour);
-                                                    },
-                                                  ),
+                                                    });
+                                                  },
                                                 ),
-                                                Expanded(
-                                                  flex: 5,
-                                                  child: TimePickerWidget(
-                                                    text: "Heure de fin",
-                                                    beginTime: beginHour,
-                                                    onDateTimeChanged:
-                                                        (newDateTime) {
+                                              ),
+                                              Expanded(
+                                                flex: 5,
+                                                child: TimePickerWidget(
+                                                  text: "Heure de fin",
+                                                  beginTime: beginHour,
+                                                  onDateTimeChanged:
+                                                      (newDateTime) {
+                                                    setModalState(() {
                                                       endHour = newDateTime;
                                                       print(endHour);
-                                                    },
-                                                  ),
+                                                    });
+                                                  },
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
-                                          Expanded(
-                                              flex: 3,
-                                              child: Row(children: [
-                                                Expanded(
-                                                    flex: 5,
-                                                    child: RoundedButton(
-                                                        text: "Ajouter",
-                                                        press: () {
-                                                          if (selectedDate !=
-                                                                  null &&
-                                                              beginHour !=
-                                                                  null &&
-                                                              endHour != null) {
-                                                            createPlanningEvent(
-                                                                planningEvent,
-                                                                context,
-                                                                true);
-                                                          }
-                                                        }))
-                                              ])),
-                                        ],
-                                      ),
-                                    ));
-                              });
-                        },
-                      ))
+                                        ),
+                                        Expanded(
+                                            flex: 3,
+                                            child: !verifyData()
+                                                ? Container()
+                                                : compareData()
+                                                    ? Text(
+                                                        "L'heure de debut doit être inferieur à l'heure de fin",
+                                                        style: TextStyle(
+                                                            color: Colors.red),
+                                                      )
+                                                    : Row(children: [
+                                                        Expanded(
+                                                            flex: 5,
+                                                            child: RoundedButton(
+                                                                text: "Ajouter",
+                                                                press: () {
+                                                                  if (selectedDate != null &&
+                                                                      beginHour !=
+                                                                          null &&
+                                                                      endHour !=
+                                                                          null) {
+                                                                    createPlanningEvent(
+                                                                        planningEvent,
+                                                                        context,
+                                                                        true);
+                                                                  }
+                                                                }))
+                                                      ])),
+                                      ],
+                                    ),
+                                  ));
+                            });
+                          },
+                        );
+                      }))
                   .toList(),
               // IgnorePointer(child: Center(child: buildText(text))),
             ]),
@@ -170,7 +186,7 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
               allowDragAndDrop: true,
               onDragEnd: dragEnd,
               initialDisplayDate: selectedDate,
-              timeSlotViewSettings: TimeSlotViewSettings(
+              timeSlotViewSettings: const TimeSlotViewSettings(
                   timeIntervalHeight: 60, timeFormat: "hh:mm"),
               showWeekNumber: true,
             ),
@@ -178,6 +194,16 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
         ],
       ),
     ));
+  }
+
+  bool verifyData() {
+    return (selectedDate != null && beginHour != null && endHour != null);
+  }
+
+  bool compareData() {
+    return ((beginHour!.hour * 60 + beginHour!.minute) -
+            (endHour!.hour * 60 + endHour!.minute) >=
+        0);
   }
 
   void createPlanningEvent(PlanningEvent planningEvent, context, bool save) {

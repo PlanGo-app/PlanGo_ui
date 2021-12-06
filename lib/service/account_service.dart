@@ -19,13 +19,15 @@ class AccountService {
 
   Future<http.Response> GetUser() async {
     return Storage.getToken().then((token) async {
-      return await http.get(
-        Uri.parse(HTTP + "user"),
-        headers: {
-          'Authorization': 'Bearer $token',
-          "Content-Type": "application/json"
-        },
-      );
+      if (token != null)
+        return await http.get(
+          Uri.parse(HTTP + "user"),
+          headers: {
+            'Authorization': 'Bearer $token',
+            "Content-Type": "application/json"
+          },
+        );
+      return http.Response("", 400);
     });
   }
 

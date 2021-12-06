@@ -23,13 +23,6 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
   String getText() {
     if (time == null) {
       return widget.text;
-    } else if (widget.beginTime != null &&
-        (widget.beginTime!.hour * 60 + widget.beginTime!.minute) -
-                (time!.hour * 60 + time!.minute) >=
-            0) {
-      print((widget.beginTime!.hour * 60 + widget.beginTime!.minute) -
-          (time!.hour * 60 + time!.minute));
-      return "Heure de fin < heure de debut ";
     } else {
       final hours = time!.hour.toString().padLeft(2, '0');
       final minutes = time!.minute.toString().padLeft(2, '0');
@@ -48,7 +41,7 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
   Future pickTime(BuildContext context) async {
     final newTime = await showTimePicker(
       context: context,
-      initialTime: time ?? TimeOfDay(hour: 9, minute: 0),
+      initialTime: time ?? const TimeOfDay(hour: 9, minute: 0),
       // initialEntryMode: TimePickerEntryMode.input,
       builder: (BuildContext context, Widget? child) {
         return MediaQuery(
@@ -57,9 +50,7 @@ class _TimePickerWidgetState extends State<TimePickerWidget> {
         );
       },
     );
-
     if (newTime == null) return;
-
     setState(() {
       time = newTime;
       widget.onDateTimeChanged(newTime);

@@ -50,9 +50,10 @@ class _FormLoginState extends State<FormLogin> {
   @override
   Widget build(BuildContext context) {
     AccountService().GetUser().then((value) => {
-          USER_NAME = json.decode(value.body)["pseudo"],
+          print(value.statusCode),
           if (value.statusCode == 200)
             {
+              USER_NAME = json.decode(value.body)["pseudo"],
               Navigator.push(
                   context,
                   MaterialPageRoute(

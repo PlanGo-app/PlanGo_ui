@@ -65,7 +65,6 @@ class _TravelsListState extends State<TravelsList> {
                             return const Center(child: Text('Aucun voyage'));
                           } else {
                             // return Text(snapshot.data!);
-                            print(snapshot.data![0].id);
                             return TravelsListBuilder(
                                 dateFormat: dateFormat, snapshot: snapshot);
                           }
@@ -246,7 +245,7 @@ class _TravelsListBuilderState extends State<TravelsListBuilder> {
                                 SharingPage(
                                     invitationCode: widget
                                         .snapshot.data![index].invitationCode),
-                          )).then((_) => setState(() {}));
+                          ));
                     },
                   ),
                 ],
