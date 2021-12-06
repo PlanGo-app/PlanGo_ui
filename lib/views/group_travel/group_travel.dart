@@ -35,7 +35,6 @@ class _GroupState extends State<Group> {
     //     });
 
     return Container(
-      color: Colors.deepPurple,
       child: FutureBuilder<List<User>>(
         future: TravelService().getMembers(widget.travelId),
         builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
@@ -172,7 +171,7 @@ class _GroupState extends State<Group> {
       },
       itemBuilder: (context, index) {
         return Container(
-          color: Colors.blue,
+          color: kPrimaryColor,
           child: Container(
             width: size.height * 0.7,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
@@ -183,7 +182,7 @@ class _GroupState extends State<Group> {
                   child: Center(
                     child: Text(
                       snapshot.data![index].pseudo,
-                      style: const TextStyle(fontSize: 60, color: Colors.red),
+                      style: const TextStyle(fontSize: 60, color: Colors.white),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -225,6 +224,20 @@ class _GroupState extends State<Group> {
                               size: 40,
                               color: Colors.white,
                             )))
+                    : Container(),
+                snapshot.data![index].pseudo == USER_NAME &&
+                        snapshot.data![index].role == "ADMIN"
+                    ? Flexible(
+                        flex: 2,
+                        child: IconButton(
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.looks_one,
+                            color: Colors.yellow,
+                            size: 40,
+                          ),
+                        ),
+                      )
                     : Container()
               ],
             ),
