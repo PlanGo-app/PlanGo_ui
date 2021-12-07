@@ -93,6 +93,7 @@ class _TextSearchCityState extends State<TextSearchCity> {
               Flexible(
                   child: TextField(
                 decoration: const InputDecoration(
+                  hintText: 'Dans quelle ville ?',
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide.none,
                   ),
