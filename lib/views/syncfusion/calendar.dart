@@ -337,7 +337,6 @@ class _SyncfusionTestState extends State<SyncfusionTest> {
                 timeIntervalHeight: 60,
                 timeFormat: "HH:mm",
               ),
-              showWeekNumber: true,
               minDate: widget.dateBegin,
               maxDate: widget.dateEnd,
               onTap: (CalendarTapDetails details) {
