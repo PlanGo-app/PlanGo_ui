@@ -94,7 +94,6 @@ class _CreateAccountState extends State<CreateAccount> {
                             AccountService()
                                 .CreateUser(pseudo, email, password)
                                 .then((value) {
-                              print(value.statusCode);
                               switch (value.statusCode) {
                                 case 201:
                                   // var token = json.decode(value.body)["token"];
@@ -134,12 +133,10 @@ class _CreateAccountState extends State<CreateAccount> {
 
 String? validateEmail(String? value) {
   String pattern =
-      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-      r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-      r"{0,253}[a-zA-Z0-9])?)*$";
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
   RegExp regex = RegExp(pattern);
   if (value == null || !regex.hasMatch(value)) {
-    return 'Enter a valid email address';
+    return 'Entrez une adresse email valide';
   } else {
     return null;
   }
