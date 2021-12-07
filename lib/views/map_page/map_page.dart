@@ -73,10 +73,12 @@ class _MapViewBodyState extends State<MapViewBody> {
   void initState() {
     super.initState();
     panelController = PanelController();
-    map = MapView(travelId: widget.travelId, panelController: panelController);
+    late Widget map;
     CountryCityService().getLatLng(widget.city, widget.country).then((value) =>
         {
-          map.mapController.move(LatLng(value.latitude, value.longitude), 16.0)
+    MapView(travelId: widget.travelId, panelController: panelController, longitude:value.longitude, latitide:value.latitude);
+
+        map.mapController.move(LatLng(value.latitude, value.longitude), 16.0)
         });
   }
 
