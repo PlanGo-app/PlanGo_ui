@@ -210,11 +210,10 @@ class _TravelsListBuilderState extends State<TravelsListBuilder> {
                             color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
-                          widget.dateFormat.format(
-                                  widget.snapshot.data![index].date_start) +
-                              " -- " +
-                              widget.dateFormat.format(
-                                  widget.snapshot.data![index].date_end),
+                        '${widget.snapshot.data![index].date_start.day}/${widget.snapshot.data![index].date_start.month}/${widget.snapshot.data![index].date_start.year}'
+                            '->'
+                            '${widget.snapshot.data![index].date_end.day}/${widget.snapshot.data![index].date_end.month}/${widget.snapshot.data![index].date_end.year}',
+
                           style: const TextStyle(color: Colors.white)),
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
