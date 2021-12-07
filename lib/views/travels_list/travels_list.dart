@@ -235,7 +235,6 @@ class _TravelsListBuilderState extends State<TravelsListBuilder> {
                     icon: const Icon(Icons.share),
                     color: Colors.white,
                     onPressed: () {
-                      print(widget.snapshot.data![index].invitationCode);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -252,7 +251,7 @@ class _TravelsListBuilderState extends State<TravelsListBuilder> {
               ),
             ),
             endActionPane: ActionPane(
-              motion: ScrollMotion(),
+              motion: const ScrollMotion(),
               children: [
                 SlidableAction(
                   // An action can be bigger than the others.

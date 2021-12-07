@@ -58,8 +58,7 @@ class _FormLoginState extends State<FormLogin> {
                 Stack(
                   children: [
                     const Label(
-                        text: "Votre adresse mail :",
-                        color: kPrimaryLightColor),
+                        text: "Votre pseudo :", color: kPrimaryLightColor),
                     Login(
                       hide: false,
                       controller: pseudoController,
