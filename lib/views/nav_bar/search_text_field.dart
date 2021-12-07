@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 import 'package:plango_front/service/country_city_service.dart';
@@ -40,6 +41,9 @@ class _SearchTextFieldState extends State<SearchTextField> {
                           return const Text(
                               'Aucun lieu ne correspond à votre recherche');
                         } else {
+                          if (searchController.text.isEmpty) {
+                            return Container();
+                          }
                           return ConstrainedBox(
                             constraints: const BoxConstraints(maxHeight: 350),
                             child: ListView.separated(
@@ -88,6 +92,12 @@ class _SearchTextFieldState extends State<SearchTextField> {
 
             onChanged: (text) {
               setState(() {});
+              KeyboardVisibilityController().onChange.listen((isVisible) {
+                if (isVisible) {
+                } else {
+                  searchController.text = "";
+                }
+              });
               // getPlaces(searchController.text);
             },
           )),
