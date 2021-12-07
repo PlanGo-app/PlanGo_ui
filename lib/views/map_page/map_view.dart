@@ -13,13 +13,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 class MapView extends StatefulWidget {
   int travelId;
   PanelController panelController;
-  double longitude, latitude;
-  MapView(
-      {Key? key,
-      required this.travelId,
-      required this.panelController,
-      required this.longitude,
-      required this.latitude})
+  MapView({Key? key, required this.travelId, required this.panelController})
       : super(key: key);
 
   MapController mapController = MapController();
@@ -139,7 +133,7 @@ class _MapState extends State<MapView> {
               // ignore: empty_catches
             } catch (e) {}
           },
-          center: LatLng(widget.longitude, widget.latitude),
+          center: LatLng(50.62925, 3.057256),
           minZoom: 1.0,
           maxZoom: 20.0,
           zoom: 16.0),
